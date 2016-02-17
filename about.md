@@ -1,0 +1,8 @@
+---
+layout: page
+title: About
+---
+
+I am a Front End Developer with Full-Stack tendencies.
+
+You can find my projects at [MattTrifilo.com](http://www.MattTrifilo.com), [CodePen](http://www.codepen.io/dprsky), and [GitHub](https://github.com/itxchy).

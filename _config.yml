@@ -1,0 +1,24 @@
+# Permalinks
+#
+# Use of `relative_permalinks` ensures post links from the index work properly.
+permalink:           pretty
+
+# Setup
+title:               Matt Trifilo
+tagline:             'A stream of conciousness on the internet.'
+description:         'I''ve been learning to code, among other things. <br><br> I''ll tell you <em>all</em> about it.'
+url:                 http://blog.matttrifilo.com
+baseurl:             ''
+gems: [jekyll-paginate]
+paginate:            5
+paginate_path: "page:num"
+
+# About/contact
+author:
+  name:              Matt Trifilo
+  url:               http://www.matttrifilo.com
+  email:             matt.trifilo@gmail.com
+  twitter:			 https://twitter.com/matttrifilo
+
+# Custom vars
+version:             1.0.0
