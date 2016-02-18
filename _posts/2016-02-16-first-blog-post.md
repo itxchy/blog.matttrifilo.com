@@ -5,31 +5,34 @@ title: First Blog Post!
 
 <iframe src="//giphy.com/embed/kpQjhiuMqGJHi" width="480" height="269" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
   
-I thought I'd christen this shiny new blog with a reflection of how I got to this point. This post will be a long one, but this will be a good chance to reflect on the past few years that have been a roller coaster to say the least. 
+I thought I'd christen this shiny new blog with a reflection of how I got to this point. This post will be long (okay, it's a novel), but this will be a good chance for me to reflect on the past few years that have been a roller coaster to say the least. 
 
 Changing careers full stop can be a terrifying undertaking, but it can be the most liberating thing you can do with your life when the path you're on turns into a canyon getting deeper and narrower all the time. 
 
-If something isn't working, let it go. 
+If something isn't working, just let it go. 
 
-The costs of drawing it out, plus the lost returns of what's waiting for you on the other side, far outweigh the costs of leaving the sinking ship behind. There's a massive, vibrant, fragile world out there waiting to be explored and helped, and it's happy to have you. 
+The many costs of drawing out a career that is hollow and unfulfilling, plus the lost returns of what's waiting for you on the other side, far outweigh the costs of leaving the sinking ship behind. There's a massive, vibrant, fragile world out there waiting to be explored and helped, and it's happy to have you. 
 
-The sunk costs of all the time, money, training, and experience that go into a skilled occupation you're leaving behind can be difficult to ignore. Ego and insecurity pressure you into just going with the flow and grinding away at something that's unfulfilling and draining until a better oppurtunity falls into your lap, but that's not how life works. You'll more likely find yourself allowing external influences to shape how you live your life and spend your time until you don't even know what your doing or why anymore. That's the opposite of freedom. 
+The sunk costs of all the time, money, training, and experience that go into a skilled occupation you're leaving behind are hard to just brush off. Ego and insecurity pressure you into just going with the flow and grinding away at tasks that are existentially pointless and draining until a better oppurtunity falls into your lap, but that's not how life works. You'll more likely find yourself allowing external influences to shape how you live your life and spend your time until you don't even know what your doing or why anymore. That is the opposite of freedom. 
 
 If you don't take command of your life and your time, someone else will. 
 
-Many people spend most of their lives taking the easy, comfortable opportunities just because they're right there in front of them--not because those opportunities are what they actually want or what's best for them. Boredom is the death of creativity.
+Too many people spend most of their lives taking the easy, comfortable opportunities just because they're right there in front of them--not because those opportunities are what they actually want or what's best for them. Boredom is the death of creativity.
 
-How do you shape your life into what you want it to be? How do you start? It's actually pretty simple. 
+How do you shape your life into what you want it to be? How do you start? 
+It's actually pretty simple. 
 
 Just start. Today. Right now. 
 
-If you put it off until tomorrow, those tomorrows might add up to years before you know what happened.  
+If you put it off until tomorrow, those tomorrows have a way of adding up to years before you know what happened. 
+
+I've been there.
 
 <iframe src="//giphy.com/embed/r6hxRPegvFzfG" width="480" height="272" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
 
-It took me a long time summon the courage to leave behind a career I'd been working towards since high school, but it's in favor of something much bigger and far more exciting than I ever realized. The technology sector has been going through a renaissance period that's still heating up. As new technologies continue to be developed and released at a quickening pace, nearly unimaginable new products and apps will not only be possible, but eventually the norm. 
+It took me a long time summon the courage to leave behind a career I'd been working towards since high school, but it's been in favor of something much larger and far more exciting than I ever imagined. The technology sector has been going through a renaissance period that's still heating up. We've only seen the beginning. As new technologies continue to be developed and released at a quickening pace, nearly unimaginable new products and apps will not only be possible, but eventually be the norm. 
 
-[Web Assembly](https://medium.com/javascript-scene/what-is-webassembly-the-dawn-of-a-new-era-61256ec5a8f6#.dwuol2ky4) alone is going to rock the foundations of every web browser in the coming years. It will give JavaScript the shot of adrenaline it's been missing by allowing developers to access low-level operations (threads!, parallel processing pipelines!, hype!) by importing performance-critical Web Assembly code the same way you'd import a normal JavaScript module. Web Assembly will also offer a compile target for many other languages, allowing them to finally run on the web platform. Mozilla has already built a working toolchain called [Binaryen](https://hacks.mozilla.org/2015/12/compiling-to-webassembly-its-happening/) for compiling C and C++ to Web Assembly, just don't expect it to work in your browser anytime soon. Using JavaScript, we'll probably have to use a different language to get down and dirty with low-level primitives before compiling to Web Assembly that could be imported into a JavaScript program. We'll see what happens as the standard matures. Who knows? A new JavaScript flavored language may emerge specifically for web developers writing semantic low-level operations optimized for Web Assembly compilation, which could then be imported into a normal ES2015(ES2016?!) program. I'm still trying to wrap my head around how all this will work, but we'll soon be able to run much more powerful software in the browser than I ever thought possible.
+[Web Assembly](https://medium.com/javascript-scene/what-is-webassembly-the-dawn-of-a-new-era-61256ec5a8f6#.dwuol2ky4) alone is poised to rock the foundations of every web browser in the just a few years. It will give JavaScript the shot of adrenaline it's been missing by allowing developers to access low-level operations (threads!, parallel processing pipelines!, hype!) by allowing developers to import performance-critical code as Web Assembly modules the same way they'd import a normal JavaScript module. Web Assembly will also offer a compile target for many other languages, allowing them to finally run on the web platform at the binary level. Mozilla has already built a working toolchain called [Binaryen](https://hacks.mozilla.org/2015/12/compiling-to-webassembly-its-happening/) for compiling C and C++ to Web Assembly, just don't expect it to work in your browser anytime soon. Using JavaScript, we'll probably have to use a different language to get down and dirty with low-level primitives before compiling to Web Assembly that could be imported into a JavaScript program. We'll see what happens as the standard matures. Who knows? A new JavaScript flavored language similar to CoffeeScript or Elm may emerge specifically for web developers writing semantic low-level operations optimized for Web Assembly compilation, which could then be imported into a normal ES2015(ES2016?!) program. I'm still trying to wrap my head around how all this will work, but we'll soon be able to run much more powerful software in the browser than ever before.
 
 On the VR front, the Oculus Rift hasn't even hit the market yet for consumers, but it's already been [helping to treat solders with PTSD](http://www.theverge.com/2013/4/22/4251926/oculus-rift-virtual-reality-therapy-mental-health).
 
@@ -39,7 +42,7 @@ Why?
   
 ### Let's take a step back.
   
-For most of my life, I've been immersed in music and computers. Both have been an ocean of inspiration for me in more ways than I'll ever know. Soon after I hooked up my family's first Gateway computer in middle school, I was playing Starcraft online with other human beings from all over the world. In real time. 4v4 maps against people scattered over thousands of miles of planet. In. Real. Time. Back in 2000, that was just too crazy for words. But even more amazing than that, to me at least, was being able to download songs directly from AOL's search engine. Any song. By any artist. Holy shit! Once AOL took that feature down, it didn't take me long to find Napster. 
+For most of my life, I've been immersed in music and computers. Both have been an ocean of inspiration for me in more ways than I'm conscious of. Soon after I hooked up my family's first Gateway computer in middle school, I was playing Starcraft online with other human beings from all over the world. In real time. 4v4 maps against people scattered over thousands of miles of planet. In. Real. Time. Back in 2000, that was just too crazy for words. But even more amazing than that, to me at least, was being able to download songs directly from AOL's search engine. Any song. By any artist. Holy shit! Once AOL took that feature down, it didn't take me long to find Napster. 
 
  ![napster](https://farm1.staticflickr.com/158/429019967_f40e650950.jpg "Thanks krazykory from Flickr")
 
@@ -101,7 +104,9 @@ Besides new technologies and plugins replacing anolog gear, the process itself r
 
 I knew that I'd be able to freelance with a lot of friends in LA on interesting projects after I got my feet on the ground, but without anything new to learn or aspire to beyond bigger budget films where I'd likely have to settle for the lowest level audio cleanup tasks with hyper-fast deadlines and low pay for years, I knew I'd never be happy doing post-production full-time. 
 
-Think about the majority of big budget films that have come out in recent years. Many of them were a complete waste of precious, finite time and money to see. Two hours of your one and only life that you'll never get back. Just imagine spending years of your life working feverishly on a film like Speed 2 just to get a paycheck and witness it tank spectacularly. I'd much rather spend my most productive years working on projects that will make people's lives better, even in a small, indirect way. There are so many big, hard problems in the world and not nearly enough people doing anything meaningful to solve them. I knew a change had to happen.
+I'm very thankful to the many filmmakers and friends who have given me incredible opportunities over the years, but the audio industry is very limiting in a lot of ways. You work very hard and passionately on projects just to see them vanish a short time later. The majority of projects I've spent hundreds of hours on are gone forever. Not online, not on television, just gone. There's no way to work on personal projects either without shooting your own film, which would not allow time to mix sound on top of that. Being a sound editor, sound designer, or re-recording mixer leaves you dependent on others creating projects in order for you to do anything at all. I lived for the soulful, inspiring projects with directors who trusted me with creative decisions that would benefit the project in ways they couldn't accomplish alone, but could push me beyond my perceived limits to produce the kind of soundscapes I could never build alone. Those kind of projects are very rare at the professional level, and were few and far between while I freelanced.
+
+Think about the majority of big budget films that have come out in recent years. Many of them were a complete waste of precious, finite time and money to see. Two hours of your one and only life that you'll never get back. Just imagine spending *years* of your life working feverishly on a film like Transformers 3 just to get a paycheck and witness it tank spectacularly. I'd much rather spend my most productive years working on projects that will make people's lives *better*, even in a small, indirect way. There are so many big, hard problems in the world and not nearly enough people doing anything meaningful to solve them. I knew a change had to happen.
   
 ### Hello, World!
 
