@@ -4,13 +4,49 @@
  <title>Matt Trifilo</title>
  <link href="http://blog.matttrifilo.com/atom.xml" rel="self"/>
  <link href="http://blog.matttrifilo.com/"/>
- <updated>2016-02-24T13:13:24-06:00</updated>
+ <updated>2016-08-03T15:14:38-05:00</updated>
  <id>http://blog.matttrifilo.com</id>
  <author>
    <name>Matt Trifilo</name>
    <email>matt.trifilo@gmail.com</email>
  </author>
 
+ 
+ <entry>
+   <title>Leveling Up</title>
+   <link href="http://blog.matttrifilo.com/2016/08/02/leveling-up/"/>
+   <updated>2016-08-02T00:00:00-05:00</updated>
+   <id>http://blog.matttrifilo.com/2016/08/02/leveling-up</id>
+   <content type="html">&lt;p&gt;At the end of May, I finally completed my &lt;a href=&quot;https://www.freecodecamp.com/itxchy/front-end-certification&quot;&gt;Front End Certification&lt;/a&gt; for Free Code Camp.&lt;/p&gt;
+
+&lt;p&gt;Since then, I’ve spent some time refactoring a few of my older projects to get them to a place where I don’t cringe every time I look at the source code. They were pretty grisly. My Pomodoro app from last year in particular was a hacky mess. It was my first project trying out AngularJS, and while it worked, it broke pretty much every relavent style in &lt;a href=&quot;https://github.com/johnpapa/angular-styleguide/blob/master/a1/README.md&quot;&gt;John Papa’s style guide&lt;/a&gt;. Here’s the &lt;a href=&quot;http://codepen.io/dprsky/pen/OymXEp&quot;&gt;old source&lt;/a&gt; if you have a strong stomach. All of the logic was in one controller and $scope was polluted with almost every variable in the project. Not even one service to handle business logic. The controller was in charge or user interactions, business logic, &lt;em&gt;and&lt;/em&gt; state. The horror. It must be destroyed. I didn’t even know how to use a service versus a controller at the time. It’s a small app, and the design-pattern-less layout of the code was well commented, but it would have quickly turned into a field of thorns if it ever needed new features. Good code should be mostly self-documenting anyway. I took this as an oppurtunity to refactor the app’s code &lt;a href=&quot;https://johnpapa.net/angular-app-structuring-guidelines/&quot;&gt;structure&lt;/a&gt; and logic to separate concerns (UI elements, &lt;a href=&quot;https://johnpapa.net/sharing-data-in-an-angular-controller-or-an-angular-service/&quot;&gt;state&lt;/a&gt;, application logic, user interaction handling) and get some practice using Angular 1.5’s great new &lt;a href=&quot;https://toddmotto.com/exploring-the-angular-1-5-component-method/&quot;&gt;component method&lt;/a&gt;, modeled after Angular 2’s component pattern. That’s a story for another blog post, but it was a humbling learning experience, and Angular 1’s paradigm makes so much more sense now on every level.&lt;/p&gt;
+
+&lt;p&gt;The new pomodoro source code is &lt;a href=&quot;https://github.com/itxchy/FCC-pomodoro&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;It’s far from perfect, but application state is maintained in a single shared service (not spread out all over the application), the controllers simply handle user interactions, and the application structure is organized by feature.&lt;/p&gt;
+
+&lt;p&gt;Using &lt;a href=&quot;https://www.npmjs.com/package/ng-redux&quot;&gt;Redux&lt;/a&gt; would greatly &lt;a href=&quot;http://blog.rangle.io/managing-state-redux-angular/&quot;&gt;impove the state handling&lt;/a&gt;, but that’s for another day.&lt;/p&gt;
+
+&lt;!--break--&gt;
+
+&lt;p&gt;Quincy Larson advises students not to bother refactoring old projects and just keep moving forward as you’ll write better code as you go. He’s absolutely right. I ended up shaving a &lt;a href=&quot;http://www.catb.org/~esr/jargon/html/Y/yak-shaving.html&quot;&gt;herd of yaks&lt;/a&gt; and spending hours on code I won’t need for my portfolio once I build a few full stack applications.&lt;/p&gt;
+
+&lt;p&gt;Stubborn yaks aside, I’m glad I took the time to revisit my old projects. I learned a great deal about unit testing, was able to set up three very handy re-usable boiler plates, powered by gulp and Browsersync, to build basic sites with Sass, modular sites with Webpack for Angular 1.x and React, and modular sites with an Express backend. Getting into the guts of Gulp, Bower, Webpack, and ES2015 was definitely worth the time and frustration. At least for now, I have the build systems I need to build my next generation of apps, and I don’t have to worry about relying on “magic” from some of the complex boilerplates out there. There are some great ones that are well documented, but they should be used with caution and after a lot of tire-kicking. With my own, I can make a new gulp task or drop in a new Webpack plugin knowing exactly where and how to wire everything together without hours of research.&lt;/p&gt;
+
+&lt;p&gt;The biggest mistake I’ve made with boilerplates in the past was using some that used multiple technologies or syntax that I’ve never used before. You can learn one unknown fairly quickly, but if the boilerplate has two or three or six unknowns baked in to the stack, you’re in for a world of hurt very quickly.&lt;/p&gt;
+
+&lt;p&gt;Thankfully, there are a lot of great boilerplates out there, each maintained by dozens of very smart developers representing many different opinions and stacks. Using a well-designed boilerplate can save a lot of set up time, as long as you understand every piece of the stack and can reason through the maintainers’ code easily. The boilerplates worth using will be actively maintained by many smart people, be focused on best practices over individual opinions, and be very well documented in and out of the source code.&lt;/p&gt;
+
+&lt;p&gt;For React, a great site for shopping for boilerplates based on features is &lt;a href=&quot;http://andrewhfarmer.com/starter-project/&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;One boilerplate that stands out to me is &lt;a href=&quot;https://github.com/erikras/react-redux-universal-hot-example&quot;&gt;React Redux Universal Hot Example&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;I haven’t used it, but its stack uses very familier tools, nothing exotic. It’s well documented–even the &lt;a href=&quot;https://react-redux.herokuapp.com/&quot;&gt;demo app&lt;/a&gt; has &lt;a href=&quot;https://github.com/erikras/react-redux-universal-hot-example/blob/master/docs/ExploringTheDemoApp/ExploringTheDemoApp.md&quot;&gt;a guide&lt;/a&gt;, and the source is heavily commented. It also has over 100 contributers and close to 1000 commits. When I start working on some server-side rendered React apps for Free Code Camp’s full stack projects, this will likely be my starter.&lt;/p&gt;
+
+&lt;p&gt;Over the next few months, I will be finishing a redesign for a friend’s business site, working through Free Code Camp’s back end challenges with Express, and learning all I can about NodeJS, Express, ReactJS, and Redux. The rest of the summer should be very exciting.&lt;/p&gt;
+
+</content>
+ </entry>
  
  <entry>
    <title>First Blog Post!</title>
@@ -20,6 +56,8 @@
    <content type="html">&lt;iframe src=&quot;//giphy.com/embed/kpQjhiuMqGJHi&quot; width=&quot;480&quot; height=&quot;269&quot; frameborder=&quot;0&quot; class=&quot;giphy-embed&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;
 
 &lt;p&gt;I thought I’d christen this shiny new blog with a reflection of how I got to this point. This post will be long (okay, it’s a novel), but this will be a good chance for me to reflect on the past few years that have been a roller coaster to say the least.&lt;/p&gt;
+
+&lt;!--break--&gt;
 
 &lt;p&gt;Changing careers full stop can be a terrifying undertaking, but it can be the most liberating thing you can do with your life when the path you’re on turns into a canyon getting deeper and narrower all the time.&lt;/p&gt;
 

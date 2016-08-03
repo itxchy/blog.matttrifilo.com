@@ -1,11 +1,14 @@
 ---
 layout: post
 title: First Blog Post!
+comments: true
 ---
 
 <iframe src="//giphy.com/embed/kpQjhiuMqGJHi" width="480" height="269" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
   
 I thought I'd christen this shiny new blog with a reflection of how I got to this point. This post will be long (okay, it's a novel), but this will be a good chance for me to reflect on the past few years that have been a roller coaster to say the least. 
+
+<!--break-->
 
 Changing careers full stop can be a terrifying undertaking, but it can be the most liberating thing you can do with your life when the path you're on turns into a canyon getting deeper and narrower all the time. 
 
