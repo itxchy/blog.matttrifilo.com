@@ -5,8 +5,8 @@ permalink:           pretty
 
 # Setup
 title:               Matt Trifilo
-tagline:             'A stream of conciousness on the internet.'
-description:         'I''ve been learning to code, among other things. <br><br> I''ll tell you <em>all</em> about it.'
+tagline:             'JavaScript is eating the world.'
+description:         'JavaScript developer, cyclist, keto carnivore. Let\'s speak in code.'
 url:                 http://blog.matttrifilo.com
 baseurl:             ''
 gems: [jekyll-paginate]
