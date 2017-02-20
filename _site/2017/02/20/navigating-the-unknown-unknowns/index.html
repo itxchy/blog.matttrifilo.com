@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Navigating the Unknown Unknowns &middot; Matt Trifilo
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400">
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-precomposed.png">
+  <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+     styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>I've been learning to code, among other things. <br><br> I'll tell you <em>all</em> about it.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item" href="/">Home</a>
+
+    
+
+    
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/about/">About</a>
+        
+      
+    
+      
+    
+    <a class="sidebar-nav-item" href="http://www.matttrifilo.com">MattTrifilo.com</a>
+    <a class="sidebar-nav-item" href="https://twitter.com/matttrifilo">Twitter</a>
+    <a class="sidebar-nav-item" href="https://github.com/itxchy">GitHub</a>
+  </nav>
+</div>
+
+
+    <!-- Wrap is the content to shift when toggling the sidebar. We wrap the
+         content to avoid any CSS collisions with our real content. -->
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="/" title="Home">Matt Trifilo</a>
+            <small>A stream of conciousness on the internet.</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+        <div class="post">
+  <h1 class="post-title">Navigating the Unknown Unknowns</h1>
+  <span class="post-date">20 Feb 2017</span>
+  <h2 id="navigating-the-unknown-unknowns">Navigating the Unknown Unknowns</h2>
+
+<p>As new coders traverse the vast, treacherous landscape of modern JavaScript developement in 2017, many chasms in knowledge appear out of the fog that can stop them in their tracks. There’s no avoiding it. There’s no guessing where they might even arise at times.</p>
+
+<p>In my case, the first “knowledge chasm” of many appeared after completing Codecademy’s JavaScript course, and finishing all of Free Code Camp’s beginner algorthim challenges. I felt pretty confident. JavaScript was becoming familiar, and I built web pages with HTML, CSS, and jQuery with increasing ease.</p>
+
+<p>Then came the Free Code Camp Intermediate Front End Development challenges to build simple client-side apps like a quote generator and a weather app. I barely knew where or how to begin. The guided trail ended and the time came to venture into wild. Blocking the way I wanted to go was a gaping, vertical ravine. How do you cross it? The simple answer is to find the right tools you need to repel down and then climb up the other side. Learn which tools to use when, where, and why, learn them well, learn how to use them together, and you can reach your goal. Easy right? Not so much.</p>
+
+<!--break-->
+
+<p>That process is much easier said than done. When it comes to software, the reality is that new chasms are always just ahead of you. If you can learn how to <em>approach</em> the unknowns correctly, you can build just about anything. Not easily (not at all!), but that’s the game. Over time, it will become more and more intellectually and personally fulfilling as you solve bigger and harder problems, build better software, and start to make a tangible impact in the lives of real people. If you’re still new to programming, you won’t be building software in a vacuum forever.</p>
+
+<p>Thankfully for software developers today, many of the most powerful tools out there are free and open source to solve a multitude of common problems, and they’re improving all the time. Learning to fully understand the problems in front of you and find the most viable solutions to them through code or libraries is a journey that takes a lifetime to master, and best practices in software are moving targets. Quality software is transient, which is great because as technologies improve, so do the possiblities of what we can build. Our goal should be to help the landscape change for the better wherever we can so we can use these tools and ideas to build quality, stable, secure software as a means for improving the lives of real people and saving their precious, limited time on this planet.</p>
+
+<p>How do you approach the menacing unknowns in practice? For a simplified example, let’s go back to my first “knowledge chasm” because “climbing down and up a ravine” is a bit of a cop out.</p>
+
+<h2 id="approaching-the-big-problem">Approaching the Big Problem</h2>
+
+<p>Putting all of the technologies I’ve learned up to that point together to build something like a <a href="https://calculator.matttrifilo.com/">calculator</a> seemed almost impossible at first glance. Here’s how I approached the “ravine.”</p>
+
+<p>First, I thought about the what made up the Big Problem (making a calculator app) and broke it apart. A calculator app will need an HTML page with a UI that has a “screen” div, number buttons, and operator buttons, all with id’s that JavaScript can hook on to. The UI will get styled with fancy CSS. Then, JavaScript logic will handle the button clicks and display updates.</p>
+
+<p>Digging into the JavaScript logic, I had to then break the problem apart further and further. What happens when a number is clicked? A plus sign? The Equal sign? The ‘.’? How will the display screen div update the numbers and when? As the big problem broke apart into smaller and smaller problems, they became easier to solve individually adding up to the whole.</p>
+
+<p>Number buttons had a click handler to update the display, and each operator button triggered an operator click handler that would put the displayed numbers into the clicked-operator’s array, clear the display on the next number press, and put the new numbers into the next index of that same array, and apply the calculation to both numbers in the active array as soon as the equal sign, or another operator button, gets pressed, and finally update the display with the new total. Thinking about all of that logic at the same time is too much for the brain to handle for long, but thinking about each piece individually and putting them together synchronously, step by step, makes code much easier to reason about and extend as nessessary. Here’s the same logic broken up:</p>
+
+<ul>
+  <li>A number button click: triggers the number click handler</li>
+  <li>number click handler: updates the number display</li>
+  <li>operator button click: triggers the operator click handler</li>
+  <li>operator click handler:
+    <ul>
+      <li>stores the displayed number in index 0 of the  clicked operator’s array</li>
+      <li>clears the displayed number variable (updates UI on next number press)</li>
+    </ul>
+  </li>
+  <li>A number button click: triggers the number click handler and updates the number display</li>
+  <li>An operator button click: triggers the operator click handler</li>
+  <li>operator click handler:
+    <ul>
+      <li>pushes the displayed number into index 1 of the previous operator’s array</li>
+      <li>calculates the two numbers based on the previous operator</li>
+      <li>then puts the new, calculated number into index 0 of the currently pressed operator array</li>
+      <li>clears the previous operators array</li>
+      <li>updates the display with the new result immediatly</li>
+      <li>clears the displayed number variable (updates UI on next number press)</li>
+    </ul>
+  </li>
+</ul>
+
+<p>This is similar to psuedocode, though there is repetition to make it clear what the code should be <em>doing</em>. Looking at this list, you can easily implement this logic piece by piece. Not all edge cases are described here as its very generalized for brevity, but the edge cases are mostly straight forward to account for once the core functionality is defined.</p>
+
+<p>The calculator is a simple example, but this method of breaking up large problems into managable pieces and reasoning through them can scale up to building very large, complex applications. At that level, tools and frameworks are going to become essential for working with teams, ensuring compatibility with all major browsers or systems, and not reinventing the wheel at every turn.</p>
+
+<h2 id="chosing-the-right-tools">Chosing the Right Tools</h2>
+
+<p>Using module patterns and helpful libraries and frameworks can abstract away many common implementation details and allow different layers of the stack you’re using to work well together, whether you’re building a universal web app, a game, or an Electron desktop app. Servers, databases, and client-side code are easier to wire up together than ever before. We’re thankful to live in an era in 2017 where there are many great frameworks and libraries that are built to solve all sorts of common problems, but applying them to the software we’re trying to build still takes that same degree of problem solving to know what to use and when, why, and how. Hand-holding tutorials will only get you so far. The devil is in the details, and you’ll certainly encounter edge cases you didn’t anticipate that will take a lot of research and understanding to solve.</p>
+
+<p>In the React ecosystem for example, it’s important to consider when to store your application state in Redux vs letting your React components handle their own state. Each approach is prefereable in certain situations, but it’s important to understand when to bring in Redux. If your app’s components don’t likely ever need to share state, then Redux is probably overkill. It will make development more tedious, and increase the code surface area for bugs. On the other hand, if your apps componets need to share a lot of state up and down the component tree, you’ll run into “data-tunneling” problems and have a very hard time refactoring. In this situation, the extra effort required to use Redux is well worth it since your components will be far more portable, refactoring will be easier, and changing redux logic won’t affect the components who receive the Redux state as props.</p>
+
+<p>Google, official documentation, Stack Overflow, Slack, Gitter, Discourse forums, FreeNode, and ideally your mentor can answer just about anything you ask about your problem if its a common one. Learning to ask the right questions is key.</p>
+
+<p>Over time, this process of breaking up problems and deciding when and how to use libraries and frameworks becomes easier and patterns start to emerge. There are many front end frameworks out there like React, Angular, Ember, and Vue, but they are all providing varying code structures and approaches to solving the same sort of problems. All of them are meant for building dynamic user interfaces that handle user interactions and data flow to put it very simply. The APIs, code structures, and scope of responsibilties vary, but end goal is the same.</p>
+
+<p>Whether you use vanilla javascript, or a modern stack of libraries, there are many ways to cross the ravine.</p>
+
+  <div id="disqus_thread"></div>
+  <script>
+      /**
+       *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+       *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+       */
+
+      //var disqus_developer = 1;
+      
+      var disqus_config = function () {
+          this.page.url = "http://blog.matttrifilo.com/2017/02/20/navigating-the-unknown-unknowns/";  // Replace PAGE_URL with your page's canonical URL variable
+          this.page.identifier = "/2017/02/20/navigating-the-unknown-unknowns"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+      };
+      
+      (function() {  // DON'T EDIT BELOW THIS LINE
+          var d = document, s = d.createElement('script');
+          
+          s.src = '//matttrifiloblog.disqus.com/embed.js';
+          
+          s.setAttribute('data-timestamp', +new Date());
+          (d.head || d.body).appendChild(s);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2016/08/02/leveling-up/">
+            Leveling Up
+            <small>02 Aug 2016</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2016/02/16/first-blog-post/">
+            First Blog Post!
+            <small>16 Feb 2016</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
+</div>
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+    <script>
+      (function(document) {
+        var toggle = document.querySelector('.sidebar-toggle');
+        var sidebar = document.querySelector('#sidebar');
+        var checkbox = document.querySelector('#sidebar-checkbox');
+
+        document.addEventListener('click', function(e) {
+          var target = e.target;
+
+          if(!checkbox.checked ||
+             sidebar.contains(target) ||
+             (target === checkbox || target === toggle)) return;
+
+          checkbox.checked = false;
+        }, false);
+      })(document);
+    </script>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-74260851-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+  </body>
+</html>
