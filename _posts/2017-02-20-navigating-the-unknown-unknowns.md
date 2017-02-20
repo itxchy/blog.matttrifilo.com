@@ -4,8 +4,6 @@ title: Navigating the Unknown Unknowns
 comments: true
 ---
 
-## Navigating the Unknown Unknowns
-
 As new coders traverse the vast, treacherous landscape of modern JavaScript developement in 2017, many chasms in knowledge appear out of the fog that can stop them in their tracks. There's no avoiding it. There's no guessing where they might even arise at times.
 
 In my case, the first "knowledge chasm" of many appeared after completing Codecademy's JavaScript course, and finishing all of Free Code Camp's beginner algorthim challenges. I felt pretty confident. JavaScript was becoming familiar, and I built web pages with HTML, CSS, and jQuery with increasing ease.
