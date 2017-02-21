@@ -4,7 +4,7 @@
  <title>Matt Trifilo</title>
  <link href="http://blog.matttrifilo.com/atom.xml" rel="self"/>
  <link href="http://blog.matttrifilo.com/"/>
- <updated>2017-02-21T11:34:05-06:00</updated>
+ <updated>2017-02-21T11:43:21-06:00</updated>
  <id>http://blog.matttrifilo.com</id>
  <author>
    <name>Matt Trifilo</name>
@@ -67,7 +67,7 @@
   &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;This is similar to psuedocode, though there is repetition to make it clear what the code should be &lt;em&gt;doing&lt;/em&gt;. Looking at this list, you can easily implement this logic piece by piece. Not all edge cases are described here as its very generalized for brevity, but the edge cases are mostly straight forward to account for once the core functionality is defined.&lt;/p&gt;
+&lt;p&gt;This is similar to pseudocode, though there is repetition to make it clear what the code should be &lt;em&gt;doing&lt;/em&gt;. Looking at this list, you can easily implement this logic piece by piece. Not all edge cases are described here as its very generalized for brevity, but the edge cases are mostly straight forward to account for once the core functionality is defined.&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://github.com/itxchy/FCC-calculator/blob/master/source/js/app.js&quot;&gt;You can look at the code here&lt;/a&gt;, though if you’re working through Free Code Camp and haven’t completed your own calculator yet, get that done first. Honor system!&lt;/p&gt;
 

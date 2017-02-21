@@ -47,7 +47,7 @@ Number buttons had a click handler to update the display. Each operator button t
   - updates the display with the new result immediately
   - clears the displayed number variable (updates UI on next number press)
 
-This is similar to psuedocode, though there is repetition to make it clear what the code should be *doing*. Looking at this list, you can easily implement this logic piece by piece. Not all edge cases are described here as its very generalized for brevity, but the edge cases are mostly straight forward to account for once the core functionality is defined.
+This is similar to pseudocode, though there is repetition to make it clear what the code should be *doing*. Looking at this list, you can easily implement this logic piece by piece. Not all edge cases are described here as its very generalized for brevity, but the edge cases are mostly straight forward to account for once the core functionality is defined.
 
 [You can look at the code here](https://github.com/itxchy/FCC-calculator/blob/master/source/js/app.js), though if you're working through Free Code Camp and haven't completed your own calculator yet, get that done first. Honor system!
 
