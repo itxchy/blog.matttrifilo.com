@@ -2,6 +2,7 @@
 layout: post
 title: Navigating the Unknown Unknowns
 comments: true
+date: 2017-02-20T10:20:00Z
 ---
 
 As new coders traverse the vast, treacherous landscape of modern JavaScript developement in 2017, many chasms in knowledge appear out of the fog that can stop them in their tracks. There's no avoiding it. There's no guessing where they might even arise at times.
