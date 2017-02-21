@@ -87,7 +87,7 @@
       <div class="container content">
         <div class="post">
   <h1 class="post-title">Leveling Up</h1>
-  <span class="post-date">02 Aug 2016</span>
+  <span class="post-date">08/02/2016</span>
   <p>At the end of May, I finally completed my <a href="https://www.freecodecamp.com/itxchy/front-end-certification">Front End Certification</a> for Free Code Camp.</p>
 
 <p>Since then, I’ve spent some time refactoring a few of my older projects to get them to a place where I don’t cringe every time I look at the source code. They were pretty grisly. My Pomodoro app from last year in particular was a hacky mess. It was my first project trying out AngularJS, and while it worked, it broke pretty much every relavent style in <a href="https://github.com/johnpapa/angular-styleguide/blob/master/a1/README.md">John Papa’s style guide</a>. Here’s the <a href="http://codepen.io/dprsky/pen/OymXEp">old source</a> if you have a strong stomach. All of the logic was in one controller and $scope was polluted with almost every variable in the project. Not even one service to handle business logic. The controller was in charge or user interactions, business logic, <em>and</em> state. The horror. It must be destroyed. I didn’t even know how to use a service versus a controller at the time. It’s a small app, and the design-pattern-less layout of the code was well commented, but it would have quickly turned into a field of thorns if it ever needed new features. Good code should be mostly self-documenting anyway. I took this as an oppurtunity to refactor the app’s code <a href="https://johnpapa.net/angular-app-structuring-guidelines/">structure</a> and logic to separate concerns (UI elements, <a href="https://johnpapa.net/sharing-data-in-an-angular-controller-or-an-angular-service/">state</a>, application logic, user interaction handling) and get some practice using Angular 1.5’s great new <a href="https://toddmotto.com/exploring-the-angular-1-5-component-method/">component method</a>, modeled after Angular 2’s component pattern. That’s a story for another blog post, but it was a humbling learning experience, and Angular 1’s paradigm makes so much more sense now on every level.</p>
@@ -125,17 +125,17 @@
        */
 
       //var disqus_developer = 1;
-      
+
       var disqus_config = function () {
           this.page.url = "http://blog.matttrifilo.com/2016/08/02/leveling-up/";  // Replace PAGE_URL with your page's canonical URL variable
           this.page.identifier = "/2016/08/02/leveling-up"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
       };
-      
+
       (function() {  // DON'T EDIT BELOW THIS LINE
           var d = document, s = d.createElement('script');
-          
+
           s.src = '//matttrifiloblog.disqus.com/embed.js';
-          
+
           s.setAttribute('data-timestamp', +new Date());
           (d.head || d.body).appendChild(s);
       })();
