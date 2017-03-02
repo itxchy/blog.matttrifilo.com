@@ -1,6 +1,6 @@
 # Outline
 
-Lesson Learned From my First Full Stack Application
+Lessons Learned From my First Full Stack Application
 
 - Introduction
     + Who is this post for?
