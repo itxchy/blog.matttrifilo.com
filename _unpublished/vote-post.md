@@ -25,7 +25,9 @@ The user stories for this Free Code Camp project can be perused [here](https://w
 
 Basically, Vote allows you to make polls as an authenticated user, vote on any poll, and share a single poll.
 
-It's far from perfect. You can't search or sort polls, but the time spent adding too much functionality beyond the user stories for a toy app like this can be better spent on new projects. I don't expect this app to go viral. Learning the process and mechanics of building something like this was the primary goal. Let's dig in!
+This project is far from perfect. You can't search or sort polls, but the time spent adding too much functionality beyond the user stories for a toy app like this is better spent on new projects at this point. I don't expect this app to go viral. Learning the process and mechanics of building something like this was the primary goal.
+
+Let's dig in!
 
 # Tooling
 
@@ -184,6 +186,8 @@ A lot of quick wins can be gained by splitting up your bundle. To start, putting
 
 The ideas for splitting up bundles can get [deep](https://survivejs.com/webpack/building/splitting-bundles/) very quickly, so split them up based on how you expect your app to grow.
 
+Some great advice on how to shink down certain dependencies, and deal with multiple copies of dependencies with different versions can be found in [this great post](https://medium.freecodecamp.com/manually-tuning-webpack-builds-284923f47f44#.799l57uja).
+
 You can take advantage of [code splitting](https://webpack.js.org/guides/code-splitting-import/) for your application code as well, so your users only need to download the nessessary code for each "page" of your single page app, instead of the whole thing at once.
 
 For simplicity, I decided to add just the largest libraries to Vote's `vendor.js` bundle. `d3`, `jquery`, `react`, `react-dom` and `moment`.
@@ -273,6 +277,22 @@ Now, you can add an npm script to build your prodution bundle:
 }
 ```
 
+#### Tree-Shaking
+
+Another amazing new feature in Webpack 2 is tree-shaking. Since Webpack 2 supports ES6 module syntax, it is now able to check for exports in your code during the bundling step that are not imported anywhere, and remove those exports. Then, when you uglify your JavaScript, all of the now-dead code gets stripped away. Since the unused modules lost their export calls, the code inside never gets touched. Thinking of this like the name "tree-shaking" implies. You have a dependency tree of code, and the branches of that tree that are never touched just fall off during the uglify step. Webpack will show you logs of the code being removed in the terminal during the uglify step.
+
+There is a problem with this if you use Babel's `es2015` preset, but its easy to fix.
+
+Just set `modules` to false in your `.babelrc`:
+```
+"presets": [
+    "react",
+    ["es2015", { "modules": false }]
+  ],
+```
+
+Babel's `es2015` preset will convert your your ES6 modules to CommonJS modules by default, so just turn it off and your ES6 modules will be respected.
+
 #### Linting with Webpack
 
 Remember Standard? You can use [`eslint-loader`](https://github.com/MoOx/eslint-loader) to lint your code before Webpack bundles everything. I did this based on Brian Holt's recommendation in Complete Intro to React.
@@ -317,13 +337,332 @@ The skeleton of the application is based on Brian Holt's Complete Intro To React
 
 Since [React v0.13](https://facebook.github.io/react/blog/2015/03/10/react-v0.13.html), ES6 classes have become the defacto standard for building React components with some [helpful encouragement](https://medium.com/@dan_abramov/how-to-use-classes-and-sleep-at-night-9af8de78ccb4#.8he89ybjd) from Dan Abramov.
 
-I recently used this style for the first time when I refactored my Free Code Camp [wikipedia](https://github.com/itxchy/FCC-spiffy-wikipedia) search project with `create-react-app`. At first it felt annoying to have to bind each method with the constructors `this` keyword, but if you think about it, this a win from a performance standpoint since you can use a `react` replacement like `preact` which can strip away `react`'s auto-binding logic for `React.createClass` and just bind manually. Plus, it's a good idea to use stateless functional components as much as you can, until you need to use state, methods, or React lifecycle methods.
+I recently used this style for the first time when I refactored my Free Code Camp Wikipedia search project, [Spiffy Wikipedia](https://github.com/itxchy/FCC-spiffy-wikipedia) with `create-react-app`. At first it felt annoying to have to bind each method with the constructors `this` keyword, but if you think about it, this a win from a performance standpoint since you can use a `react` replacement like `preact` which can strip away `react`'s auto-binding logic for `React.createClass` and just bind manually. Plus, it's a good idea to use stateless functional components as much as you can, until you need to use state, methods, or React lifecycle methods.
 
 For Vote however, I used the `React.createClass` style because that's what I'd been used to, and how Brian Holt taught Complete Intro To React.
 
 I don't really have a preference of one style over the other at this point, but I do like how I don't have to worry about forgetting a coma when using classes. Manually binding methods isn't a big deal. Looking at the broader community, classes seem to be the determined direction that most developers have committed to, so it's probably best not to fight the tide, and ensure your code is as readable as possible for the majority of React developers who are used to classes. That said, I doubt that Facebook would deprecate `React.createClass` in the foreseeable future since so many codebases rely on it.
 
-### Composition
+### PropTypes
+
+The true value of React's [PropTypes](https://facebook.github.io/react/docs/typechecking-with-proptypes.html) really shine while building larger apps.
+
+Take this example from Vote's Create A Poll page component:
+```js
+import React from 'react'
+import NewPollTitle from './NewPollTitle'
+import PendingPollOptions from './PendingPollOptions'
+import SaveOrReset from './SaveOrReset'
+import { connect } from 'react-redux'
+import {
+  updateOption,
+  setNewPollTitle,
+  setTitleEditable,
+  submitNewPoll,
+  resetNewPoll,
+  resetPollSaved
+} from '../../redux/modules/createNewPoll'
+const { object, func, string, bool, array } = React.PropTypes
+
+const CreateAPoll = React.createClass({
+  propTypes: {
+    poll: object,
+    dispatchUpdateOption: func.isRequired,
+    newPollTitle: string,
+    titleEditable: bool,
+    dispatchSetNewPollTitle: func.isRequired,
+    dispatchSetTitleEditable: func.isRequired,
+    newPollOptions: array,
+    dispatchSubmitPoll: func.isRequired,
+    dispatchResetNewPoll: func.isRequired,
+    dispatchResetPollSaved: func.isRequired,
+    pollSaved: string,
+    user: object
+  },
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.pollSaved) {
+      this.context.router.push(`/v/${nextProps.pollSaved}`)
+      this.props.dispatchResetPollSaved()
+    }
+  },
+  render () {
+    const newPoll = true
+    return (
+      <div>
+        <h1 className='view-title text-center'>Create a New Poll</h1>
+        <NewPollTitle
+          newPollTitle={this.props.newPollTitle}
+          titleEditable={this.props.titleEditable}
+          dispatchSetNewPollTitle={this.props.dispatchSetNewPollTitle}
+          dispatchSetTitleEditable={this.props.dispatchSetTitleEditable}
+        />
+        <PendingPollOptions
+          poll={this.props.poll}
+          dispatchUpdateOption={this.props.dispatchUpdateOption}
+        />
+        <SaveOrReset
+          newPollTitle={this.props.newPollTitle}
+          newPollOptions={this.props.newPollOptions}
+          dispatchResetNewPoll={this.props.dispatchResetNewPoll}
+          dispatchSubmitPoll={this.props.dispatchSubmitPoll}
+          user={this.props.user}
+          poll={this.props.poll}
+          newPoll={newPoll}
+          pollID={null}
+        />
+      </div>
+    )
+  }
+})
+
+CreateAPoll.contextTypes = {
+  router: object.isRequired
+}
+
+const mapStateToProps = (state) => {
+  return {
+    poll: state.newPoll,
+    newPollTitle: state.newPoll.newPollTitle,
+    titleEditable: state.newPoll.titleEditable,
+    newPollOptions: state.newPoll.newPollOptions,
+    pollSaved: state.newPoll.pollSaved,
+    user: state.user
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    dispatchUpdateOption (newOptions) {
+      dispatch(updateOption(newOptions))
+    },
+    dispatchSetNewPollTitle (pollTitle) {
+      dispatch(setNewPollTitle(pollTitle))
+    },
+    dispatchSetTitleEditable (bool) {
+      dispatch(setTitleEditable(bool))
+    },
+    dispatchResetNewPoll (newPoll) {
+      dispatch(resetNewPoll())
+    },
+    dispatchSubmitPoll (newPoll) {
+      dispatch(submitNewPoll(newPoll))
+    },
+    dispatchResetPollSaved () {
+      dispatch(resetPollSaved())
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CreateAPoll)
+
+```
+
+There is a lot going on here, but just take a look at all of the `propTypes` checking the props coming in from Redux.
+
+PropTypes allow you to type check your props to ensure your components receive the types they're expecting. This can catch a lot of bugs early. Using `isRequired` will throw a warning is an essential prop is ommitted.
+
+Beyond typechecking, the `propTypes` property is great for documenting all of the props that your component is expecting.
+
+If you're using ES6 class syntax for React, you can include your `propTypes` as a `static` property. Here's an [example](https://github.com/reactjs/redux/blob/85e2368ea9ff9b308fc873921ddf41929638f130/examples/todomvc/src/components/Header.js#L5).
+
+Note that `static` properties are still only at [Stage-2](https://github.com/hemanth/es-next#class-property-declarations) in the [TC39 process](http://www.2ality.com/2015/11/tc39-process.html), so you'll need an extra Babel plugin called [`transform-class-properties`](https://babeljs.io/docs/plugins/transform-class-properties/) to transpile them.
+
+Otherwise, you can take on `propTypes` to your Component `class`
+separately:
+```js
+import React, { Component } from 'react'
+const { string } = React.PropTypes
+
+class Greeting extends Component {
+  // lots of things
+}
+
+Greeting.propTypes = {
+  greetingMessage: string.isRequired
+}
+```
+
+Note the casing difference in `React.PropTypes` vs `Greeting.propTypes`.
+
+### Component Hierarchy
+
+The official React docs have a great guide about how to [think about your component structure](https://facebook.github.io/react/docs/thinking-in-react.html).
+
+One of my favorite qualities of React is the ablitiy to compose components in your render function as JSX, effectivly treating them as if you're using custom HTML elements containing whatever you'd like and taking in any attributes you'd like. JSX is just JavaScript, so you can pass in anything to props AND regular HTML attributes that you can cram into a JavaScript expression, including arrow functions.
+
+>Digression: One great use for arrow functions in React's synthetic DOM event attributes is when you want to pass an argument to an `onClick` event. The native `onclick` handler won't let you pass your own arguments to it since `onclick` itself receives the mouse click event as its only argument. You can get around this easily in React:
+```jsx
+<a
+  className='btn btn-danger delete-button'
+  onClick={() => this.deleteOption(index)}
+  aria-label='Delete' >
+  <i className='fa fa-trash-o' aria-hidden='true' />
+</a>
+```
+This way, I was able to use an arrow function inside of `onClick`'s JavaScript expression to pass `this.deleteOption(index)` as the arrow function's implicit return value, complete with the index value passed in from the `map` function this example resides in.
+
+How to break up your UI into components can get subjective, but it makes sense to use the [Single Responsibily Principle](https://en.wikipedia.org/wiki/Single_responsibility_principle) as mentioned in the docs. In practice, this can get very difficult as apps grow, but simple code doesn't mean easy code.
+
+#### Spiffy Wikipedia Example
+
+For a simple example, let's put Vote aside for a moment and look at my other recently-refactored React project, [Spiffy Wikipedia](https://github.com/itxchy/FCC-spiffy-wikipedia). This project simply allows you to search Wikipedia for a topic using its API, and the results will get displayed.
+
+Component tree:
+```
+- App
+  + Header
+  + SearchBar
+  + SearchResults
+    * Result
+```
+
+`ReactDOM` renders [`App`](https://github.com/itxchy/FCC-spiffy-wikipedia/blob/master/src/components/App.js):
+```js
+class App extends Component {
+
+// ... check the GitHub repo for the complete code
+
+  render () {
+    return (
+      <div className='App'>
+        <Header />
+        <SearchBar onSearchSubmit={this.handleSearchSubmit} />
+        <SearchResults searchResults={this.state.data} error={this.state.error} />
+      </div>
+    )
+  }
+}
+```
+
+##### Container Components
+
+App's responsibility as a [container component](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0#.qlp6sobvr) is to handle search requests from `SearchBar`, and pass the results down to `SearchResults` after performing an AJAX call to Wikipedia's API.
+
+As Dan Abromov puts it, container components are "concerned with *how things work.*"
+
+Notice that this component only displays other components. The main concern of App is with handling data and passing it down to its children.
+
+`Header`:
+```js
+import React from 'react'
+import './Header.css'
+
+function Header (props) {
+  return (
+    <header>
+      <h1>Spiffy Wikipedia</h1>
+    </header>
+  )
+}
+
+export default Header
+
+```
+
+##### Presentational Components
+
+Header is a very simple stateless functional component. It shows the header. Notice the `Header.css` import. It may seem trivial to make a separate component for such a simple piece of UI, but now, anytime I might want to change the header's look, I know exactly where to go. Everything about the header's presentation, from markup to styling, is encapsulated right here inside this component.
+
+`SearchBar`:
+```js
+import React, { Component } from 'react'
+import './SearchBar.css'
+import { Form, FormGroup, FormControl, Button } from 'react-bootstrap'
+
+class SearchBar extends Component {
+
+// ... check the GitHub repo for the complete code
+
+  render () {
+    return (
+      <div className='form-container'>
+        <Form inline onSubmit={this.handleSubmit}>
+          <FormGroup controlId='searchInput' bsSize='large'>
+            <FormControl
+              type='text'
+              value={this.state.searchText}
+              placeholder='What are you looking for?'
+              className='search-input'
+              onChange={this.handleSearchInputChange}
+            />
+          </FormGroup>
+          <Button type='submit' bsSize='large' id='search-submit'>
+            Search
+          </Button>
+        </Form>
+        <a className='chance-link' href='https://en.wikipedia.org/wiki/Special:Random'>Take a chance!</a>
+      </div>
+    )
+  }
+}
+
+SearchBar.propTypes = {
+  onSearchSubmit: func.isRequired
+}
+
+export default SearchBar
+
+```
+
+##### Time to Refactor
+
+There is a code smell here.
+
+SearchBar is currently a presentational component with one responsibility, which is to present the search bar. It's doing that one responsibility, but with quite a bit of markup to put a form together, as well as a link to a random Wikipedia article.
+
+Do you keep everything encapsalated here, or do you break this up with components for "SearchForm", "Button" inside "SearchForm", and "ChanceLink"? This is where things get subjective. If you're not careful, you could end up making a component for every DOM element. On the other hand, it's good for readablility and maintainability to keep components as simple as possible.
+
+One easy compromise would be to make a `SearchForm` component to be responsible for the form itself, and leave the chance button in `SearchBar` since its only one simple link element:
+```js
+class SearchBar extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      searchText: ''
+    }
+    this.handleSearchInputChange = this.handleSearchInputChange.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
+  }
+
+  handleSearchInputChange (event) {
+    this.setState({ searchText: event.target.value })
+  }
+
+  handleSubmit (event) {
+    event.preventDefault()
+    if (!this.state.searchText) {
+      return
+    }
+    this.props.onSearchSubmit(this.state.searchText.trim())
+    this.setState({ searchText: '' })
+  }
+  render () {
+    return (
+      <div className='form-container'>
+        <SearchForm
+          handleSubmit={this.handleSubmit}
+          searchText={this.state.searchText}
+          handleSearchInputChange={this.handleSearchInputChange} />
+        <a className='chance-link' href='https://en.wikipedia.org/wiki/Special:Random'>Take a chance!</a>
+      </div>
+    )
+  }
+}
+
+SearchBar.propTypes = {
+  onSearchSubmit: func.isRequired
+}
+```
+
+Now that render function is much easier to grok. I included the rest of the code here to illustrate how SearchBar's methods and state can be passed down as props.
+
+##### Data Flow
+
+As events happen in SearchForm, SearchForm itself doesn't alter data or handle events. SearchForm simply passes events up to SearchBar, either an input value change, or a submit event. If SearchBar gets an input change event from `this.handleSearchInputChange`, called from SearchForm, SearchBar updates its state, and passes that new state down to SearchForm's `searchText` prop as the new data. SearchForm can than update the form with the new data it receives. When SearchForm's form is submitted, it can call `this.handleSubmit`, which it received as a `handleSubmit` prop from SearchBar, and SearchBar will handle it by passing the form data up to App using App's `handleSearchSubmit` method, which App passed down to SearchBar as a prop called `onSearchSubmit`. SearchBar doesn't care about how to handle search submits.
+
+The important takeaway is that data always moves in one direction. This is the essence of one-way data-binding. If anything breaks, its easy to trace where  something went wrong because data is moving only in a single direction when an event happens. Typing something into the form doesn't update the DOM form directly like you'd expect nativly. Instead, your keystroke is sending an event, which eventually culminates with React updating the form's text from its own state. This happens so fast, it feels native. This is called a [controlled component](https://facebook.github.io/react/docs/forms.html). React is handling the form state, instead of allowing the DOM to handle form state. Debugging errors in this sort of flow is a lot easier than in other paradigms where data can be passed in both directions. Two-way data binding makes it hard to determine the source of bugs in a lot of cases if you don't know where the data is coming from when a bug occurs.
+
+[React Dev Tools](https://facebook.github.io/react/blog/2015/09/02/new-react-developer-tools.html) even allow you to watch state updates in real time!
 
 
 
