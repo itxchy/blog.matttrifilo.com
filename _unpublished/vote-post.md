@@ -11,54 +11,79 @@ I took my time on this project in particular because while I was familiar with R
 
 Needless to say, I've learned more from this project than anything else I've worked on to date, and I'm excited to share some of the most useful lessons I've learned.
 
+<!-- MarkdownTOC -->
+
+  - [Thank You Virtual Mentors](#thank-you-virtual-mentors)
+  - [An Overview of Vote](#an-overview-of-vote)
+- [Tooling](#tooling)
+    - [Linting with Standard JS \(Use with caution\)](#linting-with-standard-js-use-with-caution)
+      - [Why Standard \(or Semistandard\)?](#why-standard-or-semistandard)
+      - [Using Standard Without React](#using-standard-without-react)
+      - [Using Standard With React](#using-standard-with-react)
+    - [Webpack 2](#webpack-2)
+      - [Optimizing Your Bundle\(s\)](#optimizing-your-bundles)
+      - [Optimizing Bundles for Production](#optimizing-bundles-for-production)
+      - [Tree-Shaking](#tree-shaking)
+      - [Linting with Webpack](#linting-with-webpack)
+- [The Client](#the-client)
+  - [React](#react)
+    - [`React.createClass` vs ES6 classes](#reactcreateclass-vs-es6-classes)
+    - [PropTypes](#proptypes)
+    - [Component Hierarchy](#component-hierarchy)
+      - [Spiffy Wikipedia Example](#spiffy-wikipedia-example)
+  - [Redux](#redux)
+    - [When Do You Need Redux?](#when-do-you-need-redux)
+
+<!-- /MarkdownTOC -->
+
 ## Thank You Virtual Mentors
 
 First off, I'd like to thank Brian Holt for both of his great Complete Intro To React workshops on Front End Masters. The workflow he shared helped me to scaffold the guts of this project without endless refactors along the way as it grew. I can't recommend his workshops enough, even if you've been using React for years. The insights he shares are well worth the Front End Masters subscription. Check out all of Kyle Simpson's workshops while you're at it!
 
 I'd also like to thank Rem Zolotykh for his great [Youtube series](https://www.youtube.com/playlist?list=PLuNEz8XtB51K-x3bwCC9uNM_cxXaiCcRY) about building a React/Redux application with jwt authentication. While you should never use a custom authentication strategy like this for real-world production apps (use Passport instead), it was valuable to learn about the authentication flow using JSON web tokens with localStorage, and managing headers. It was also great to get another perspective of how to wire up React and Redux.
 
-Finally, I owe a great deal of gratitude to Robert M. Pirsig. While working on this project, I hit a lot of brick walls. To unwind after getting put in my place by a waterfall of error messages, I would read Zen and the Art of Motorcycle Maintenance. After picking at it for a year, I finished the second half during this project very quickly. Most of the metaphors and ideas Phaedrus was exploring correlate directly with programming. It put a lot of issues I had with code into a much broader perspective and it made me appreciate the Art of Programming much more deeply. It changed the way I percieve and approach bugs. I've gained an appreciation for them. Each hard bug illumiates a gap in knowledge with an oppurtunity to learn something new and grow as a developer--and in turn write better *quality* software and be better prepared to contribute my knowledge and experience to open source and companies building the future. A bug may seem trivial at first glance, but if you consider that the entire application relies on this trivial bug being fixed in order to run the way it ought to, it's not so trivial after all,and deserves attention and careful research. Zen and the Art of Motorcycle Maintenance should be in every CS curriculum.
+Finally, I owe a great deal of gratitude to Robert M. Pirsig. While working on this project, I hit a lot of brick walls. To unwind after getting put in my place by a waterfall of error messages, I would read Zen and the Art of Motorcycle Maintenance. After picking at the first half for a year, I finished the second half during this project very quickly. Many of the metaphors and ideas discussed in that book correlate directly with programming. It put a lot of issues I had with code into a much broader perspective and it made me appreciate the Art of Programming much more deeply. It changed the way I percieve and approach bugs. I've gained an appreciation for them, as frustrating and ego-crushing as they can be. Each hard bug illumiates a gap in knowledge with an oppurtunity to learn something profound and grow as a developer. In turn, this leads to writing better *quality* software naturally and becoming better prepared to contribute increased knowledge and experience to open source software, and companies building the future. A bug may seem trivial at first, but if you consider that an entire application relies on a trivial bug being fixed in order to run the way it needs to, it's not so trivial after all, and deserves attention and careful research. Zen and the Art of Motorcycle Maintenance should be in every CS curriculum.
 
 ## An Overview of Vote
 
-The user stories for this Free Code Camp project can be perused [here](https://www.freecodecamp.com/challenges/build-a-voting-app).
+The user stories for this Free Code Camp project can be viewed [here](https://www.freecodecamp.com/challenges/build-a-voting-app).
 
-Basically, Vote allows you to make polls as an authenticated user, vote on any poll, and share a single poll.
+Basically, Vote allows you to create polls as an authenticated user, vote on any poll, and share a single poll with friends and strangers.
 
-This project is far from perfect. You can't search or sort polls, but the time spent adding too much functionality beyond the user stories for a toy app like this is better spent on new projects at this point. I don't expect this app to go viral. Learning the process and mechanics of building something like this was the primary goal.
+This project is far from perfect. You can't search or sort polls, but the time spent adding too much functionality beyond the user stories for a toy app like this is better spent on new projects at this point. This app won't be a "Show HN" post. Learning the process and mechanics of building something like this was the primary goal, and it payed dividends in hard knocks.
 
 Let's dig in!
 
 # Tooling
 
-If you're going to build a good table, you better know what tools to use when, why, and how. Otherwise your food will slide into your lap.
+If you're going to build a good table, you'd better know what tools to use when, why, and how. Otherwise your food will slide into your lap.
 
 ### Linting with Standard JS (Use with caution)
 
 I was skeptical of [Standard JS](http://standardjs.com/) at first,
-but I tried it out at the recommendation of Brian Holt from his workshop, and really enjoyed the simplicity.
+but I gave it a chance at the recommendation of Brian Holt from his workshop, and really enjoyed the simplicity.
 
-A lot of [very](https://github.com/getify/You-Dont-Know-JS/blob/master/types%20&%20grammar/ch5.md#error-correction) [smart](http://www.2ality.com/2011/05/semicolon-insertion.html) [people](https://google.github.io/styleguide/javascriptguide.xml#Semicolons) assert (with good reason) that ommiting semi-colons, and relying on JavaScript's [Automatic Semicolon Insertion](https://www.ecma-international.org/ecma-262/5.1/#sec-7.9) to insert every semi-colon for you under the hood is a bad practice, and they're right! It doesn't make sense at all for a company with a team of developers to allow them to write code without semicolons because that exposes the code to yet another class of bugs that can pop up if lint rules are not followed.
+A lot of [very](https://github.com/getify/You-Dont-Know-JS/blob/master/types%20&%20grammar/ch5.md#error-correction) [smart](http://www.2ality.com/2011/05/semicolon-insertion.html) [people](https://google.github.io/styleguide/javascriptguide.xml#Semicolons) assert (with good reason) that ommiting semi-colons, and relying on JavaScript's [Automatic Semicolon Insertion](https://www.ecma-international.org/ecma-262/5.1/#sec-7.9) to insert every semi-colon for you under the hood is a bad practice. They're right! It adds another aspect of risk for a company with deadlines if a team of developers are allowed to write code without semicolons, simply because of the added exposure to ASI-related bugs if any code isn't linted properly. Plus, you need to place your trust in the linter to catch every edge case.
 
-That said, the [gotchas](http://standardjs.com/rules.html#semicolons) of ommitting semi-colons are well known and Standard has lint rules to stop you from making those mistakes, as long as all of your code is always linted. I think its fine for personal projects.
+That said, the common [gotchas](http://standardjs.com/rules.html#semicolons) of ommitting semi-colons are well known and Standard has lint rules to stop you from making those mistakes, assuming that all of your code is always linted. I think its fine for personal projects that aren't meant for customers.
 
-It's still a lot safer to use something like [Semistandard](https://github.com/Flet/semistandard) (Standard plus semicolons) for real-world code that customers will touch because including semicolons takes the possiblity of that category of bugs off the table.
+It's safer to use [Semistandard](https://github.com/Flet/semistandard) (Standard plus semicolons) for customer facing code, and you still get all the benifits of a simple, effective style-guide that you don't need to spend time tweaking. You can't tweak it anyway.
 
 #### Why Standard (or Semistandard)?
 
-Eslint is a powerful tool, but I'd spent more time than I'd like to admit agonizing over which rules to enforce, whether to use a popular style guide from companies like AirBnB and which one, plus managing `.eslintrc` changes accross projects.
+Eslint is a powerful tool, but I'd spent more time than I'd like to admit experimenting with linting rules, and researching whether to use a popular style guide from companies like AirBnB and which one, plus managing `.eslintrc` changes accross projects.
 
-Standard JS takes all of that choice out of the equation and enforces a simple, sensible styleguide that CAN'T be changed. If you change it with custom lint rules, than you're not coding in Standard.
+Standard JS takes all of that choice out of the equation and enforces a simple, reliable styleguide that CAN'T be changed. If you change it with custom lint rules, than you're not coding in Standard.
 
-This idea captures the brilliance of [PEP 8](https://www.python.org/dev/peps/pep-0008/) from the Python world. If you know PEP 8 well, you'll have an easy time reading other people's Python code. Standard seeks to offer the same consistancy for JavaScript.
+This idea captures the brilliance of [PEP 8](https://www.python.org/dev/peps/pep-0008/) from Python. If you know PEP 8 well, you'll have an easy time reading other people's Python code. Standard seeks to offer the same consistancy for JavaScript.
 
-While I don't think it would be good for JavaScript to adopt any single style guide for every developer to adhere to at this point in its evolution, Standard offers a style guide for eslint that lets you set-it-and-forget-it, which can free up valuable brain cycles.
+While I don't think it would be good for JavaScript to officially standardize any single style guide for every developer to follow given its history, Standard offers a style guide for eslint that lets you set-it-and-forget-it, which frees up valuable brain cycles.
 
 #### Using Standard Without React
 
 Standard itself is very easy to [install and use](https://github.com/feross/standard#install).
 
-The docs are straightforward, but Standard's lint errors can be a bit hard to read.
+The docs are straightforward, but Standard's lint errors are hard to read in the terminal.
 
 Instead of using Standard directly, you can install a package called `snazzy`, which will give you nicely formatted results with colors.
 
@@ -70,7 +95,7 @@ $ yarn add -D snazzy
 ```
 
 > If you already have standard installed globally, install `standard` as a dev dependency to work with snazzy in your project without errors:
-`yarn add -D standard snazzy`. Yarn [discrourages](https://yarnpkg.com/en/docs/cli/add#toc-caveats) using global dependancies in most cases, so keep them local whenever possible for portability.
+`yarn add -D standard snazzy`. The smarties behind Yarn [discrourage](https://yarnpkg.com/en/docs/cli/add#toc-caveats) using global dependancies in most cases, so keep them local whenever possible for portability. NPM works just fine too if you're not into yarn.
 
 Add a lint script to `package.json`:
 ```
@@ -79,14 +104,14 @@ Add a lint script to `package.json`:
 }
 ```
 
-> If you're using `npm`, mute the `err!` messages by adding `exit 0` to your script: `"lint": "snazzy; exit 0`
+> If you're using `npm`, mute the annoying `err!` messages by adding `exit 0` to your script: `"lint": "snazzy; exit 0`
 
 Run it:
 ```
 $ yarn run lint
 ```
 
-That's it! Standard will magically find your JavaScript (excluding `node_modules`) and return your lint errors or nothing if everything passes.
+That's it! Standard will magically find your JavaScript (excluding `node_modules`) and return your lint errors, or nothing if everything passes.
 
 #### Using Standard With React
 
@@ -96,9 +121,9 @@ install:
 ```
 $ yarn add -D eslint-config-standard eslint-config-standard-react eslint-plugin-promise eslint-plugin-react eslint-plugin-standard
 ```
-> If you have `eslint` installed globally, add `eslint` to the above command so that your config points to the local copy in order to avoid errors.
+> If you have `eslint` installed globally, add `eslint` to the above command so that your config points to the local copy of `eslint` in order to avoid errors.
 
-Create a file called `.eslintrc` in your root directory and add this to it:
+Create a file called `.eslintrc` in your root directory and add this:
 ```
 {
   "extends": ["standard", "standard-react"]
@@ -114,14 +139,14 @@ Add `eslint` and your source code directory to your lint script:
 
 Unlike `standard` or `snazzy`, you need to specify where eslint should look for your `.js` files. In the script above, eslint will check a directory called `src`
 
-What if you use extensions like `.jsx` or `.es6`? `eslint` has a flag for that!:
+What if you use extensions like `.jsx` or `.es6`? `eslint` has a flag for that:
 ```
 "scripts": {
   "lint": "eslint --ext .js --ext .jsx src"
 }
 ```
 
-The CLI has many more options depending on your needs. [The docs are your friend](http://eslint.org/docs/user-guide/command-line-interface).
+The CLI has many more options depending on your needs. [The docs are great](http://eslint.org/docs/user-guide/command-line-interface).
 
 Finally, run it:
 ```
@@ -132,7 +157,7 @@ Happy linting!
 
 You can also delegate linting to `webpack` using `eslint-loader`, so you'll see lint errors every time a new bundle is compiled. More on that in a bit.
 
-
+I turned off linting in Sublime Text months ago because I found it more distracting then helpful. If you don't like linting in a terminal, Standard plugins are available for the major text editors.
 
 ### Webpack 2
 
