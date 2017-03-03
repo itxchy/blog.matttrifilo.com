@@ -13,18 +13,21 @@ Needless to say, I've learned more from this project than anything else I've wor
 
 <!-- MarkdownTOC -->
 
-  - [Thank You Virtual Mentors](#thank-you-virtual-mentors)
-  - [An Overview of Vote](#an-overview-of-vote)
+- [Thank You Virtual Mentors](#thank-you-virtual-mentors)
+- [An Overview of Vote](#an-overview-of-vote)
 - [Tooling](#tooling)
-    - [Linting with Standard JS \(Use with caution\)](#linting-with-standard-js-use-with-caution)
-      - [Why Standard \(or Semistandard\)?](#why-standard-or-semistandard)
-      - [Using Standard Without React](#using-standard-without-react)
-      - [Using Standard With React](#using-standard-with-react)
-    - [Webpack 2](#webpack-2)
-      - [Optimizing Your Bundle\(s\)](#optimizing-your-bundles)
+  - [Linting with Standard JS \(Use with caution\)](#linting-with-standard-js-use-with-caution)
+    - [Why Standard \(or Semistandard\)?](#why-standard-or-semistandard)
+    - [Using Standard Without React](#using-standard-without-react)
+    - [Using Standard With React](#using-standard-with-react)
+  - [Webpack 2](#webpack-2)
+    - [Optimizing Your Bundle\(s\)](#optimizing-your-bundles)
+      - [Analyzing a Bundle with `webpack-bundle-analyzer`](#analyzing-a-bundle-with-webpack-bundle-analyzer)
+      - [Splitting Bundles](#splitting-bundles)
       - [Optimizing Bundles for Production](#optimizing-bundles-for-production)
-      - [Tree-Shaking](#tree-shaking)
-      - [Linting with Webpack](#linting-with-webpack)
+    - [Tree-Shaking](#tree-shaking)
+    - [Linting with Webpack](#linting-with-webpack)
+      - [One Caveat](#one-caveat)
 - [The Client](#the-client)
   - [React](#react)
     - [`React.createClass` vs ES6 classes](#reactcreateclass-vs-es6-classes)
@@ -36,7 +39,8 @@ Needless to say, I've learned more from this project than anything else I've wor
 
 <!-- /MarkdownTOC -->
 
-## Thank You Virtual Mentors
+
+# Thank You Virtual Mentors
 
 First off, I'd like to thank Brian Holt for both of his great Complete Intro To React workshops on Front End Masters. The workflow he shared helped me to scaffold the guts of this project without endless refactors along the way as it grew. I can't recommend his workshops enough, even if you've been using React for years. The insights he shares are well worth the Front End Masters subscription. Check out all of Kyle Simpson's workshops while you're at it!
 
@@ -44,7 +48,7 @@ I'd also like to thank Rem Zolotykh for his great [Youtube series](https://www.y
 
 Finally, I owe a great deal of gratitude to Robert M. Pirsig. While working on this project, I hit a lot of brick walls. To unwind after getting put in my place by a waterfall of error messages, I would read Zen and the Art of Motorcycle Maintenance. After picking at the first half for a year, I finished the second half during this project very quickly. Many of the metaphors and ideas discussed in that book correlate directly with programming. It put a lot of issues I had with code into a much broader perspective and it made me appreciate the Art of Programming much more deeply. It changed the way I percieve and approach bugs. I've gained an appreciation for them, as frustrating and ego-crushing as they can be. Each hard bug illumiates a gap in knowledge with an oppurtunity to learn something profound and grow as a developer. In turn, this leads to writing better *quality* software naturally and becoming better prepared to contribute increased knowledge and experience to open source software, and companies building the future. A bug may seem trivial at first, but if you consider that an entire application relies on a trivial bug being fixed in order to run the way it needs to, it's not so trivial after all, and deserves attention and careful research. Zen and the Art of Motorcycle Maintenance should be in every CS curriculum.
 
-## An Overview of Vote
+# An Overview of Vote
 
 The user stories for this Free Code Camp project can be viewed [here](https://www.freecodecamp.com/challenges/build-a-voting-app).
 
@@ -58,7 +62,7 @@ Let's dig in!
 
 If you're going to build a good table, you'd better know what tools to use when, why, and how. Otherwise your food will slide into your lap.
 
-### Linting with Standard JS (Use with caution)
+## Linting with Standard JS (Use with caution)
 
 I was skeptical of [Standard JS](http://standardjs.com/) at first,
 but I gave it a chance at the recommendation of Brian Holt from his workshop, and really enjoyed the simplicity.
@@ -69,7 +73,7 @@ That said, the common [gotchas](http://standardjs.com/rules.html#semicolons) of 
 
 It's safer to use [Semistandard](https://github.com/Flet/semistandard) (Standard plus semicolons) for customer facing code, and you still get all the benifits of a simple, effective style-guide that you don't need to spend time tweaking. You can't tweak it anyway.
 
-#### Why Standard (or Semistandard)?
+### Why Standard (or Semistandard)?
 
 Eslint is a powerful tool, but I'd spent more time than I'd like to admit experimenting with linting rules, and researching whether to use a popular style guide from companies like AirBnB and which one, plus managing `.eslintrc` changes accross projects.
 
@@ -79,7 +83,7 @@ This idea captures the brilliance of [PEP 8](https://www.python.org/dev/peps/pep
 
 While I don't think it would be good for JavaScript to officially standardize any single style guide for every developer to follow given its history, Standard offers a style guide for eslint that lets you set-it-and-forget-it, which frees up valuable brain cycles.
 
-#### Using Standard Without React
+### Using Standard Without React
 
 Standard itself is very easy to [install and use](https://github.com/feross/standard#install).
 
@@ -113,7 +117,7 @@ $ yarn run lint
 
 That's it! Standard will magically find your JavaScript (excluding `node_modules`) and return your lint errors, or nothing if everything passes.
 
-#### Using Standard With React
+### Using Standard With React
 
 Using Standard with React will require an eslint config, but it's still very easy.
 
@@ -159,7 +163,7 @@ You can also delegate linting to `webpack` using `eslint-loader`, so you'll see 
 
 I turned off linting in Sublime Text months ago because I found it more distracting then helpful. If you don't like linting in a terminal, Standard plugins are available for the major text editors.
 
-### Webpack 2
+## Webpack 2
 
 In a nutshell, Webpack bundles up your website's assets into a single file to reduce http requests. This lets you import things (js, jpg's, css) into your JavaScript modules, and Webpack will bundle up everything smartly so it's all in the correct order.
 
@@ -171,13 +175,13 @@ The [documentation](https://webpack.js.org/configuration/) is very well thought 
 
 While webpack seems to perform a basic task, files in -> bundle(s) out, its configuration can get complex depending on what you need it to do. The documentation for version 2 is thankfully much better than version 1, so go through the concepts and guides on [webpack.js.org](https://webpack.js.org/) if you don't know where to start. It will get you up and running in no time.
 
-#### Optimizing Your Bundle(s)
+### Optimizing Your Bundle(s)
 
 As your project grows, so will your bundle. It will probably get huge. The development version of Vote had a bundle that was over 3 MB before optimizing, but in production, it now has a `vendor.js` for larger dependencies, and a `bundle.js` for the app itself. Each bunlde weighs in under 200 kb minfied and gzipped. The main bundle can get broken up even furthur with [code spitting](https://webpack.js.org/guides/code-splitting/).
 
 Before configuring the `vendor.js` bundle for Vote, I first had to figure out which dependencies were bulking up the `bundle.js` file the most.
 
-##### Analyzing a Bundle with `webpack-bundle-analyzer`
+#### Analyzing a Bundle with `webpack-bundle-analyzer`
 
 One of the coolest plugins I've come across for Webpack is the [webpack-bundle-analyzer](https://www.npmjs.com/package/webpack-bundle-analyzer). It gives you a highly-interactive visualization of your bundle(s) to show you the elephants in the room.
 
@@ -205,7 +209,7 @@ Now, anytime you build a new bundle, `BundleAnalyzerPlugin` will spin up a serve
 
 For Vote, I used this tool to determine which vendor dependencies should be extracted into a `vendor.js` bundle.
 
-##### Splitting Bundles
+#### Splitting Bundles
 
 A lot of quick wins can be gained by splitting up your bundle. To start, putting your 3rd party libraries in a `vendor.js` bundle will not only reduce the file size of the two, but you'll also be able to take advantage of caching the 3rd party dependencies that likely won't change nearly as often as your application's code. Your users would only need to download your bulky dependencies once, and have them ready to go immediatlely on future vists. Boom! Just be sure to include a [chunkHash](https://webpack.js.org/guides/caching/) with each bundle so that browsers won't serve old cached bundles after you deploy a new build.
 
@@ -302,7 +306,7 @@ Now, you can add an npm script to build your prodution bundle:
 }
 ```
 
-#### Tree-Shaking
+### Tree-Shaking
 
 Another amazing new feature in Webpack 2 is tree-shaking. Since Webpack 2 supports ES6 module syntax, it is now able to check for exports in your code during the bundling step that are not imported anywhere, and remove those exports. Then, when you uglify your JavaScript, all of the now-dead code gets stripped away. Since the unused modules lost their export calls, the code inside never gets touched. Thinking of this like the name "tree-shaking" implies. You have a dependency tree of code, and the branches of that tree that are never touched just fall off during the uglify step. Webpack will show you logs of the code being removed in the terminal during the uglify step.
 
@@ -318,7 +322,7 @@ Just set `modules` to false in your `.babelrc`:
 
 Babel's `es2015` preset will convert your your ES6 modules to CommonJS modules by default, so just turn it off and your ES6 modules will be respected.
 
-#### Linting with Webpack
+### Linting with Webpack
 
 Remember Standard? You can use [`eslint-loader`](https://github.com/MoOx/eslint-loader) to lint your code before Webpack bundles everything. I did this based on Brian Holt's recommendation in Complete Intro to React.
 
@@ -346,7 +350,7 @@ module.exports = {
 
 Note `enforce: 'pre`. That will allow your code to be linted *before* webpack's build step.
 
-##### One Caveat
+#### One Caveat
 
 Keep in mind that `eslint-loader` will only see your code that gets bundled, so your server code will still need to be linted separately. If you're using Statnard and not Semistandard, this is doubly important to protect yourself from ASI related errors.
 
