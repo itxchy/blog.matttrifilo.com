@@ -23,6 +23,7 @@ Lessons Learned From my First Full Stack Application
         * React
             - createClass vs ES6 classes
             - propTypes are mandatory. Flow is a great option
+              + https://babeljs.io/blog/2015/06/07/react-on-es6-plus
             - When to break apart components
             - Smart vs dumb components
             - When is Redux needed?

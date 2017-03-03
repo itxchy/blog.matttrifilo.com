@@ -660,9 +660,36 @@ Now that render function is much easier to grok. I included the rest of the code
 
 As events happen in SearchForm, SearchForm itself doesn't alter data or handle events. SearchForm simply passes events up to SearchBar, either an input value change, or a submit event. If SearchBar gets an input change event from `this.handleSearchInputChange`, called from SearchForm, SearchBar updates its state, and passes that new state down to SearchForm's `searchText` prop as the new data. SearchForm can than update the form with the new data it receives. When SearchForm's form is submitted, it can call `this.handleSubmit`, which it received as a `handleSubmit` prop from SearchBar, and SearchBar will handle it by passing the form data up to App using App's `handleSearchSubmit` method, which App passed down to SearchBar as a prop called `onSearchSubmit`. SearchBar doesn't care about how to handle search submits.
 
-The important takeaway is that data always moves in one direction. This is the essence of one-way data-binding. If anything breaks, its easy to trace where  something went wrong because data is moving only in a single direction when an event happens. Typing something into the form doesn't update the DOM form directly like you'd expect nativly. Instead, your keystroke is sending an event, which eventually culminates with React updating the form's text from its own state. This happens so fast, it feels native. This is called a [controlled component](https://facebook.github.io/react/docs/forms.html). React is handling the form state, instead of allowing the DOM to handle form state. Debugging errors in this sort of flow is a lot easier than in other paradigms where data can be passed in both directions. Two-way data binding makes it hard to determine the source of bugs in a lot of cases if you don't know where the data is coming from when a bug occurs.
+The important takeaway is that data always moves in one direction. This is the essence of one-way data-binding. If anything breaks, its easy to trace where  something went wrong because data is moving only in a single direction when an event happens. Typing something into the form doesn't update the DOM form directly like you'd expect nativly. Instead, your keystroke is sending an event, which eventually culminates with React updating the form's text from its own state. This happens so fast, it feels native. This is called a [controlled component](https://facebook.github.io/react/docs/forms.html). React is handling the form state, instead of allowing the DOM to handle form state. Debugging errors in this sort of flow is a lot easier than in other paradigms where data can be passed in both directions. Two-way data binding makes it hard to determine the source of bugs in a lot of cases if you don't know where the data is coming from when a bug occurs. Thankfully, Angular has moved passed that, and a number of other frameworks have embraced one-way data-binding.
 
 [React Dev Tools](https://facebook.github.io/react/blog/2015/09/02/new-react-developer-tools.html) even allow you to watch state updates in real time!
 
+##### Escalating to Redux
 
+Now, what if you wanted to add a dropdown of look-ahead search results SearchForm?
+
+It would make sense to include that UI as a separate component, but what if it needs to call `loadWikiData` from [`App`](https://github.com/itxchy/FCC-spiffy-wikipedia/blob/master/src/components/App.js) to load results every 400ms?
+
+Let's reference our updated component tree:
+```
+- App (WikiContainer)
+    + SearchBar
+      * SearchForm
+        - LookAheadDropdown
+          + LookAheadResult
+    + SearchResults
+      * Result
+```
+
+We don't need to flesh out that idea in code to realize we'd have a big problem. To do this, we'd need to pass `this.loadWikiData` down as a prop through SearchBar, into SearchForm, and possibly even LookAheadDropdown depending on if we end up refactoring SearchForm to include handleSearchInputChange, and handleSubmit instead of [SearchBar](https://github.com/itxchy/FCC-spiffy-wikipedia/blob/master/src/components/SearchBar/SearchBar.js) to furthur clarify each components' single responsibility as this app grows. But that's not all! We'd need to pass `this.state.data` from App down the tree to at least SearchForm as well.
+
+This is called the data tunneling problem. As the app grows, so do the number of components that data and events need to pass through. This is when Redux makes its entrance.
+
+## Redux
+
+Redux is a powerful Flux pattern variant that allows you to abstract away all of your React application's state, and pass bits of state to components as props based on what they need. You can pass action creaters as props too, which are basically state-altering functions, among any components that need them.
+
+For big apps, this allows you to decouple your components so they don't need to worry about the flow of state, state-altering methods, or events being passed through the component tree. It all flows in from Redux, a la carte style.
+
+### When Do You Need Redux?
 
