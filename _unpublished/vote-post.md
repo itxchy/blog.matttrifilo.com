@@ -36,6 +36,8 @@ Needless to say, I've learned more from this project than anything else I've wor
       - [Spiffy Wikipedia Example](#spiffy-wikipedia-example)
   - [Redux](#redux)
     - [When Do You Need Redux?](#when-do-you-need-redux)
+    - [A Ducks Pattern Variant](#a-ducks-pattern-variant)
+    - [Thunks](#thunks)
 
 <!-- /MarkdownTOC -->
 
@@ -46,7 +48,7 @@ First off, I'd like to thank Brian Holt for both of his great Complete Intro To 
 
 I'd also like to thank Rem Zolotykh for his great [Youtube series](https://www.youtube.com/playlist?list=PLuNEz8XtB51K-x3bwCC9uNM_cxXaiCcRY) about building a React/Redux application with jwt authentication. While you should never use a custom authentication strategy like this for real-world production apps (use Passport instead), it was valuable to learn about the authentication flow using JSON web tokens with localStorage, and managing headers. It was also great to get another perspective of how to wire up React and Redux.
 
-Finally, I owe a great deal of gratitude to Robert M. Pirsig. While working on this project, I hit a lot of brick walls. To unwind after getting put in my place by a waterfall of error messages, I would read Zen and the Art of Motorcycle Maintenance. After picking at the first half for a year, I finished the second half during this project very quickly. Many of the metaphors and ideas discussed in that book correlate directly with programming. It put a lot of issues I had with code into a much broader perspective and it made me appreciate the Art of Programming much more deeply. It changed the way I percieve and approach bugs. I've gained an appreciation for them, as frustrating and ego-crushing as they can be. Each hard bug illumiates a gap in knowledge with an oppurtunity to learn something profound and grow as a developer. In turn, this leads to writing better *quality* software naturally and becoming better prepared to contribute increased knowledge and experience to open source software, and companies building the future. A bug may seem trivial at first, but if you consider that an entire application relies on a trivial bug being fixed in order to run the way it needs to, it's not so trivial after all, and deserves attention and careful research. Zen and the Art of Motorcycle Maintenance should be in every CS curriculum.
+Finally, I owe a great deal of gratitude to Robert M. Pirsig. While working on this project, I hit a lot of brick walls. To unwind after getting put in my place by a waterfall of error messages, I would read Zen and the Art of Motorcycle Maintenance. After picking at the first half for a year, I finished the second half during this project very quickly. Many of the metaphors and ideas discussed in that book correlate directly with programming. It put a lot of issues I had with code into a much broader perspective and it made me appreciate the Art of Programming much more deeply. It changed the way I percieve and approach bugs. I've gained an appreciation for them, as frustrating and ego-crushing as they can be. Each hard bug illumiates a gap in knowledge with an oppurtunity to learn something profound, and you grow because of it. In turn, this leads to writing better *quality* software naturally and becoming better prepared and energized to contribute fresh perspectives to open source software, and companies building the future. A bug may seem trivial at first, but if you consider that an entire application may rely on that trivial bug being fixed in order to run the way it needs to, it's not so trivial after all, and deserves attention and careful thought.
 
 # An Overview of Vote
 
@@ -695,11 +697,11 @@ The important takeaway is that data always moves in one direction. This is the e
 
 ##### Escalating to Redux
 
-Now, what if you wanted to add a dropdown of look-ahead search results SearchForm?
+Now, what if I decided to add a dropdown of look-ahead search results SearchForm?
 
-It would make sense to include that UI as a separate component, but what if it needs to call `loadWikiData` from [`App`](https://github.com/itxchy/FCC-spiffy-wikipedia/blob/master/src/components/App.js) to load results every 400ms?
+It would make sense to include the dropdown's UI as a separate component, but what if it needs to call [`loadWikiData`](https://github.com/itxchy/FCC-spiffy-wikipedia/blob/master/src/components/App.js#L28) from `App.js`  every 400ms to load results?
 
-Let's reference our updated component tree:
+Let's reference the updated component tree:
 ```
 - App (WikiContainer)
     + SearchBar
@@ -710,15 +712,310 @@ Let's reference our updated component tree:
       * Result
 ```
 
-We don't need to flesh out that idea in code to realize we'd have a big problem. To do this, we'd need to pass `this.loadWikiData` down as a prop through SearchBar, into SearchForm, and possibly even LookAheadDropdown depending on if we end up refactoring SearchForm to include handleSearchInputChange, and handleSubmit instead of [SearchBar](https://github.com/itxchy/FCC-spiffy-wikipedia/blob/master/src/components/SearchBar/SearchBar.js) to furthur clarify each components' single responsibility as this app grows. But that's not all! We'd need to pass `this.state.data` from App down the tree to at least SearchForm as well.
+We don't need to flesh out the new components in code to realize we'd have a problem. To pull this off, we'd need to pass `App`'s `loadWikiData` method down as a prop through `SearchBar`, into `SearchForm`, and possibly even `LookAheadDropdown` depending on whether `SearchForm` gets refactored to include `handleSearchInputChange`, and `handleSubmit` instead of [SearchBar](https://github.com/itxchy/FCC-spiffy-wikipedia/blob/master/src/components/SearchBar/SearchBar.js) to furthur clarify each components' single responsibility. But that's not all! We'd need to pass [`state.data`](https://github.com/itxchy/FCC-spiffy-wikipedia/blob/master/src/components/App.js#L13) from `App` down the component tree to at least `SearchForm` as well.
 
-This is called the data tunneling problem. As the app grows, so do the number of components that data and events need to pass through. This is when Redux makes its entrance.
+This is an example of the data tunneling problem. As the components get nested deeper, so do the levels of components that data and events need to pass through. This is when Redux's predictable complexity becomes more desirable than the unpredictable complexity of data tunneling which can grow over time.
 
 ## Redux
 
-Redux is a powerful Flux pattern variant that allows you to abstract away all of your React application's state, and pass bits of state to components as props based on what they need. You can pass action creaters as props too, which are basically state-altering functions, among any components that need them.
+In essense, Redux allows you to store and manage all of your React state outside of your React components.
 
-For big apps, this allows you to decouple your components so they don't need to worry about the flow of state, state-altering methods, or events being passed through the component tree. It all flows in from Redux, a la carte style.
+// research https://blog.risingstack.com/flux-inspired-libraries-with-react/
+http://pixelhunter.me/post/110248593059/flux-solutions-compared-by-example
+
+It's uses a variation of the [Flux](https://facebook.github.io/flux/docs/in-depth-overview.html#content) arcitecture from Facebook. Flux is essentially a pattern that describes a "store", or multiple "stores", which are objects that hold on to your immutable state, "actions" which trigger state changes, and "dispatchers" which trigger actions based on UI events, or other events. When a store is updated, the view layer (usually React) recieves the new state, and updates its UI with the changes. Flux has a lot of other pieces to it which I won't dig into here since you'll likely be using a library like Redux to impliment flavors of the Flux pattern. Flux is complicated because it solves a much more complicated problem. Facebook's code is very complex, with many hundreds (thousands?) of deeply nested components, many needing to share props and state. Just imagine building Facebook UIs with React alone.
+
+There are many libraries implementing the Flux pattern, but Redux is the most widely used at the present. Instead of allowing multiple stores, you just have a single store which is an immutable object. Any time an action is dispatched using an action creator, a reducer function takes in the action plus the current state, and returns a new state object with the changes, not a mutated state object. This allows for powerful features like time-travel debugging in Redux Developer Tools, which does exactly what you'd expect. Since store updates from reducers create an entirely new object each time, its possible to track those unique objects over time, and pass your application between states in the Redux Dev Tools. This single direction of flow into the single store object makes debugging very easy since its easy to trace which reducers update state in order over time.
+
+For big apps, this allows you to decouple your components so they don't need to worry about the flow of state, state-altering methods, or events being passed through the component tree. It all flows in from, and to, Redux, a la carte style.
 
 ### When Do You Need Redux?
+
+Not all apps need Redux, and you shouldn't use it if you're not running into the problems it's here to solve. There are tradeoffs.
+
+On the one hand, Redux allows you share state between components easily, and keep components decoupled and portable.
+
+On the other hand, Redux adds complexity and weight to your app, making it more tedious to add features and maintain.
+
+At what point do you *need* Redux?
+
+Some people don't mind data-tunneling for small to mid-size apps, but its probably a good idea to bring in Redux once you find yourself with state and props that need to be passed at least two layers deep in muliple parts of your application. As the app grows, these pcomplexities will start to snowball.
+
+If, on the other hand, you have an app with one component a few layers deep that needs to tunnel some state, and no others, then you'll probably be fine just handling the data-tunneling in that instance. The added complexity of Redux would outweigh the complexity of maintaining one data-tunneling instance without Redux.
+
+For Vote, adding Redux was a no-brainer. Many components need access to the `user` object in state, which alone would have been a nightmare to pass between components. A higher-order componet could have been an option, but there are a number of other bits of state and methods, like `flashMessage`'s state-altering, which are used in multiple components in different branches of the component tree. Using higher-order components for everything would get hairy fast.
+
+The added complexity of Redux didn't hold a handle to the add compexity without it.
+
+### A Ducks Pattern Variant
+
+At first, my Redux code lived in a single `store.js` file which got unruly very quickly.
+
+After some research, I read about the [Ducks](https://medium.com/@scbarrus/the-ducks-file-structure-for-redux-d63c41b7035c#.yawhsa7sx) Pattern which looked great.
+
+I ended up with a variation of that pattern which worked out well for my needs:
+```
+/redux
+  /modules
+    module.js
+    ...
+  Store.js
+  rootReducer.js
+```
+
+Very simple.
+
+Store.js:
+```js
+import { applyMiddleware, compose, createStore } from 'redux'
+import thunk from 'redux-thunk'
+import rootReducer from './rootReducer'
+
+export const store = createStore(rootReducer, compose(
+    applyMiddleware(thunk),
+    typeof window === 'object' && typeof window.devToolsExtension !== 'undefined' ? window.devToolsExtension() : (f) => f
+))
+
+export default store
+```
+
+The Store.js file simply initiallized the store with middleware and the rootReducer. Thanks again to Brian Holt for teaching that very handy devTools argument. Before that, I used remote-dev-tools to spin up a separate server to run the dev tools while server side rendering. This one-liner is much simpler, and works on the client and the server.
+
+rootReducer.js:
+```js
+import { combineReducers } from 'redux'
+import flashMessages from './modules/flashMessage'
+import newPoll from './modules/createNewPoll'
+import user from './modules/auth'
+import allPolls from './modules/getAllPolls'
+import newVote from './modules/submitVote'
+import clientFormValidation from './modules/clientFormValidation'
+import userSignupRequest from './modules/userSignupRequest'
+import userPolls from './modules/getUserPolls'
+import singlePoll from './modules/getSinglePoll'
+import editPoll from './modules/editPoll'
+import deletedPoll from './modules/deletePoll'
+
+export default combineReducers({
+  flashMessages,
+  newPoll,
+  user,
+  allPolls,
+  newVote,
+  clientFormValidation,
+  userSignupRequest,
+  userPolls,
+  singlePoll,
+  editPoll,
+  deletedPoll
+})
+
+```
+
+`rootReducer.js` is even simpler. It just exports `conmineReducers` from the default exports of the modules.
+
+One important note is that the name of the exported reducer slice inside each module determines the name of the module's state object in the store.
+
+Let's look at a module, createNewPoll.js:
+```js
+import axios from 'axios'
+import { addFlashMessage } from './flashMessage'
+
+// ******* Actions ******* /
+
+const SET_NEW_POLL_TITLE = 'setNewPollTitle'
+const SET_NEW_TITLE_EDITABLE = 'setTitleEditable'
+const UPDATE_OPTION = 'updateOption'
+const RESET_NEW_POLL = 'resetNewPoll'
+const POLL_SAVED = 'POLL_SAVED'
+const RESET_POLL_SAVED = 'RESET_POLL_SAVED'
+
+// ******* Action Creators ******* /
+
+/**
+ * Sets state.newPollTitle
+ *
+ * @param {string} pollTitle
+ */
+export function setNewPollTitle (pollTitle) {
+  return { type: SET_NEW_POLL_TITLE, value: pollTitle }
+}
+/**
+ * Sets state.titleEditable
+ *
+ * @param {boolean} bool
+ */
+export function setTitleEditable (bool) {
+  return { type: SET_NEW_TITLE_EDITABLE, value: bool }
+}
+/**
+ * Sets state.newPollOptions
+ *
+ * @param {array} updatedOptions - An array of at least 2 strings
+ */
+export function updateOption (updatedOptions) {
+  return { type: UPDATE_OPTION, value: updatedOptions }
+}
+/**
+ * Resets state to DEFAULT_STATE
+ */
+export function resetNewPoll () {
+  return { type: RESET_NEW_POLL }
+}
+/**
+ * Sets state.pollSaved as a new Poll's ID
+ *
+ * @param {string} pollId - A new poll's mongoDB _id
+ */
+export function pollSaved (pollId) {
+  return { type: POLL_SAVED, pollId }
+}
+/**
+ * Sets state.pollSaved as null
+ */
+export function resetPollSaved () {
+  return { type: RESET_POLL_SAVED }
+}
+/**
+ * Submits a new poll to the server
+ *
+ * @param {object} newPoll - an object containing a new poll's title, at least two
+ * options, and the owner (user). Sample: { title: 'What number?', options: ['one', 'two'], owner: 'Lloyd'}
+ *
+ */
+export function submitNewPoll (newPoll) {
+  return dispatch => {
+    axios.post('/api/polls', newPoll)
+      .then(res => {
+        console.log('newPoll submitted successfully!', res.data.poll._id)
+        dispatch(resetNewPoll())
+        dispatch(addFlashMessage({ type: 'success', text: 'Poll saved!' }))
+        dispatch(pollSaved(res.data.poll._id))
+      })
+      .catch(err => {
+        console.error('ERROR: redux: newPoll could not be saved', err)
+        dispatch(addFlashMessage({ type: 'error', text: 'Something went wrong. Poll coudn\'t be saved.' }))
+      })
+  }
+}
+
+// ******* Reducers ******* /
+
+const setNewPollTitleReducer = (state, action) => {
+  if (typeof action.value !== 'string') {
+    console.error('ERROR: redux: setNewPollTitle wasn\'t passed a string:', action.value)
+    return Object.assign({}, state)
+  }
+  return Object.assign({}, state, { newPollTitle: action.value })
+}
+const setTitleEditableReducer = (state, action) => {
+  if (typeof action.value !== 'boolean') {
+    console.error('ERROR: redux: setTitleEditable was not passed a boolean:', action.value)
+    return Object.assign({}, state, { titleEditable: true })
+  }
+  return Object.assign({}, state, { titleEditable: action.value })
+}
+const updateOptionReducer = (state, action) => {
+  if (action.value.length < 2) {
+    console.error('ERROR: redux: less than two options were passed to updateOption:', action.value)
+    return Object.assign({}, state)
+  }
+  return Object.assign({}, state, { newPollOptions: action.value })
+}
+const resetNewPollReducer = (state, action) => {
+  const newState = {}
+  const blankPollState = {
+    newPollTitle: '',
+    titleEditable: true,
+    newPollOptions: [
+      '',
+      ''
+    ],
+    pollSaved: null
+  }
+  Object.assign(newState, state, blankPollState)
+  return newState
+}
+const pollSavedReducer = (state, action) => {
+  if (typeof action.pollId !== 'string') {
+    console.error('ERROR: redux: pollSaved was not passed an id as a string:', action.pollId)
+    return Object.assign({}, state, { pollSaved: false })
+  }
+  return Object.assign({}, state, { pollSaved: action.pollId })
+}
+const resetPollSavedReducer = (state, action) => {
+  return Object.assign({}, state, { pollSaved: null })
+}
+
+// ******* Root Reducer Slice ******* /
+
+export const DEFAULT_STATE = {
+  newPollTitle: '',
+  titleEditable: true,
+  newPollOptions: [
+    '',
+    ''
+  ],
+  pollSaved: null
+}
+export default function newPoll (state = DEFAULT_STATE, action) {
+  switch (action.type) {
+    case SET_NEW_POLL_TITLE:
+      return setNewPollTitleReducer(state, action)
+    case SET_NEW_TITLE_EDITABLE:
+      return setTitleEditableReducer(state, action)
+    case UPDATE_OPTION:
+      return updateOptionReducer(state, action)
+    case RESET_NEW_POLL:
+      return resetNewPollReducer(state, action)
+    case POLL_SAVED:
+      return pollSavedReducer(state, action)
+    case RESET_POLL_SAVED:
+      return resetPollSavedReducer(state, action)
+    default:
+      return state
+  }
+}
+
+```
+
+There is a lot going in this file, but it progresses logically. For a `newPoll`, the actions, action creators, reducer functions, and the rootReducerSlice are easy to follow. Adding a new feature is as easy as adding the relevent code to each section, instead of bouncing between many files. It's easier to reason about as well (for me at least).
+
+### Thunks
+
+Handling async requests in Redux is simple using thunks.
+
+Note the axios call from the example above:
+```js
+/**
+ * Submits a new poll to the server
+ *
+ * @param {object} newPoll - an object containing a new poll's title, at least two
+ * options, and the owner (user). Sample: { title: 'What number?', options: ['one', 'two'], owner: 'Lloyd'}
+ *
+ */
+export function submitNewPoll (newPoll) {
+  return dispatch => {
+    axios.post('/api/polls', newPoll)
+      .then(res => {
+        console.log('newPoll submitted successfully!', res.data.poll._id)
+        dispatch(resetNewPoll())
+        dispatch(addFlashMessage({ type: 'success', text: 'Poll saved!' }))
+        dispatch(pollSaved(res.data.poll._id))
+      })
+      .catch(err => {
+        console.error('ERROR: redux: newPoll could not be saved', err)
+        dispatch(addFlashMessage({ type: 'error', text: 'Something went wrong. Poll coudn\'t be saved.' }))
+      })
+  }
+}
+```
+
+After getting a response from the API, a certain set of action creators will get dispatched if the response is successful, and other action creators will get called if the response is an error.
+
+Using a thunk in an action creator involves simply returning a function taking in `dispatch` as its argument, and making your async request (a side effect) within the function.
+
+Action creators should be pure functions, but thunks allow you to handle side effects easily.
+
+Redux Sagas may be worth looking into as well if you have some complex side effects to handle.
 
