@@ -37,7 +37,8 @@ Needless to say, I've learned more from this project than anything else I've wor
   - [Redux](#redux)
     - [When Do You Need Redux?](#when-do-you-need-redux)
     - [A Ducks Pattern Variant](#a-ducks-pattern-variant)
-    - [Thunks](#thunks)
+    - [Thunks Middleware](#thunks-middleware)
+    - [Styling](#styling)
 
 <!-- /MarkdownTOC -->
 
@@ -725,7 +726,7 @@ http://pixelhunter.me/post/110248593059/flux-solutions-compared-by-example
 
 It's uses a variation of the [Flux](https://facebook.github.io/flux/docs/in-depth-overview.html#content) arcitecture from Facebook. Flux is essentially a pattern that describes a "store", or multiple "stores", which are objects that hold on to your immutable state, "actions" which trigger state changes, and "dispatchers" which trigger actions based on UI events, or other events. When a store is updated, the view layer (usually React) recieves the new state, and updates its UI with the changes. Flux has a lot of other pieces to it which I won't dig into here since you'll likely be using a library like Redux to impliment flavors of the Flux pattern. Flux is complicated because it solves a much more complicated problem. Facebook's code is very complex, with many hundreds (thousands?) of deeply nested components, many needing to share props and state. Just imagine building Facebook UIs with React alone.
 
-There are many libraries implementing the Flux pattern, but Redux is the most widely used at the present. Instead of allowing multiple stores, you just have a single store which is an immutable object. Any time an action is dispatched using an action creator, a reducer function takes in the action plus the current state, and returns a new state object with the changes, not a mutated state object. This allows for powerful features like time-travel debugging in Redux Developer Tools, which does exactly what you'd expect. Since store updates from reducers create an entirely new object each time, its possible to track those unique objects over time, and pass your application between states in the Redux Dev Tools. This single direction of flow into the single store object makes debugging very easy since its easy to trace which reducers update state in order over time.
+There are [many libraries](https://github.com/voronianski/flux-comparison) implementing the Flux pattern, but Redux has been the most widely used lately and for good reason. Instead of allowing multiple stores, Redux uses a single store for all of your state. Any time an action is dispatched, a reducer function takes in the action plus the current state, and returns a new state object with the changes, not a mutated form of the state object which was passed in as a parameter. This allows for powerful features like time-travel debugging in Redux Developer Tools, which does exactly what you'd expect. Since store updates from reducers create an entirely new object each time, its possible to track those unique objects over time, and pass your application between states in the Redux Dev Tools. This single direction of flow into the single store object makes debugging very easy since its easy to trace which reducers update state in order over time.
 
 For big apps, this allows you to decouple your components so they don't need to worry about the flow of state, state-altering methods, or events being passed through the component tree. It all flows in from, and to, Redux, a la carte style.
 
@@ -821,12 +822,22 @@ Let's look at a module, createNewPoll.js:
 import axios from 'axios'
 import { addFlashMessage } from './flashMessage'
 
-// ******* Actions ******* /
+export const DEFAULT_STATE = {
+  newPollTitle: '',
+  titleEditable: true,
+  newPollOptions: [
+    '',
+    ''
+  ],
+  pollSaved: null
+}
 
-const SET_NEW_POLL_TITLE = 'setNewPollTitle'
-const SET_NEW_TITLE_EDITABLE = 'setTitleEditable'
-const UPDATE_OPTION = 'updateOption'
-const RESET_NEW_POLL = 'resetNewPoll'
+// ******* Action Types ******* /
+
+const SET_NEW_POLL_TITLE = 'SET_NEW_POLL_TITLE'
+const SET_NEW_TITLE_EDITABLE = 'SET_TITLE_EDITABLE'
+const UPDATE_OPTION = 'UPDATE_OPTION'
+const RESET_NEW_POLL = 'RESET_NEW_POLL'
 const POLL_SAVED = 'POLL_SAVED'
 const RESET_POLL_SAVED = 'RESET_POLL_SAVED'
 
@@ -924,15 +935,7 @@ const updateOptionReducer = (state, action) => {
 }
 const resetNewPollReducer = (state, action) => {
   const newState = {}
-  const blankPollState = {
-    newPollTitle: '',
-    titleEditable: true,
-    newPollOptions: [
-      '',
-      ''
-    ],
-    pollSaved: null
-  }
+  const blankPollState = DEFAULT_STATE
   Object.assign(newState, state, blankPollState)
   return newState
 }
@@ -948,16 +951,6 @@ const resetPollSavedReducer = (state, action) => {
 }
 
 // ******* Root Reducer Slice ******* /
-
-export const DEFAULT_STATE = {
-  newPollTitle: '',
-  titleEditable: true,
-  newPollOptions: [
-    '',
-    ''
-  ],
-  pollSaved: null
-}
 export default function newPoll (state = DEFAULT_STATE, action) {
   switch (action.type) {
     case SET_NEW_POLL_TITLE:
@@ -981,12 +974,115 @@ export default function newPoll (state = DEFAULT_STATE, action) {
 
 There is a lot going in this file, but it progresses logically. For a `newPoll`, the actions, action creators, reducer functions, and the rootReducerSlice are easy to follow. Adding a new feature is as easy as adding the relevent code to each section, instead of bouncing between many files. It's easier to reason about as well (for me at least).
 
-### Thunks
+One way to make this cleaner would be to group the Action Types, Actions, and Reducers together for each feature, and maybe even put each feature into separate files to be imported into this current one for the Root Reducer Slice to use.
 
-Handling async requests in Redux is simple using thunks.
-
-Note the axios call from the example above:
+Here's how grouping action creators and reducers can look:
 ```js
+import axios from 'axios'
+import { addFlashMessage } from './flashMessage'
+
+export const DEFAULT_STATE = {
+  newPollTitle: '',
+  titleEditable: true,
+  newPollOptions: [
+    '',
+    ''
+  ],
+  pollSaved: null
+}
+
+// ******* Action Types ******* /
+
+const SET_NEW_POLL_TITLE = 'SET_NEW_POLL_TITLE'
+const SET_NEW_TITLE_EDITABLE = 'SET_NEW_TITLE_EDITABLE'
+const UPDATE_OPTION = 'UPDATE_OPTION'
+const RESET_NEW_POLL = 'RESET_NEW_POLL'
+const POLL_SAVED = 'POLL_SAVED'
+const RESET_POLL_SAVED = 'RESET_POLL_SAVED'
+
+// ******* Action Creators & Reducers******* /
+
+/**
+ * Sets state.newPollTitle
+ *
+ * @param {string} pollTitle
+ */
+export function setNewPollTitle (pollTitle) {
+  return { type: SET_NEW_POLL_TITLE, value: pollTitle }
+}
+const setNewPollTitleReducer = (state, action) => {
+  if (typeof action.value !== 'string') {
+    console.error('ERROR: redux: setNewPollTitle wasn\'t passed a string:', action.value)
+    return Object.assign({}, state)
+  }
+  return Object.assign({}, state, { newPollTitle: action.value })
+}
+/**
+ * Sets state.titleEditable
+ *
+ * @param {boolean} bool
+ */
+export function setTitleEditable (bool) {
+  return { type: SET_NEW_TITLE_EDITABLE, value: bool }
+}
+const setTitleEditableReducer = (state, action) => {
+  if (typeof action.value !== 'boolean') {
+    console.error('ERROR: redux: setTitleEditable was not passed a boolean:', action.value)
+    return Object.assign({}, state, { titleEditable: true })
+  }
+  return Object.assign({}, state, { titleEditable: action.value })
+}
+/**
+ * Sets state.newPollOptions
+ *
+ * @param {array} updatedOptions - An array of at least 2 strings
+ */
+export function updateOption (updatedOptions) {
+  return { type: UPDATE_OPTION, value: updatedOptions }
+}
+const updateOptionReducer = (state, action) => {
+  if (action.value.length < 2) {
+    console.error('ERROR: redux: less than two options were passed to updateOption:', action.value)
+    return Object.assign({}, state)
+  }
+  return Object.assign({}, state, { newPollOptions: action.value })
+}
+/**
+ * Resets state to DEFAULT_STATE
+ */
+export function resetNewPoll () {
+  return { type: RESET_NEW_POLL }
+}
+const resetNewPollReducer = (state, action) => {
+  const newState = {}
+  const blankPollState = DEFAULT_STATE
+  Object.assign(newState, state, blankPollState)
+  return newState
+}
+/**
+ * Sets state.pollSaved as a new Poll's ID
+ *
+ * @param {string} pollId - A new poll's mongoDB _id
+ */
+export function pollSaved (pollId) {
+  return { type: POLL_SAVED, pollId }
+}
+const pollSavedReducer = (state, action) => {
+  if (typeof action.pollId !== 'string') {
+    console.error('ERROR: redux: pollSaved was not passed an id as a string:', action.pollId)
+    return Object.assign({}, state, { pollSaved: false })
+  }
+  return Object.assign({}, state, { pollSaved: action.pollId })
+}
+/**
+ * Sets state.pollSaved as null
+ */
+export function resetPollSaved () {
+  return { type: RESET_POLL_SAVED }
+}
+const resetPollSavedReducer = (state, action) => {
+  return Object.assign({}, state, { pollSaved: null })
+}
 /**
  * Submits a new poll to the server
  *
@@ -1009,13 +1105,96 @@ export function submitNewPoll (newPoll) {
       })
   }
 }
+
+// ******* Root Reducer Slice ******* /
+
+export default function newPoll (state = DEFAULT_STATE, action) {
+  switch (action.type) {
+    case SET_NEW_POLL_TITLE:
+      return setNewPollTitleReducer(state, action)
+    case SET_NEW_TITLE_EDITABLE:
+      return setTitleEditableReducer(state, action)
+    case UPDATE_OPTION:
+      return updateOptionReducer(state, action)
+    case RESET_NEW_POLL:
+      return resetNewPollReducer(state, action)
+    case POLL_SAVED:
+      return pollSavedReducer(state, action)
+    case RESET_POLL_SAVED:
+      return resetPollSavedReducer(state, action)
+    default:
+      return state
+  }
+}
+
 ```
 
-After getting a response from the API, a certain set of action creators will get dispatched if the response is successful, and other action creators will get called if the response is an error.
+The file is still pretty long, but much easier to maintain. Keeping Each action creator and its corresponding reducer together eliminate the need to scroll back and forth while changing things, or adding a new action. The flow reads a lot more naturally as well.
 
-Using a thunk in an action creator involves simply returning a function taking in `dispatch` as its argument, and making your async request (a side effect) within the function.
+### Thunks Middleware
 
-Action creators should be pure functions, but thunks allow you to handle side effects easily.
+Out of the box, Redux only supports a strictly synchronous [data flow](http://redux.js.org/docs/basics/DataFlow.html).
 
-Redux Sagas may be worth looking into as well if you have some complex side effects to handle.
+Thankfully, middleware make it easy to dispatch functions and promises, instead of synchronous action creators alone, allowing you to perform operations after a action is dispatched, but before the reducer is called.
+
+[`redux-thunk`](https://github.com/gaearon/redux-thunk) for example, will hijack a dispatched action when a function is returned and tell Redux "Hey, I've got this. Do other things, and I'll get back to you." Once an async operation, like commonly a promise, gets resolved or rejected, you can dispatch any actions you'd like depending on result of the promise, and Redux will handle those resulting action dispatches. You can uses a thunk for dispatching actions conditionally as well. A thunk function is simply a wrapper function used to delay the evaluation inside of it.
+
+You can dispatch more than one action in a `.then` callback after a promise is returned, but you need at least one `dispatch` call for Redux to anything.
+
+Handling async actions in Redux is simple using thunks.
+
+Note the axios call from the example above:
+```js
+/**
+ * Submits a new poll to the server
+ *
+ * @param {object} newPoll - an object containing a new poll's title, at least two
+ * options, and the owner (user). Sample: { title: 'What number?', options: ['one', 'two'], owner: 'Lloyd'}
+ *
+ */
+export function submitNewPoll (newPoll) {
+  return dispatch => {
+
+    // You can dispatch a "loading" action here
+
+    axios.post('/api/polls', newPoll)
+      .then(res => {
+        console.log('newPoll submitted successfully!', res.data.poll._id)
+        dispatch(resetNewPoll())
+        dispatch(addFlashMessage({ type: 'success', text: 'Poll saved!' }))
+        dispatch(pollSaved(res.data.poll._id))
+      })
+      .catch(err => {
+        console.error('ERROR: redux: newPoll could not be saved', err)
+        dispatch(addFlashMessage({ type: 'error', text: 'Something went wrong. Poll coudn\'t be saved.' }))
+      })
+  }
+}
+```
+
+After getting a response from the API, a certain set of action creators will get dispatched if the response is successful, and other action creators will get dispatched if the response is an error.
+
+Writing a thunk action involves simply returning a function taking in `dispatch` as its argument, and making your async request (a side effect) within the function.
+
+Action creators are pure functions, but thunks allow you to make them "impure" and handle side effects effectively.
+
+[redux-saga](https://github.com/redux-saga/redux-saga) may be worth looking into as well if you have some complex async logic to handle. Sagas allow [cancellation](https://redux-saga.github.io/redux-saga/docs/advanced/TaskCancellation.html) and ["concurrency"](https://redux-saga.github.io/redux-saga/docs/advanced/Concurrency.html) in your async operations.
+
+Note that ["concurrency" in JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript/EventLoop) as its used redux-saga involves an event loop on a single thread, and not multiple processes on individual threads like in other languages.
+
+With web workers however, you can take advantage of multi-threading with JavaScript. Check out [`Hampsters.js]`(https://github.com/austinksmith/Hamsters.js) for that awesomeness. It's best not to go that route until you absolutely need to.
+
+### Styling
+
+`webpack` makes it easy to modularize your CSS and import individual CSS modules into your React components. `create-react-app` encourages this by default, and I really enjoyed this workflow in my [Spiffy Wikipeda](https://github.com/itxchy/FCC-spiffy-wikipedia/blob/master/src/components/Result/Result.css) app. Maintaining CSS styles is getting easier all the time. [`PostCSS`](https://github.com/postcss/postcss) offers many powerful plugins as well, which can work well with your CSS preprocessor of choice.
+
+For vote, I'll admit I didn't focus as much attention on styling as I should have. For simplicity, I elected to keep my SASS and CSS considerations separate from my React code. I used `webpack`'s `ExtractTextPlugin` to bundle all of the compiled CSS into a separate css file, and imported the `main.scss` directly into [`BrowserEntry.js`](https://github.com/itxchy/FCC-vote/blob/master/components/BrowserEntry.jsx#L4).
+
+All of my SCSS files were stored in a separate `sass` directory, the idea being to keep syling concerns and React component concerns separate. But isn't the *syling* of a component part of a component's concerns? Depends on who you ask I guess, but importing your SASS or CSS modules directly into the components that need them makes a lot of sense. Instead of going through a separate directory tree looking for the styles that are responsible for your component, and managing the file structure of the style directory, it makes sense to keep your CSS or SASS together with the components they style. This makes it easier to use CSS conventions like BEM as well. Instead of mirroring your CSS directory with your component directory, you can keep your components even more self contained in their file structure.
+
+![Styling in its own directory compared with keeping styles with their components.](../public/img/css-structure.png)
+
+
+
+
 
