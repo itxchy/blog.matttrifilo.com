@@ -51,6 +51,7 @@ Needless to say, I've learned more from this project than anything else I've wor
 - [The Database: MongoDB](#the-database-mongodb)
   - [Schema](#schema)
   - [mongoose](#mongoose)
+  - [Development Database vs Production Database](#development-database-vs-production-database)
 - [Production](#production)
 
 <!-- /MarkdownTOC -->
@@ -1670,6 +1671,51 @@ router.get('/:identifier', (req, res) => {
 This code searches the database for an email or username matching the identifier passed into the login form. The promise gets resolved with a user object (either populated with a found user, or empty), otherwise, the error is passed to the `catch` function.
 
 It's important to handle rejected promises quickly so that you can debug them in the right context. Without the `catch` statement, an error here would be more difficult to trace.
+
+## Development Database vs Production Database
+
+During development, you can spin up your local mongoDB on your system if it's installed, and connect to it with mongoose.
+
+You'll need to create a `data` folder in your project's root directory and another npm script:
+```
+"scripts" {
+  "mongo": "mongod --port 27017 --dbpath=./data"
+}
+```
+
+You should see a bunch of logs in your terminal if it's working.
+
+Then, you just connect mongoose to `mongodb://localhost:27017/[databaseName]`
+
+For production, you should use an environment variable for your mLab URI, since it's a bad idea to put security credentials in your code, especially if you're commiting to GitHub publically.
+
+You can use a conditional statement to connect the proper database based on your node environment:
+```js
+// server.js /
+/**
+ * connect to MongoDB
+ */
+if (process.env.NODE_ENV === 'production') {
+  mongoose.connect(process.env.MONGO_URI)
+    .then(() => {
+      console.log('Connected to Mongoose! production environment')
+    })
+    .catch(err => {
+      console.error('Mongoose production connection failed', err)
+    })
+} else {
+  mongoose.connect('mongodb://localhost:27017/vote')
+  .then(() => {
+    console.log('Connected to Mongoose! development environment')
+  })
+  .catch(err => {
+    console.error('Mongoose development connection failed:', err)
+  })
+}
+
+```
+
+Promises make life easier again!
 
 # Production
 
