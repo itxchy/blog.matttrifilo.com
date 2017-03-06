@@ -43,7 +43,15 @@ Needless to say, I've learned more from this project than anything else I've wor
   - [Server Side Rendering](#server-side-rendering)
       - [`React.createElement` Refresher](#reactcreateelement-refresher)
     - [Pre-Transpiling For Node Using Babel](#pre-transpiling-for-node-using-babel)
-    - [Express API Routes](#express-api-routes)
+  - [Express API Routes](#express-api-routes)
+    - [RESTful Dialog Between Machines](#restful-dialog-between-machines)
+    - [CRUD Logic](#crud-logic)
+    - [Avoiding Callback Hell With Async/Await](#avoiding-callback-hell-with-asyncawait)
+      - [Not So Fast...](#not-so-fast)
+- [The Database: MongoDB](#the-database-mongodb)
+  - [Schema](#schema)
+  - [mongoose](#mongoose)
+- [Production](#production)
 
 <!-- /MarkdownTOC -->
 
@@ -1372,5 +1380,296 @@ Now it's closer to production ready.
 
 When the app is in a production environment, `babel-register` won't be run, and React will render the pre-transpiled version of the app. During development, `babel-register` will transpile on the fly, and ReactDOMServer can point to our actual application code without a lengthy transpilation step before-hand.
 
-### Express API Routes
+## Express API Routes
+
+Vote's API was meant to be [RESTful](http://www.restapitutorial.com/lessons/whatisrest.html).
+
+### RESTful Dialog Between Machines
+
+REST is more of a paradigm than a hardened standard that describes an interface between a client and a server that is uniform, stateless, and explicit. Resources are passed between computers (usually in JSON, but XML is still prevailent) in a predictable way, so that the two distinct applications don't have to care about what languages, libraries or even hardware each are using. REST is method of communication with its own customs and dialect.
+
+REST stands for REpresentational State Transfer.
+
+### CRUD Logic
+
+Making a polling app was a great exercise for creating a server API since a number of simple Create Read Update Delete operations would be necessary.
+
+From [`polls.js`](https://github.com/itxchy/FCC-vote/blob/master/routes/polls.js)
+```js
+/**
+ * Retrieves all polls
+ */
+router.get('/', (req, res) => {
+  Poll.find()
+    .select('_id title options totalVotes owner')
+    .exec()
+    .then(polls => {
+      return res.json(polls)
+    })
+    .catch(err => res.status(500).json({ 'error retrieving all polls': err }))
+})
+
+/**
+ * Retrieves all of a user's polls
+ */
+router.get('/:user', (req, res) => {
+  Poll.find({ owner: req.params.user })
+    .select('_id title options totalVotes owner')
+    .exec()
+    .then(polls => {
+      return res.json(polls)
+    })
+    .catch(err => res.status(500).json({ 'error retrieving current user\'s polls': err }))
+})
+
+/**
+ * Retrieves a single poll based on poll ID
+ */
+router.get('/id/:id', (req, res) => {
+  Poll.find({ _id: req.params.id })
+    .select('_id title options totalVotes owner')
+    .exec()
+    .then(poll => {
+      console.log('mongo returned this poll:', poll)
+      return res.json(poll)
+    })
+    .catch(err => res.status(500).json({ 'error retrieveing single poll': err }))
+})
+
+/**
+ * Deletes a poll forever based on ID
+ */
+router.delete('/delete/:id', (req, res) => {
+  Poll.find({ _id: req.params.id })
+    .remove()
+    .exec()
+    .then(poll => {
+      console.log('This poll has been deleted!:', poll)
+      return res.json(poll)
+    })
+    .catch(err => res.status(500).json({'error deleting poll': err}))
+})
+
+```
+
+This application uses Express Router, so picture these endpoints as prepended with `api/polls`.
+
+Anytime a request reaches the server, it first passes through Express' middleware, which includes express router. Here's a heavily redacted [`server.js`](https://github.com/itxchy/FCC-vote/blob/master/server.js):
+```js
+const express = require('express')
+const users = require('./routes/users.js')
+const auth = require('./routes/auth.js')
+const polls = require('./routes/polls.js')
+const app = express()
+
+app.use(bodyParser.json())
+
+/**
+ * Routes
+ */
+app.use('/api/users', users)
+app.use('/api/auth', auth)
+app.use('/api/polls', polls)
+
+app.use('/public', expressStaticGzip('./public'))
+```
+
+One mistake I made building this API was that I didn't design a blueprint for it first.
+
+It's a good idea to have all of your endpoints and data schemas mapped out beforehand to anticipate where some clarification of API routes may be needed.
+
+In the example above from [`polls.js`](https://github.com/itxchy/FCC-vote/blob/master/routes/polls.js), those endpoints could be crudely mapped out this way:
+```
+GET: /api/polls
+  - responds with all polls
+
+GET: /api/polls/:username
+  - responds with all of a user's polls
+
+GET: /api/polls/id/:id
+  - responds with a single poll based on its ID
+
+DELETE: /api/polls/delete/:id
+  - deletes a poll based on its ID
+```
+
+As I developed this application, its easy to see that I built the first two endpoint before the latter two. It makes sense to think of endpoints as if you're accessing a directory struncture. In this case, the username endpoint isn't very descriptive. `/api/polls/username/:username` would be more clear.
+
+The DELETE endpoint could have just pointed to `/api/polls/id/:id` as well, but what if someone (possibly me) accidently set a DELETE request to that endpoint instead of a GET request to that same endpoint and it somehow made it to production? Someone could lose priceless data for a groundbreaking poll.
+
+API design is a deep subject and there are a lot different opinions and styles concerning APIs, but REST offers some great guidelines to stick to.
+
+### Avoiding Callback Hell With Async/Await
+
+Promises work very well, but I've really enjoyed working with [`async`/`await`](http://www.2ality.com/2016/10/async-function-tips.html) syntax. It allows you to program with asynchronous functions while treating them as if they're synchronous. Generators and Promises are very effective as well, but I enjoy the simplicity and readabilty of `async`/`await`. It's mindblowing that so many great alternatives to callbacks have entered the wild in just a few short years!
+
+#### Not So Fast...
+
+Unfortunately, Node 6 doesn't support `async`/`await`, but [Node 7 does](http://node.green/#ES2017-features-async-functions), and Node 8 scheduled for release in [April 2017](https://github.com/nodejs/LTS)! By the time you read this, async/await will probably be available natively in Node.
+
+For now, I used a library called `asyncawait` to be able to use async/await as functions so no transpiling would be necessary.
+
+```js
+const async = require('asyncawait/async')
+const awaitFake = require('asyncawait/await')
+
+/**
+ *  Edits a poll
+ */
+router.put('/edit/:id', authenticate, (req, res) => {
+  const validate = validateUpdatedPoll(res, req.body, commonValidations)
+  if (!validate.isValid) {
+    return res.status(400).json({ 'bad request': 'bad data for poll edit', errors: validate.errors })
+  }
+
+  const applyPollEdits = async(function applyPollEdits (req, res) {
+    try {
+      let updatedPoll = awaitFake(updatePollDocumentOnEdit(req.params.id, req.body))
+      console.log('edit: updatedPoll:', updatedPoll)
+      if (updatedPoll.updatedDoc) {
+        return res.json(updatedPoll.updatedDoc)
+      }
+      if (updatedPoll.error) {
+        return res.status(500).json({'poll edit failed in database operation': updatedPoll.error})
+      }
+    } catch (error) {
+      console.error(error)
+      return res.status(500).json({'poll edit failed': error})
+    }
+  })
+
+  applyPollEdits(req, res)
+})
+
+```
+
+Keep in mind that `async` and `await` are reserved keywords in the spec, and NOT functions like they're shown here. This [2ality article](http://www.2ality.com/2016/10/async-function-tips.html) goes deep into async/await in addition to other asynchrous function options coming soon.
+
+The `asyncawait` library behaves identically to the real thing, so it's fine until I can use the real thing.
+
+Let's look at an older commit when I was still using `babel-register` on the server exclusivley:
+```js
+/**
+ *  Edits a poll
+ */
+router.put('/edit/:id', authenticate, (req, res) => {
+  const validate = validateUpdatedPoll(res, req.body, commonValidations)
+  if (!validate.isValid) {
+    return res.status(400).json({ 'bad request': 'bad data for poll edit', errors: validate.errors })
+  }
+  const pollID = req.params.id
+
+  applyPollEdits(req, res)
+
+  async function applyPollEdits (req, res) {
+    try {
+      let updatedPoll = await updatePollDocumentOnEdit(req.params.id, req.body)
+      console.log('edit: updatedPoll:', updatedPoll)
+      if (updatedPoll.updatedDoc) {
+        return res.json(updatedPoll.updatedDoc)
+      }
+      if (updatedPoll.error) {
+        return res.status(500).json('poll edit failed in database operation': updatedPoll.error)
+      }
+    } catch (error) {
+      console.error(error)
+      return res.status(500).json({'poll edit failed': error})
+    }
+  }
+})
+```
+
+Could a promise have been used here? Of course, but this project seemed like a good time to give `async`/`await` a try, and it's very simple to use.
+
+Inside of an async function, you set up `try`/`catch` blocks. Inside the `try` block, you can use `await` to essentially tell the block "hey, I'm pausing this function until I hear back from this promise." In this code, the expressions following the `await` call won't evaluate until a promise from `updatePollDocumentOnEdit` gets resolved or rejected. Once the `updatePollDocumentOnEdit` function finishes, `updatedValue` receives its new value, and `async` function continues. All of this happens while Node does other things in the mean time. If a promise gets rejected, you can handle the error in the `catch` block.
+
+This was a simple example with only one `await` statement, but what if you had to perform three or four async function calls? Instead of nested callbacks, or even nested promises, you can use `await` to tell the rest of the function to hold on unit it gets the result of a promise back. This way you can have multiple variables being assigned the results of consecutive async calls that rely on what came before them:
+
+```js
+async function workout (run, updateJournal, highIntensityCardio) {
+  try {
+      const averageMileTime = await run({ miles: 2 })
+      const journalEntry = await updateJournal(averageMileTime)
+      const euphoria = await highIntensityCardio()
+      return { euphoria, journalEntry }
+  } catch (error) {
+    return { error }
+  }
+}
+
+const beastMode = workout(run, updateJournal, highIntensityCardio)
+
+```
+
+Many more use cases can be read about [here](http://www.2ality.com/2016/10/async-function-tips.html).
+
+# The Database: MongoDB
+
+I tried out Posgresql at first, but swtiched back to MongoDB mostly because I'm more familiar with Mongo and Mongoose, but also because the data of this app works very well for noSQL objects. Translating the poll schema into SQL tables would have gotten messy very quickly. I'm sure there's an elegant way to do it that I'm not aware of, but Postgresql isn't going anywhere. The other key factor was being able to use a hosted MongoDB database on [mLab](https://mlab.com/) for free.
+
+## Schema
+
+Going hand-in-hand with designing an API, another key takeaway I took from Vote was thinking about Schema design.
+
+The Schema for polls went through a few iterations but I ended up with this:
+```js
+const mongoose = require('mongoose')
+
+const votesSchema = new mongoose.Schema({
+  voter: String
+})
+
+const optionsSchema = new mongoose.Schema({
+  option: String,
+  votes: [votesSchema]
+})
+
+const voteSchema = new mongoose.Schema({
+  title: String,
+  options: [optionsSchema],
+  totalVotes: Number,
+  owner: String
+}, { timestamps: true })
+
+const Poll = mongoose.model('Polls', voteSchema)
+
+module.exports = Poll
+```
+
+This could probably be simplified, but having the separate schemas made it look a lot cleaner to look at as a flat structure.
+
+
+## mongoose
+
+Mongoose allows you to chain commands and use promises to simply MongoDB logic.
+
+```js
+/**
+ * Looks up a user based on username or email
+ * If no user is found, the response will be null
+ */
+router.get('/:identifier', (req, res) => {
+  User.find({ $or: [{ email: req.params.identifier }, { username: req.params.identifier }] })
+  .select('username email')
+  .exec()
+  .then(user => {
+    console.log('user found!', user)
+    if (isEmpty(user)) {
+      return res.json({user: null})
+    }
+    return res.json({user})
+  })
+  .catch(err => {
+    console.error('find user promise rejection')
+    res.status(400).json({ 'user lookup error': err, error: err })
+  })
+})
+
+```
+
+This code searches the database for an email or username matching the identifier passed into the login form. The promise gets resolved with a user object (either populated with a found user, or empty), otherwise, the error is passed to the `catch` function.
+
+It's important to handle rejected promises quickly so that you can debug them in the right context. Without the `catch` statement, an error here would be more difficult to trace.
+
+# Production
 
