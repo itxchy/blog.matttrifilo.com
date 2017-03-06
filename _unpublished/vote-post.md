@@ -38,7 +38,12 @@ Needless to say, I've learned more from this project than anything else I've wor
     - [When Do You Need Redux?](#when-do-you-need-redux)
     - [A Ducks Pattern Variant](#a-ducks-pattern-variant)
     - [Thunks Middleware](#thunks-middleware)
-    - [Styling](#styling)
+  - [Styling](#styling)
+- [The Server](#the-server)
+  - [Server Side Rendering](#server-side-rendering)
+      - [`React.createElement` Refresher](#reactcreateelement-refresher)
+    - [Pre-Transpiling For Node Using Babel](#pre-transpiling-for-node-using-babel)
+    - [Express API Routes](#express-api-routes)
 
 <!-- /MarkdownTOC -->
 
@@ -1184,7 +1189,7 @@ Note that ["concurrency" in JavaScript](https://developer.mozilla.org/en-US/docs
 
 With web workers however, you can take advantage of multi-threading with JavaScript. Check out [`Hampsters.js]`(https://github.com/austinksmith/Hamsters.js) for that awesomeness. It's best not to go that route until you absolutely need to.
 
-### Styling
+## Styling
 
 `webpack` makes it easy to modularize your CSS and import individual CSS modules into your React components. `create-react-app` encourages this by default, and I really enjoyed this workflow in my [Spiffy Wikipeda](https://github.com/itxchy/FCC-spiffy-wikipedia/blob/master/src/components/Result/Result.css) app. Maintaining CSS styles is getting easier all the time. [`PostCSS`](https://github.com/postcss/postcss) offers many powerful plugins as well, which can work well with your CSS preprocessor of choice.
 
@@ -1194,7 +1199,178 @@ All of my SCSS files were stored in a separate `sass` directory, the idea being 
 
 ![Styling in its own directory compared with keeping styles with their components.](../public/img/css-structure.png)
 
+*How* to [bundle your CSS](https://webpack.js.org/guides/code-splitting-css/) is another consideration. Using `ExtractTextPlugin` will allow you to load your CSS in a separate script tag, requiring an additional network request. Including your CSS in a JavaScript bundle will save a network request, but will add to the bundle's weight.
 
+# The Server
 
+Vote uses Express to handle requests from users requesting a page, as well as the API for data requests and CRUD operations from MongoDB.
 
+## Server Side Rendering
+
+Vote's React markup is rendered on the [server](https://github.com/itxchy/FCC-vote/blob/master/server.js) into a string using `ReactDOMServer.renderToString`, and passed down to the client. By the time the client bootstraps the bundle, the client-side application code from the bundle takes over user interactions. This is great for a few reasons. First, React doesn't need to re-render the requested page when the client application finally bootstraps. Second, this allows the server to respond with markup as if it were static, which is great for users with slow connections. A lot of people are stuck with 2G around the world. Instead of having to wait a long time for a bundle to download before seeing anything, the pre-rendered markup will show up faster by an order of magnitude. Once the app's bundle finishes downloading, the app will be interactive. This is great for SEO, since the pre-rendered markup is crawlable by search engine bots.
+
+The code itself is very simple. Thanks again to Brain Holt for teaching this pattern in the first Complete Intro To React!
+
+```js
+app.use((req, res) => {
+  match({ routes: Routes(), location: req.url }, (error, redirectLocation, renderProps) => {
+    if (error) {
+      res.status(500).send(error.message)
+    } else if (redirectLocation) {
+      res.redirect(302, redirectLocation.pathname + redirectLocation.search)
+    } else if (renderProps) {
+      const body = ReactDOMServer.renderToString(
+        React.createElement(
+          Provider, { store }, React.createElement(RouterContext, renderProps)
+        )
+      )
+      res.status(200).send(template({ body }))
+    } else {
+      res.status(404).send('404: Page Not Found')
+    }
+  })
+})
+```
+
+> Note: that this code works for React Router 2. The [documentation](https://github.com/ReactTraining/react-router/blob/master/docs/guides/ServerRendering.md) for server-side rendering don't mention any changes of this pattern from v2 to v3 , but you've been warned.
+>
+> React Router 4 is looking amazing and you should probably just make the jump if you're starting a new project. The [documentation](https://reacttraining.com/react-router/) got a complete revamp. You can use [`<StaticRouter>`](https://reacttraining.com/react-router/#staticrouter) and [`match`](https://reacttraining.com/react-router/#match) for server-side rendering if you're using version 4. Brian Holt explains how to tie them together in his second Complete Intro to React course on Front End Masters. It's worth it!
+
+The code above seems pretty busy at first glance, but let's break this down.
+
+```js
+app.use((req, res) => {
+
+  match({ routes: Routes(), location: req.url }, (error, redirectLocation, renderProps) => {
+    // handle the result
+  })
+
+})
+```
+
+When a request is received, the `match` function from `react-router` is called. It takes two parameters, the first being an object where it can learn about your application's `routes` (returned from a function in this case), and a `location` (the request's URL) to match to the routes. It can also take in a `history` property.
+
+One aside: in your `index.html` file, make sure you include a forward slash in your bundle script locations or you might get basename errors when reloading nested routes, or navigating to nested routes directly:
+
+```html
+    <script src="/public/vendor.js" charset="utf-8"></script>
+    <script src="/public/bundle.js" charset="utf-8"></script>
+```
+
+`match`'s second argument is a callback with three parameters, `error`, `redirectLocation`, and `renderProps`.
+
+The meat of that function simply handles an `error` if it is defined, a `redirectLocation` if it is defined, `renderProps` if there is a successful match between the requested `location` and a known route, and finally, a 404 error if none of the callbacks arguments are defined since there is no error, redirect, or match.
+
+```js
+app.use((req, res) => {
+
+  match({ routes: Routes(), location: req.url }, (error, redirectLocation, renderProps) => {
+    if (error) {
+
+      res.status(500).send(error.message) // 500, something went wrong. You'll want to send a calming 500.html page instead of the error message itself
+
+    } else if (redirectLocation) {
+
+      res.redirect(302, redirectLocation.pathname + redirectLocation.search) // 302 redirect. redirectLocation is a LocationDescriptor object that tells you where to go next.
+
+    } else if (renderProps) {
+
+      const body = ReactDOMServer.renderToString(
+        React.createElement(
+          Provider, { store }, React.createElement(RouterContext, renderProps)
+        )
+      ) // Render the things.
+
+      res.status(200).send(template({ body })) // 200 success! A match exists, inject the markup into <%= body %> in index.html and send it out.
+    } else {
+      res.status(404).send('404: Page Not Found') // No match, must be a 404.
+    }
+  })
+})
+```
+
+> More about [`LocationDescriptor`](https://github.com/ReactTraining/react-router/blob/master/docs/Glossary.md#locationdescriptor)
+
+The actual rendering happens thanks to `ReactDOMServer.renderToString`. Since this is happening on the server, it adds unecessory complexity to use JSX since JSX needs to be transpiled. Instead, using `React.createElement` for the two elements we need works out fine without getting too nested.
+
+#### `React.createElement` Refresher
+
+JSX is syntax to make it easier to compose components. Components are just functions, so we can easily express our components here as a function JSX hides under the covers. [`React.createElement`](https://facebook.github.io/react/docs/react-without-jsx.html) takes in three arguments: component, props, and children.
+
+```js
+const body = ReactDOMServer.renderToString(
+  React.createElement(
+    Provider, { store }, React.createElement(RouterContext, renderProps)
+  )
+)
+```
+
+In JSX, this would translate to:
+```jsx
+const body = (
+  <Provider store={store}>
+    <RouterContext renderProps={renderProps} />
+  </Provider>
+)
+```
+
+Those two elements will branch out into the entire page's markup.
+
+### Pre-Transpiling For Node Using Babel
+
+One obsticle to rendering a React application on the server is that Node doesn't understand JSX or ES6 module syntax, not to mention any other ES2016-ES2017+ syntax we might have leaned on Babel to transpile.
+
+There are a few options to transpile our application code for the server.
+
+Brian Holt teaches with `babel-register`, which can be required into your server code.
+```js
+require('babel-register')({ ignore: /node_modules/ } )
+```
+
+> I ended up passing an option to ignore `node_modules` because I think there was a `.babelrc` file somewhere that was overriding my own.
+
+This works great for development, but you don't want to use this in [production](https://github.com/thejameskyle/babel-handbook/blob/master/translations/en/user-handbook.md#babel-register).
+
+For server-side code, it's better to transpile ahead of time, instead of `babel` transpiling the same code over and over again on the server.
+
+To pull this off, I made a `production` directory, and set up some `npm` scripts to transpile a copy of all of the application code that the server needs to render, and put that process into the production build step.
+
+```js
+  "scripts": {
+    "build:prod": "npm run babel:prod && webpack --config webpack.prod.js",
+    "babel:clear": "del production/*",
+    "babel:components": "NODE_ENV=server babel components -d production/components",
+    "babel:redux": "NODE_ENV=server babel redux -d production/redux",
+    "babel:auth": " NODE_ENV=server babel auth -d production/auth",
+    "copy:sass": "mkdir production/sass && cp -r sass/* production/sass",
+    "babel:routes": "NODE_ENV=server babel routes -d production/routes",
+    "babel:prod": "npm run babel:clear && npm run copy:sass && npm run babel:routes && npm run babel:components && npm run babel:redux && npm run babel:auth",
+    ...
+  }
+```
+
+Now, when running `build:prod`, all of my application files will be transpiled, and the `sass` folder will be copied to the production directory too so that the application doesn't panic (gross, I know). I'm a a new convert for keeping styles with their components in the same directory to begin with in React apps.
+
+That's great, but there are a few more steps.
+
+It would be a drag to have to transpile everything everytime a file changes during development, so it would be nice to still be able to use `babel-register` outside of a 'production' environment.
+
+```js
+if (process.env.NODE_ENV !== 'production') {
+  require('babel-register')({ ignore: /node_modules/ })
+}
+```
+
+Finally, the correct application files need to be required based on the environment:
+```js
+const { store } = process.env.NODE_ENV === 'production' ? require('./production/redux/Store.js') : require('./redux/Store.js')
+
+const { Routes } = process.env.NODE_ENV === 'production' ? require('./production/components/Routes.js') : require('./components/Routes.jsx')
+```
+
+Now it's closer to production ready.
+
+When the app is in a production environment, `babel-register` won't be run, and React will render the pre-transpiled version of the app. During development, `babel-register` will transpile on the fly, and ReactDOMServer can point to our actual application code without a lengthy transpilation step before-hand.
+
+### Express API Routes
 
