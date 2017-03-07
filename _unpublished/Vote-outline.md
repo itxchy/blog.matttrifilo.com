@@ -83,3 +83,47 @@ Lessons Learned From my First Full Stack Application
 -  Security
     +  Auth implementation dangers
     +  Securing Mongo
+
+
+## Express API Routes
+
+stateless,
+explicit HTTP verbs, GET POST PUT DELETE
+performs CREATE READ UPDATE DESTROY operations (CRUD)
+expose a directory like structure for routes leading to a resource
+transfer JSON (or XML) and consumes it
+
+like SOAP
+
+anticipate your model, design your api
+
+## Jest
+
+### Snapshot Testing
+snapshots, rendered component should match snapshot
+
+the component gets rendered completely each time, and compared with the snapshot. It basically tests that all of the markup renders the way you're expecting.
+
+You can pass in dummy data to props, like a faked JSON response from an API and you can quicky test that the component renders the data properly.
+
+Not the most robust tests, but they're fast.
+
+### Jest wins
+
+Only files that change get retested in watch mode. very fast.
+
+### Enzyme
+
+enzyme from Air BnB, great for testing React components with tools like shallow and mount
+
+You can make your own events with `simulate`
+
+DOM api use requires render
+
+
+
+### advice
+
+Keep tests simple, and disposable. Make tests more complicated is bugs arise.
+
+extract component business logic into modules, and test the modules like crazy.

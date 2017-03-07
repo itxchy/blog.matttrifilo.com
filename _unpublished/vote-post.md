@@ -38,6 +38,9 @@ Needless to say, I've learned more from this project than anything else I've wor
     - [When Do You Need Redux?](#when-do-you-need-redux)
     - [A Ducks Pattern Variant](#a-ducks-pattern-variant)
     - [Thunks Middleware](#thunks-middleware)
+  - [Unit Testing](#unit-testing)
+    - [Testing React with Jest and Enzyme](#testing-react-with-jest-and-enzyme)
+    - [Testing Redux with Jest](#testing-redux-with-jest)
   - [Styling](#styling)
 - [The Server](#the-server)
   - [Server Side Rendering](#server-side-rendering)
@@ -50,9 +53,14 @@ Needless to say, I've learned more from this project than anything else I've wor
       - [Not So Fast...](#not-so-fast)
 - [The Database: MongoDB](#the-database-mongodb)
   - [Schema](#schema)
-  - [mongoose](#mongoose)
+  - [Mongoose](#mongoose)
   - [Development Database vs Production Database](#development-database-vs-production-database)
 - [Production](#production)
+  - [Continuous Integration](#continuous-integration)
+    - [Staging vs Production](#staging-vs-production)
+    - [Logging](#logging)
+  - [Security](#security)
+    - [Watch this talk](#watch-this-talk)
 
 <!-- /MarkdownTOC -->
 
@@ -378,6 +386,16 @@ Vote is a React application that leans heavily on Redux to share state across ma
 The skeleton of the application is based on Brian Holt's Complete Intro To React workshops, though I did a heavy refactor of the Redux logic as the features got more complex. I ended up using a pattern based on [Ducks](https://github.com/erikras/ducks-modular-redux), though I ended using a few differing conventions.
 
 ## React
+
+Why React?
+
+I've been a big fan of React because its very stripped down, and funnels you into making good decisions most of the time. It uses a lot of functional programming concepts and has great patterns for handling state and data flow.
+
+Is React good for everything?
+
+Of course not. There is no such thing as a one-size-fits-all framework. React work awesomely well for a lot of situations and teams, apps big and small, but if you have a large team of developers working independently on the same app, a more structured framework like Angular 2 or Ember may better serve a team's needs. React is very powerful while staying out of your way, but if a team of 10 or 15 developers are working on the same application independently, many different styles of solving the same common problems can make things harder to maintain and tie together, especially as an app grows. Even if React is a lot more fun, easier to work with, and faster to develop with, a framework with more structure and "magic" can be more maintainable over the long term, even if it is a pain at times. Like a lot of things in computer science, "it depends."
+
+The fact that Redux itself is so simple to reason about, and easy to test, and that React's UI's can be expressed so clearly with mostly plain JavaScript, those are reasons enough for React to be my go-to library for personal projects. If you know JavaScript, React will feel very natural. React components are basically functions that return UIs.
 
 ### `React.createClass` vs ES6 classes
 
@@ -1198,6 +1216,217 @@ Note that ["concurrency" in JavaScript](https://developer.mozilla.org/en-US/docs
 
 With web workers however, you can take advantage of multi-threading with JavaScript. Check out [`Hampsters.js]`(https://github.com/austinksmith/Hamsters.js) for that awesomeness. It's best not to go that route until you absolutely need to.
 
+## Unit Testing
+
+A lot of wins are gained with unit tests. They force you to think about common edge cases and how to handle them, they act as documentation for how your logic works in detail, and they encourage simple, decoupled code. As you develop your app, you're probably going to break things you've already worked on as you add more features. Good unit tests will let you know right away when something breaks so you don't end up with a nasty surprise later. Just having a process run a good majority of your code frequently is a good sanity check, and it builds confidence in your codebase as it grows even if a lot of people are working on it.
+
+There are many great testing libraries and frameworks out there to choose from. I've been useing [Jest](https://facebook.github.io/jest/) lately, but [Mocha](https://mochajs.org/) and [Tape](https://github.com/substack/tape) are great as well, depending on your needs.
+
+### Testing React with Jest and Enzyme
+
+Jest is well suited for React. You can make [snapshot](https://facebook.github.io/jest/docs/snapshot-testing.html#content) tests of your components, which essestially render a component into markup as JSON using whatever props you'd like. The test fails if the markup changes, and you'll see a diff of what changed similar to Git. You can update the snapshot by running `jest --updateSnapshot` or just `jest -u`. Snapshots are not bulletproof, but they're cheap and disposable, and will ensure that your markup is rendering as expected.
+
+For simplicity, let's go back to `[SpiffyWikipedia`](https://github.com/itxchy/FCC-spiffy-wikipedia/blob/master/src/components/SearchResults/SearchResults.test.js) for a snapshot example:
+```js
+import React from 'react'
+import { shallow } from 'enzyme'
+import { shallowToJson } from 'enzyme-to-json'
+import SearchResults from './SearchResults'
+
+test('SearchResults snapshot test', () => {
+  const component = shallow(<SearchResults error={null} searchResults={[]} />)
+  const tree = shallowToJson(component)
+  expect(tree).toMatchSnapshot()
+})
+
+```
+
+`shallow` renders the component, `shallowToJson` is just a function to create a JSON tree from shallow, and you just need to `expect` the tree `.toMatchSnapshot`. `expect` comes with Jest by default.
+
+If no snapshot file exists, Jest will create one for you. A directory will appear called `__snapshots__` in same directory as your test file.
+
+Beyond snapshots, `enzyme` from AirBnB is essential for testing your components more deeply. You can use `enzyme` with Mocha as well. `enzyme` comes with a few rendering options for your components like [`shallow`](http://airbnb.io/enzyme/docs/api/shallow.html) and [`mount`](http://airbnb.io/enzyme/docs/api/shallow.html).
+
+Shallow only renders the component passed to it, and none of its children. It doens't render a full DOM, so you won't get access to DOM API's or component lifecycle methods. The tradeoff is Shallow is very fast. It's great for testing that markup is showing up properly based on props or state in more detail than snapshots. Shallow should be used as much as possible before using `mount`.
+
+Another example from `SpiffyWikipedia`:
+```js
+import React from 'react'
+import { shallow } from 'enzyme'
+import { shallowToJson } from 'enzyme-to-json'
+import testData from '../../testData.json'
+import SearchResults from './SearchResults'
+import Result from '../Result/Result'
+
+test('SearchResults snapshot test', () => {
+  const component = shallow(<SearchResults error={null} searchResults={[]} />)
+  const tree = shallowToJson(component)
+  expect(tree).toMatchSnapshot()
+})
+
+test('SearchResults should render a Results component for each Result', () => {
+  const component = shallow(<SearchResults error={null} searchResults={testData} />)
+  expect(component.find(Result).length).toEqual(testData[1].length)
+})
+
+test('SearchResults should render "Nothing Found" if there are no results', () => {
+  const component = shallow(<SearchResults error={null} searchResults={["nothing", [], [], [], []]} />)
+  expect(component.text()).toEqual('Nothing Found')
+})
+
+test('SearchResults should render "An error occured." if an error is passed to props', () => {
+  const component = shallow(<SearchResults error={{ error: 'bad news' }} searchResults={null} />)
+  expect(component.text()).toEqual('An error occured.')
+})
+
+test('SearchResults should render "An error occured." if nothis is passed to seachResults or error as props', () => {
+  const component = shallow(<SearchResults error={null} searchResults={null} />)
+  expect(component.text()).toEqual('An error occured.')
+})
+```
+
+These tests are simply testing that the correct markup appears depending on what prop values are passed into `<SearchResults />`. Shallow has a lot of properties you can use, and they have great [documentation](http://airbnb.io/enzyme/docs/api/shallow.html).
+
+The [`SearchBar`](https://github.com/itxchy/FCC-spiffy-wikipedia/blob/master/src/components/SearchBar/SearchBar.js) component was a bit more complicated to test. A few events needed to be simulated, so `mount` was used instead of `shallow`:
+```js
+import React from 'react'
+import { shallow, mount } from 'enzyme'
+import { shallowToJson } from 'enzyme-to-json'
+import SearchBar from './SearchBar'
+
+test('SearchBar snapshot test', () => {
+  const submitHandler = jest.fn()
+  const component = shallow(<SearchBar onSearchSubmit={submitHandler} />)
+  const tree = shallowToJson(component)
+  expect(tree).toMatchSnapshot()
+})
+
+test('SeachBar should change state.searchText on every keystroke', () => {
+  const submitHandler = jest.fn()
+  const component = mount(<SearchBar onSearchSubmit={submitHandler} />)
+  component.find('.search-input').simulate('change', { target: { value: 'search term'} })
+  expect(component.state('searchText')).toEqual('search term')
+})
+
+test('SearchBar should call onSearchSubmit from props on populated form submit', () => {
+  const submitHandler = jest.fn()
+  const component = mount(<SearchBar onSearchSubmit={submitHandler} />)
+  component.setState({ searchText: 'Prince' })
+  component.find('#search-submit').simulate('click')
+  expect(submitHandler).toHaveBeenCalledWith('Prince')
+})
+
+test('SearchBar should not call onSearchSubmit from props if input is empty', () => {
+  const submitHandler = jest.fn()
+  const component = mount(<SearchBar onSearchSubmit={submitHandler} />)
+  component.find('#search-submit').simulate('click')
+  expect(submitHandler).not.toHaveBeenCalled()
+})
+
+```
+
+Mount renders full DOM allowing you to interact with DOM API's as well as component lifecycle methods.
+
+In the tests above, form change events and button click events are simulated to test how the component handles them.
+
+This is about as deep as I've gotten with testing React components. You can test all sorts of aspects of their behavior, but I think its a good idea to let your React components focus mainly on presentation, and limit business logic in React as much as possible. If you're components have a lot of complex operations going on, you can easily abstract that logic out of React and into smaller external modules that are much easier to test. By the time your app needs Redux, most of your business logic will be handled by your action creators and reducer which are very easy to test. They're just JavaScript!
+
+### Testing Redux with Jest
+
+Testing Redux is as easy as simulating an action being reduced into new state, and testing that new state against your expectations. Let's look at few examples from Vote.
+
+A few action creators along side their reducers in [`createNewPoll.js`](https://github.com/itxchy/FCC-vote/blob/master/redux/modules/createNewPoll.js):
+```js
+// ... /
+
+/**
+ * Sets state.newPollOptions
+ *
+ * @param {array} updatedOptions - An array of at least 2 strings
+ */
+export function updateOption (updatedOptions) {
+  return { type: UPDATE_OPTION, value: updatedOptions }
+}
+const updateOptionReducer = (state, action) => {
+  if (action.value.length < 2) {
+    console.error('ERROR: redux: less than two options were passed to updateOption:', action.value)
+    return Object.assign({}, state)
+  }
+  return Object.assign({}, state, { newPollOptions: action.value })
+}
+/**
+ * Resets state to DEFAULT_STATE
+ */
+export function resetNewPoll () {
+  return { type: RESET_NEW_POLL }
+}
+const resetNewPollReducer = (state, action) => {
+  const newState = {}
+  Object.assign(newState, state, DEFAULT_STATE)
+  return newState
+}
+/**
+ * Sets state.pollSaved as a new Poll's ID
+ *
+ * @param {string} pollId - A new poll's mongoDB _id
+ */
+export function pollSaved (pollId) {
+  return { type: POLL_SAVED, pollId }
+}
+const pollSavedReducer = (state, action) => {
+  if (typeof action.pollId !== 'string') {
+    console.error('ERROR: redux: pollSaved was not passed an id as a string:', action.pollId)
+    return Object.assign({}, state, { pollSaved: false })
+  }
+  return Object.assign({}, state, { pollSaved: action.pollId })
+}
+
+// ... /
+```
+
+And here are their tests in [`createNewPoll.spec.js`](https://github.com/itxchy/FCC-vote/blob/master/redux/modules/createNewPoll.spec.js):
+```js
+// ... /
+
+  describe('updateOption', () => {
+    it('should set state.newPollOptions as the array of option strings passed to it', () => {
+      let state = newPollReducerSlice(null, updateOption(['thing 1', 'thing 2']))
+      expect(state.newPollOptions).toEqual(expect.arrayContaining(['thing 1', 'thing 2']))
+    })
+    it('should return previous state if less than two option strings are given', () => {
+      let state = Object.assign({}, DEFAULT_STATE, { newPollOptions: ['thing 1', 'thing 2']})
+      let newState = newPollReducerSlice(state, updateOption(['thing 3']))
+      expect(newState.newPollOptions).toEqual(expect.arrayContaining(['thing 1', 'thing 2']))
+    })
+  })
+
+  describe('resetNewPoll', () => {
+    it('should return the createNewPoll module to its default state', () => {
+      let state = Object.assign({}, DEFAULT_STATE, { newPollTitle: 'Things' })
+      expect(state.newPollTitle).toBe('Things')
+      let newState = newPollReducerSlice(state, resetNewPoll())
+      expect(newState).toEqual(DEFAULT_STATE)
+    })
+  })
+
+  describe('pollSaved', () => {
+    it('should set state.pollSaved as a string of a new poll\'s id', () => {
+      let state = newPollReducerSlice(null, pollSaved('asdfASDF'))
+      expect(state.pollSaved).toBe('asdfASDF')
+    })
+    it('should set state.pollSaved as false if a string is not passed to pollSaved', () => {
+      let state = newPollReducerSlice(null, pollSaved(undefined))
+      expect(state.pollSaved).toBe(false)
+    })
+  })
+
+// ... /
+```
+
+In each test, the redux module's reducer slice is returning a new state object based on the previous state, and given action or action creator's returned action. Then, its just a matter of seeing if the new state is what you expect it to be. If not, you know exactly where to look for the bug.
+
+A lot more edge cases need to be considered for these tests like wrong types, out-of-range values, super long strings, etc., but this is a good start. In production apps with real clients, thousands of users will use and abuse your forms every day. App needs to be hardened against bad data.
+
 ## Styling
 
 `webpack` makes it easy to modularize your CSS and import individual CSS modules into your React components. `create-react-app` encourages this by default, and I really enjoyed this workflow in my [Spiffy Wikipeda](https://github.com/itxchy/FCC-spiffy-wikipedia/blob/master/src/components/Result/Result.css) app. Maintaining CSS styles is getting easier all the time. [`PostCSS`](https://github.com/postcss/postcss) offers many powerful plugins as well, which can work well with your CSS preprocessor of choice.
@@ -1640,7 +1869,7 @@ module.exports = Poll
 This could probably be simplified, but having the separate schemas made it look a lot cleaner to look at as a flat structure.
 
 
-## mongoose
+## Mongoose
 
 Mongoose allows you to chain commands and use promises to simply MongoDB logic.
 
@@ -1715,7 +1944,99 @@ if (process.env.NODE_ENV === 'production') {
 
 ```
 
-Promises make life easier again!
+Promises make life easier.
 
 # Production
 
+It's never been easier to deploy to the cloud. You can spin up a VPS instance in a few minutes at Digital Ocean, Linode, and others, or use a platform like Heroku or Amazon EC2 to handle all of the devops for you.
+
+I think it's valueable to go through the process of configuring your own VPS server at least once, as its a great learning experience to get you thinking about Linux, permissions, security, configuring a server that's not Node, caching, and even some rudimentry permormace optimizations that you can keep in mind if you build a toy app that ends up getting real users in the future. Nginx is very powerful, and can be used to stand in front of your node application to serve cached static content much more efficiently.
+
+If you're serving customers, that's when it's better to use a cloud platform like [AWS](https://aws.amazon.com/ec2/) that has a team of knowledgable perfessionals working full time on improving the devops and security of their services. Plus, it will make temporarily scaling out your app quickly a lot easier when your Hat Swap app makes it to the front page of Reddit and crushes your server. You'll pay a premium for that, but situations like spikes in traffic (the good kind), DDoS attacks (the bad kind), or even intrusive hacking attempts are commonplace on the modern web. If you're serving customers, you have a responsibily to ensure uptime, and protect their data. Security needs to be a top concern at the development stage, but more on that in a bit.
+
+Cloud platforms aren't bulletproof as a lot people found out recently, but it's important to remember that no matter how reliable a cloud service seems, they are all still just computers being maintained by human beings. Mistakes will happen, guarenteed. There will be plenty more outages at all sorts of companies in the future, whether from mistakes in a terminal command, a natural disaster, or just too many redundencies failing at the same time. Anticipating disasters in the cloud, and even simulating them, will help you come up with an estabolished playbook for what to do when the probable eventually happens. Performing "fire drills" regularly is powerful because when disasters do happen, you're following a familiar plan step-by-step, and not reacting to it while in a heightened emotional state. With all of that preparation, however, things will still happen that are beyond your control. When S3 went down, it was probably cheaper to just accept a few hours of downtime and lost revenue rather than reach for their "solar storm" contingincy, which could have taken many more hours to conduct properly than the time of the outage itself. It probably helped that a large chunk of the Internet was in the same boat.
+
+## Continuous Integration
+
+Continuous integration services will build your project and run all of your tests to determine whether an app's build is "passing" or "failing". This ensures that your app can actually install in a variety of environments, and will help you catch dependencies you may have missed in a project that you have installed globally. This also keeps you from deploying a build with failing tests. With teams of developers, this adds an automated safety check beyond running unit test suites individually.
+
+For Vote, I used Circle CI since it's very easy to use and has a slick interface, but I'd recommend Travis CI since it offers a lot more features for free, and their mission is to forever support open source software. Travis CI is heavily integrated with GitHub, and allows maintainers to manage builds from pull requests very easily. The [docs](https://docs.travis-ci.com/user/deployment) are very good too.
+
+If you're using a cloud platform like Heroku, you can deploy to a staging server on every successful build. Travis CI has a [guide for that](https://docs.travis-ci.com/user/deployment/heroku/).
+
+### Staging vs Production
+
+It's a good idea to have your automatic deployments first go to a staging server, and then deploy to production manually. The manual production deployment step can be as easy as a single click. This ensures that if a serious mistake passes Travis CI's build step and testing, you can still catch it before passing it on to the production server.
+
+Using Heroku [pipelines](https://devcenter.heroku.com/articles/pipelines) is useful for managing multiple deployments that share the same codebase, and you can deploy code from a staging server to a production server easily and safely knowing that it's already functioning in the cloud. Many cloud platforms offer something similar.
+
+For Vote, I used a free Heroku instance for continous deployment, and I deploy the production version manually to my own VPS server.
+
+### Logging
+
+If you have an app that gets steady traffic every day, how do you take your app's temperature? It seems to be running fine, your unit tests are all passing, and the app hasn't crashed since your last deployment, but how do you know you're users aren't hitting some strange edge cases that are causing errors?
+
+Well, you could look through your application's logs from [`forever`](https://github.com/foreverjs/forever)'s log files, but they can get very long. More importantly, how do you view only the logged errors, and logged actions leading to them, that you're most interested in for debugging, separate from other errors? What about fatal errors that you even want paged (or emailed) to you as soon as they happen?
+
+Bunyan allows you to configure JSON logs that can include as many details as you'd like. Those JSON logs can be pretty-streamed to the console and to an external log file which an external process like [`node-log-watcher`](https://github.com/Kami/node-log-watcher) can monitor for you, and send you an email anytime something blows up. You can also stream bunyan logs programattically, so you can make yourself an IoT wifi siren that can go off anytime Bunyan streams a POST request with a fatal error. Or not, but getting emails about errors you want to know about is very helpful.
+
+What to log can turn into a rabbit hole, but its helpful to log information about the successful operations that affect users, and log detailed errors when things go wrong. Hopefully, you'll be able to see what operations happened leading up to the error to help narrow down the context without having to inject a bunch of `console.logs`.
+
+To set up bunyan:
+```js
+const bunyan = require('bunyan')
+const log = bunyan.createLogger({
+  name: 'vote',
+  streams: [
+    {
+      level: 'info',
+      stream: process.stdout
+    },
+    {
+      level: 'warn',
+      path: 'log/vote.log'
+    }
+  ]})
+```
+
+With this config, levels that are at least "info" will get printed to `process.stout`, and levels that are at least "warn" will get logged into a file called `vote.log` in a `log` directory at the project's root. This file can be pretty-printed by running `bunyan vote.log` inside the `vote` directory.
+
+Here's how some helpful logging can work in practice:
+```js
+/**
+ * params: selectedOption number, pollID string, voter string
+ *
+ * Adds a new vote to a poll document. Returns an object
+ * with the updated document and updated votes tally, or
+ * error if unsuccessful.
+ *
+ * returns: Object
+ */
+const updateDocumentWithNewVote = function (selectedOption, pollID, voter) {
+  const votesPath = `options.${selectedOption}.votes`
+  return Poll.findOneAndUpdate(
+      { _id: pollID },
+      { $addToSet: { [votesPath]: { 'voter': voter } } },
+      { new: true, upsert: true }
+    )
+    .then(updatedDoc => {
+      let voteTotal = tallyVoteTotal(updatedDoc)
+      log.info('pollsDb.js: updated document with new vote', { updatedDoc }, { voteTotal })
+      return { updated: true, totalVotes: voteTotal, doc: updatedDoc }
+    })
+    .catch(err => {
+      log.error('pollsDb.js: updateDocumentWithNewVote', { mongoose: true }, { err })
+      return { updated: false, error: err }
+    })
+}
+```
+
+Note the use of `log.info` and `log.error`. Both logs will be printed to the console, but the error will also get written to the log file, which can later be parsed can searched using `bunyan`'s cli.
+
+## Security
+
+### [Watch this talk](https://www.youtube.com/watch?v=POmnL-PruAs&t=12s)
+
+There are a lot of good reasons to not build your own authentication scheme. Good security is a constantly moving target and even if you manage to build a good, secure authentication shceme that's following ALL of the current best practices, how often are you going to upgrade it? Once a week? Once a month? Once a quarter?
+
+Your
