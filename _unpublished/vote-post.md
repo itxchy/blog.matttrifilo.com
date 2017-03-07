@@ -5,11 +5,13 @@ comments: true
 date: 2017-02-20T10:20:00Z
 ---
 
-For the past few months, I've been working feverishly on my first full stack application challenge for Free Code Camp and it's finally [deployed](https://fcc-vote.matttrifilo.com)! You can view the source on [GitHub](https://github.com/itxchy/FCC-vote).
+For the past few months, I've been working on my first full stack application challenge for Free Code Camp, a web application for creating and sharing polls. It's finally [deployed](https://fcc-vote.matttrifilo.com)! You can view the source on [GitHub](https://github.com/itxchy/FCC-vote).
 
-I took my time on this project in particular because while I was familiar with React, Express, and MongoDB at a basic level, I'd never used them together before to build a modern CRUD application. On top of that, I had no experience with Redux or the Flux patterns its based on, much less how to handle state in a large React/Redux application. This was also my first experience visualizing data with D3.js.
+I took my time on this project in particular because while I was familiar with React, Express, and MongoDB at a rudimentary level, I'd never used them together to build a modern CRUD application. Piling on to that, I had no experience at all with Redux or the Flux architecture in general, much less how to pass state around in a larger React/Redux application. This was also my first experience visualizing data with D3.js.
 
-Needless to say, I've learned more from this project than anything else I've worked on to date, and I'm excited to share some of the most useful lessons I've learned.
+I've learned more from this project than anything else I've ever made to date, and this seems like a good time to take a step back to reflect on and share some of the most useful lessons I've learned from this project.
+
+This is a very long post, so feel free to jump around.
 
 <!-- MarkdownTOC -->
 
@@ -70,19 +72,21 @@ Needless to say, I've learned more from this project than anything else I've wor
 
 # Thank You Virtual Mentors
 
-First off, I'd like to thank Brian Holt for both of his great Complete Intro To React workshops on Front End Masters. The workflow he shared helped me to scaffold the guts of this project without endless refactors along the way as it grew. I can't recommend his workshops enough, even if you've been using React for years. The insights he shares are well worth the Front End Masters subscription. Check out all of Kyle Simpson's workshops while you're at it!
+First off, I'd like to thank [Brian Holt](https://twitter.com/holtbt) for both of his great Complete Intro To React workshops on [Front End Masters](https://frontendmasters.com/courses/?u=563312949abcfdd369685f8abe03f2bec24ead42). The workflow he shares is a simple and scalable way to think about building React applications. As you go, you bring in new tools only as you need them, and refactor fast and often. I can't recommend his workshops enough, even if you've been using React for years. The insights he shares are well worth the Front End Masters subscription. Check out all of Kyle Simpson's workshops while you're at it!
 
-I'd also like to thank Rem Zolotykh for his great [Youtube series](https://www.youtube.com/playlist?list=PLuNEz8XtB51K-x3bwCC9uNM_cxXaiCcRY) about building a React/Redux application with jwt authentication. While you should never use a custom authentication strategy like this for real-world production apps (use Passport instead), it was valuable to learn about the authentication flow using JSON web tokens with localStorage, and managing headers. It was also great to get another perspective of how to wire up React and Redux.
+I'd also like to thank [Rem Zolotykh](https://twitter.com/remzolotykh?lang=en) for putting together such a thorough [Youtube series](https://www.youtube.com/playlist?list=PLuNEz8XtB51K-x3bwCC9uNM_cxXaiCcRY) about building a React/Redux application with jwt authentication. While you should never use a custom authentication strategy like this for real-world production apps (use Passport instead), he offered a detailed overview of how to build an authentication flow using JSON web tokens, localStorage, and the proper headers. It was also very helpful to get another perspective of how to wire up React and Redux, and handle forms with controlled components.
 
-Finally, I owe a great deal of gratitude to Robert M. Pirsig. While working on this project, I hit a lot of brick walls. To unwind after getting put in my place by a waterfall of error messages, I would read Zen and the Art of Motorcycle Maintenance. After picking at the first half for a year, I finished the second half during this project very quickly. Many of the metaphors and ideas discussed in that book correlate directly with programming. It put a lot of issues I had with code into a much broader perspective and it made me appreciate the Art of Programming much more deeply. It changed the way I percieve and approach bugs. I've gained an appreciation for them, as frustrating and ego-crushing as they can be. Each hard bug illumiates a gap in knowledge with an oppurtunity to learn something profound, and you grow because of it. In turn, this leads to writing better *quality* software naturally and becoming better prepared and energized to contribute fresh perspectives to open source software, and companies building the future. A bug may seem trivial at first, but if you consider that an entire application may rely on that trivial bug being fixed in order to run the way it needs to, it's not so trivial after all, and deserves attention and careful thought.
+Finally, I owe a heavy amount of gratitude to Robert M. Pirsig. While working on this project, I hit a lot of brick walls. To unwind after getting put in my place by a waterfall of error messages, I would read [Zen and the Art of Motorcycle Maintenance](https://www.amazon.com/Zen-Art-Motorcycle-Maintenance-Inquiry/dp/0060589469). After picking at the first half for about a year, I finished the second half within a few weeks while working on this project. The explorations of Quality in the book correlate directly with programming, and with life in general. It put a lot of mental blocks I had with thinking about code into a much broader perspective, and inspired a deeper sense of kinship with the craft. It changed the way I perceive and approach bugs. I've gained an appreciation for them, as frustrating and ego-crushing as they can be. Each hard bug illuminates a gap in knowledge with an opportunity to learn something profound, and you grow because of it. As Ryan Holiday's cult-classic is titled, "[The Obstacle is the Way](https://www.amazon.com/Obstacle-Way-Timeless-Turning-Triumph/dp/1591846358)." In turn, this leads to writing better *quality* software naturally and becoming better prepared and energized to contribute fresh perspectives and innovations to open source projects, companies you're working for, or your even an entire industry by finding your own [blue ocean](https://www.amazon.com/Blue-Ocean-Strategy-Expanded-Uncontested/dp/1625274491/ref=sr_1_2?ie=UTF8&qid=1417408285&sr=8-2&keywords=blue+ocean+strategy) with your own open source project or company. Quality wins out in the end. Customers know it when they find it. A bug may seem trivial at first, but if you consider that an entire application may rely on that trivial bug being fixed in order to run the way it needs to, it's not so trivial after all, and deserves attention and careful thought.
+
+There seem to be a lot of nods to Stoicism in Zen and the Art of Motorcycle Maintenance, and I'm looking forward to to re-reading it after I learn a bit more about the Stoics. "The Obstacle Is the Way" at on the top of my list.
 
 # An Overview of Vote
 
 The user stories for this Free Code Camp project can be viewed [here](https://www.freecodecamp.com/challenges/build-a-voting-app).
 
-Basically, Vote allows you to create polls as an authenticated user, vote on any poll, and share a single poll with friends and strangers.
+Basically, Vote allows you to create and manage polls as an authenticated user, vote once on any poll whether you're authenticated or not, and share a single poll with friends and strangers.
 
-This project is far from perfect. You can't search or sort polls, but the time spent adding too much functionality beyond the user stories for a toy app like this is better spent on new projects at this point. This app won't be a "Show HN" post. Learning the process and mechanics of building something like this was the primary goal, and it payed dividends in hard knocks.
+This project is far from perfect. You can't search or sort polls, but the time spent adding too much functionality beyond the user stories for a toy app like this is better spent on new projects at this point. This app won't be a "[Show HN](https://news.ycombinator.com/show)" post. Learning the process and mechanics of building something like this was the primary goal, and it payed dividends in hard lessons.
 
 Let's dig in!
 
@@ -93,29 +97,29 @@ If you're going to build a good table, you'd better know what tools to use when,
 ## Linting with Standard JS (Use with caution)
 
 I was skeptical of [Standard JS](http://standardjs.com/) at first,
-but I gave it a chance at the recommendation of Brian Holt from his workshop, and really enjoyed the simplicity.
+but I gave it a chance at the recommendation of Brian Holt in his workshop, and really enjoyed the simplicity.
 
-A lot of [very](https://github.com/getify/You-Dont-Know-JS/blob/master/types%20&%20grammar/ch5.md#error-correction) [smart](http://www.2ality.com/2011/05/semicolon-insertion.html) [people](https://google.github.io/styleguide/javascriptguide.xml#Semicolons) assert (with good reason) that ommiting semi-colons, and relying on JavaScript's [Automatic Semicolon Insertion](https://www.ecma-international.org/ecma-262/5.1/#sec-7.9) to insert every semi-colon for you under the hood is a bad practice. They're right! It adds another aspect of risk for a company with deadlines if a team of developers are allowed to write code without semicolons, simply because of the added exposure to ASI-related bugs if any code isn't linted properly. Plus, you need to place your trust in the linter to catch every edge case.
+A lot of [very](https://github.com/getify/You-Dont-Know-JS/blob/master/types%20&%20grammar/ch5.md#error-correction) [smart](http://www.2ality.com/2011/05/semicolon-insertion.html) [people](https://google.github.io/styleguide/javascriptguide.xml#Semicolons) caution (with good reason) that omitting semi-colons, and relying on JavaScript's [Automatic Semicolon Insertion](https://www.ecma-international.org/ecma-262/5.1/#sec-7.9) feature to insert every semi-colon for you under the hood should be avoided. For companies with a large teams of developers, omitting semi-colons adds another layer of risk, simply because of the added exposure to ASI-related bugs if any code isn't linted properly. Plus, you need to place your trust in the linter to catch every edge case.
 
-That said, the common [gotchas](http://standardjs.com/rules.html#semicolons) of ommitting semi-colons are well known and Standard has lint rules to stop you from making those mistakes, assuming that all of your code is always linted. I think its fine for personal projects that aren't meant for customers.
+That said, the common [gotchas](http://standardjs.com/rules.html#semicolons) of omitting semi-colons are well known and Standard has lint rules to stop you from making those mistakes, assuming that all of your code is always linted. Continuous integration tools like TravisCI can run a final lint check for you before allowing the code to be deployed to staging. If any lint errors are present, the build will fail and it won't get deployed. I think Standard is fine for personal projects and smaller companies, as long as linting is strictly enforced.
 
-It's safer to use [Semistandard](https://github.com/Flet/semistandard) (Standard plus semicolons) for customer facing code, and you still get all the benifits of a simple, effective style-guide that you don't need to spend time tweaking. You can't tweak it anyway.
+For safety, [Semistandard](https://github.com/Flet/semistandard) (Standard plus semicolons) is available, and you'll still get all of the benefits of a simple, effective style guide that you don't need to spend time tweaking. This is good for having the peace of mind of knowing the risk of ASI bugs is off the table.
 
 ### Why Standard (or Semistandard)?
 
-Eslint is a powerful tool, but I'd spent more time than I'd like to admit experimenting with linting rules, and researching whether to use a popular style guide from companies like AirBnB and which one, plus managing `.eslintrc` changes accross projects.
+Eslint is a powerful tool, but I'd spent more time than I'd like to admit experimenting with linting rules, and researching whether to use a popular style guide from companies like [AirBnB](https://github.com/airbnb/javascript) and which one, plus managing `.eslintrc` changes across different projects.
 
-Standard JS takes all of that choice out of the equation and enforces a simple, reliable styleguide that CAN'T be changed. If you change it with custom lint rules, than you're not coding in Standard.
+Standard JS takes all of that choice out of the equation and enforces a simple, reliable style guide that CAN'T be changed. If you change it with custom lint rules, than you're not coding in Standard.
 
-This idea captures the brilliance of [PEP 8](https://www.python.org/dev/peps/pep-0008/) from Python. If you know PEP 8 well, you'll have an easy time reading other people's Python code. Standard seeks to offer the same consistancy for JavaScript.
+This idea is in the spirit of [PEP 8](https://www.python.org/dev/peps/pep-0008/) from Python. If you know PEP 8 well, you'll have an easy time reading other people's Python code. Standard seeks to offer the same consistency for JavaScript.
 
-While I don't think it would be good for JavaScript to officially standardize any single style guide for every developer to follow given its history, Standard offers a style guide for eslint that lets you set-it-and-forget-it, which frees up valuable brain cycles.
+While I don't think it would be good for JavaScript to officially standardize any single style guide, Standard offers a set of rules for eslint that let you set-it-and-forget-it, freeing up valuable brain cycles for other things.
 
 ### Using Standard Without React
 
-Standard itself is very easy to [install and use](https://github.com/feross/standard#install).
+Standard itself is very easy to [install and use](https://github.com/feross/standard#install). The docs are straightforward.
 
-The docs are straightforward, but Standard's lint errors are hard to read in the terminal.
+Running Standard alone in the terminal works, but the default lint error output is hard to read in the terminal.
 
 Instead of using Standard directly, you can install a package called `snazzy`, which will give you nicely formatted results with colors.
 
@@ -127,7 +131,7 @@ $ yarn add -D snazzy
 ```
 
 > If you already have standard installed globally, install `standard` as a dev dependency to work with snazzy in your project without errors:
-`yarn add -D standard snazzy`. The smarties behind Yarn [discrourage](https://yarnpkg.com/en/docs/cli/add#toc-caveats) using global dependancies in most cases, so keep them local whenever possible for portability. NPM works just fine too if you're not into yarn.
+`yarn add -D standard snazzy`. The smarties behind Yarn [discourage](https://yarnpkg.com/en/docs/cli/add#toc-caveats) using global dependencies in most cases, so keep them local whenever possible so your projects can stay portable between machines. NPM works just fine too if you're not using yarn.
 
 Add a lint script to `package.json`:
 ```
@@ -147,13 +151,13 @@ That's it! Standard will magically find your JavaScript (excluding `node_modules
 
 ### Using Standard With React
 
-Using Standard with React will require an eslint config, but it's still very easy.
+Using Standard with React will require an eslint config file, but it's still very easy.
 
 install:
 ```
 $ yarn add -D eslint-config-standard eslint-config-standard-react eslint-plugin-promise eslint-plugin-react eslint-plugin-standard
 ```
-> If you have `eslint` installed globally, add `eslint` to the above command so that your config points to the local copy of `eslint` in order to avoid errors.
+> If you have `eslint` installed globally, add `eslint` to the above command so that your config points to the local copy of `eslint` to avoid errors.
 
 Create a file called `.eslintrc` in your root directory and add this:
 ```
@@ -162,14 +166,14 @@ Create a file called `.eslintrc` in your root directory and add this:
 }
 ```
 
-Add `eslint` and your source code directory to your lint script:
+Add an `eslint` command with your source code directory to your lint script:
 ```
 "scripts": {
   "lint": "eslint src"
 }
 ```
 
-Unlike `standard` or `snazzy`, you need to specify where eslint should look for your `.js` files. In the script above, eslint will check a directory called `src`
+Unlike `standard` or `snazzy`, you need to specify where eslint should look for your `.js` files. In the script above, eslint will check a directory called `src`. You can add multiple directories separated by spaces.
 
 What if you use extensions like `.jsx` or `.es6`? `eslint` has a flag for that:
 ```
@@ -178,7 +182,7 @@ What if you use extensions like `.jsx` or `.es6`? `eslint` has a flag for that:
 }
 ```
 
-The CLI has many more options depending on your needs. [The docs are great](http://eslint.org/docs/user-guide/command-line-interface).
+The CLI has many more options depending on your needs. [The docs are very helpful](http://eslint.org/docs/user-guide/command-line-interface).
 
 Finally, run it:
 ```
@@ -187,25 +191,25 @@ yarn run lint
 
 Happy linting!
 
-You can also delegate linting to `webpack` using `eslint-loader`, so you'll see lint errors every time a new bundle is compiled. More on that in a bit.
+You can also delegate linting to `webpack` using `eslint-loader`, so can see lint errors every time a new bundle is compiled. More on that in a bit.
 
-I turned off linting in Sublime Text months ago because I found it more distracting then helpful. If you don't like linting in a terminal, Standard plugins are available for the major text editors.
+I've turned off linting in Sublime Text because I find it more distracting then helpful. Plus it creates a latency while saving, and I save files all the time. If you don't like linting in a terminal, eslint plugins are available for the major text editors.
 
 ## Webpack 2
 
-In a nutshell, Webpack bundles up your website's assets into a single file to reduce http requests. This lets you import things (js, jpg's, css) into your JavaScript modules, and Webpack will bundle up everything smartly so it's all in the correct order.
+In a nutshell, Webpack bundles up your application's assets into a bundle files to reduce HTTP requests. This lets you import things (js, jpg's, css) into your JavaScript modules, and Webpack will bundle up everything smartly so that your dependency tree remains intact.
 
 Very recently, Webpack 2 was [finally released](https://medium.com/webpack/webpack-2-2-the-final-release-76c3d43bf144#.plxnf4o9g) and it's awesome!
 
-They've made the [migration process](https://webpack.js.org/guides/migrating/) almost painless. Webpack 2 will validate your config for you, so you don't need `webpack-validator` anymore. If you mess something up, Webpack will give you a helpful error message of what doesn't match their API, and how you can fix it.
+They've made the [migration process](https://webpack.js.org/guides/migrating/) almost painless. Webpack 2 will validate your `webpack.config.js` for you, so you don't need `webpack-validator` anymore. If you mess something up, Webpack will give you a helpful error message outlining what doesn't match their API, and how you can fix it.
 
 The [documentation](https://webpack.js.org/configuration/) is very well thought out and organized so I encourage you to check it out if you've never used Webpack before, or haven't upgraded from version 1.
 
-While webpack seems to perform a basic task, files in -> bundle(s) out, its configuration can get complex depending on what you need it to do. The documentation for version 2 is thankfully much better than version 1, so go through the concepts and guides on [webpack.js.org](https://webpack.js.org/) if you don't know where to start. It will get you up and running in no time.
+While webpack seems to perform a basic task (files in -> bundle(s) out), its configuration can get complex depending on what you need it to do. The documentation for version 2 is thankfully much more clear and simplified than version 1, so go through the concepts and guides on [webpack.js.org](https://webpack.js.org/) if you don't know where to start. It will get you up and running in no time.
 
 ### Optimizing Your Bundle(s)
 
-As your project grows, so will your bundle. It will probably get huge. The development version of Vote had a bundle that was over 3 MB before optimizing, but in production, it now has a `vendor.js` for larger dependencies, and a `bundle.js` for the app itself. Each bunlde weighs in under 200 kb minfied and gzipped. The main bundle can get broken up even furthur with [code spitting](https://webpack.js.org/guides/code-splitting/).
+As your project grows, so will your bundle. It will probably get huge. The development version of Vote had a bundle that was over 3 MB before optimizing. For production, it now has a `vendor.js` bundle for larger dependencies, and a `bundle.js` bundle for the app itself. Each bundle weighs in under 200 kb minfied and gzipped. They're still heave, but much better than before. The main bundle can get broken up even further with [code spitting](https://webpack.js.org/guides/code-splitting/) so the client will only request of the pieces of the app it needs for the current view, instead of the entire app at once.
 
 Before configuring the `vendor.js` bundle for Vote, I first had to figure out which dependencies were bulking up the `bundle.js` file the most.
 
@@ -233,19 +237,19 @@ module.exports = {
 
 ```
 
-Now, anytime you build a new bundle, `BundleAnalyzerPlugin` will spin up a server, and open your browser to a visualiztion of your bundle(s) and dependencies scaled to size. The plugin can take a config object as an argument, but the defaults should be just fine for most cases. The config options are in the [docs](https://github.com/th0r/webpack-bundle-analyzer). To "turn it off," you can simply comment out the plugin.
+Now, anytime you build a new bundle, `BundleAnalyzerPlugin` will spin up a server, and open your browser to a visualization of your bundle(s) and dependencies scaled to size. The plugin can take a config object as a parameter, but the defaults should be just fine for most cases. The config options are in the [docs](https://github.com/th0r/webpack-bundle-analyzer). To "turn it off," you can simply comment out the plugin.
 
 For Vote, I used this tool to determine which vendor dependencies should be extracted into a `vendor.js` bundle.
 
 #### Splitting Bundles
 
-A lot of quick wins can be gained by splitting up your bundle. To start, putting your 3rd party libraries in a `vendor.js` bundle will not only reduce the file size of the two, but you'll also be able to take advantage of caching the 3rd party dependencies that likely won't change nearly as often as your application's code. Your users would only need to download your bulky dependencies once, and have them ready to go immediatlely on future vists. Boom! Just be sure to include a [chunkHash](https://webpack.js.org/guides/caching/) with each bundle so that browsers won't serve old cached bundles after you deploy a new build.
+A lot of quick wins can be gained by splitting up your bundle. To start, putting your 3rd party libraries in a `vendor.js` bundle will not only reduce the file size of the two, but you'll also be able to take advantage of caching 3rd party dependencies that likely won't change nearly as often as your application's code. Your users would only need to download your bulky dependencies once, and they'll be ready to go almost immediately on future visits. Boom! Just be sure to include a [chunkHash](https://webpack.js.org/guides/caching/) with each bundle so that browsers won't serve old cached bundles after you deploy a new build.
 
-The ideas for splitting up bundles can get [deep](https://survivejs.com/webpack/building/splitting-bundles/) very quickly, so split them up based on how you expect your app to grow.
+The implementations for splitting up bundles can get [deep](https://survivejs.com/webpack/building/splitting-bundles/) very quickly, so split them up based on how you expect your app to grow, and split more deeply as you need to.
 
-Some great advice on how to shink down certain dependencies, and deal with multiple copies of dependencies with different versions can be found in [this great post](https://medium.freecodecamp.com/manually-tuning-webpack-builds-284923f47f44#.799l57uja).
+Some great advice on how to shrink down certain dependencies, and deal with multiple copies of dependencies with different versions can be found in [this great post](https://medium.freecodecamp.com/manually-tuning-webpack-builds-284923f47f44#.799l57uja).
 
-You can take advantage of [code splitting](https://webpack.js.org/guides/code-splitting-import/) for your application code as well, so your users only need to download the nessessary code for each "page" of your single page app, instead of the whole thing at once.
+After splitting out your 3rd party dependencies, you can also take advantage of [code splitting](https://webpack.js.org/guides/code-splitting-import/) for your application code as well so your users only need to download the necessary code for each "page" of your single page app, instead of the whole thing at once.
 
 For simplicity, I decided to add just the largest libraries to Vote's `vendor.js` bundle. `d3`, `jquery`, `react`, `react-dom` and `moment`.
 
@@ -257,11 +261,11 @@ If you have a lot more dependencies and modules in a large application, you can 
 
 Making Webpack 2 builds for [production](https://webpack.js.org/guides/production-build/) can be as easy as running `webpack -p`.
 
-That one flag will minify your JavaScript with Webpack's `UglifyJsPlugin`, set all of your loaders' minimize option to `true`, and set the Node environment variable to `true` so your code's production optimizations can take effect.
+That one flag will minify all of your JavaScript with Webpack's `UglifyJsPlugin`, set all of your loaders' minimize option to `true`, and set the Node environment variable to 'production', allowing your code's production optimizations can take effect. This is important for React as it has a lot of production optimizations.
 
-That's very handy for many situations but for Vote, I wanted to gzip my JavaScript to shrink the bundles even furthur. That required a bit of config.
+The `webpack -p` command is very handy for many situations, but for Vote, I wanted to gzip my JavaScript to shrink the bundles even further. That required a bit of config.
 
-A quick way to cleanly create a production config file for webpack is to use `webpack-merge`. This allows you to combine a separate config file with your main config file to limit code duplication, keep your config files clean and easy to extend. To keep things simple, I decided to simply add a `webpack.prod.js` file for production builds, and use my `webpack.config.js` file for development builds.
+A quick way to cleanly create a production config file for webpack is to use `webpack-merge`. This allows you to combine a separate config file with your main `webpack.config.js` file to limit code duplication and keep your config files clean and easy to extend. To keep things simple, I decided to simply add a `webpack.prod.js` file for production builds, and use my `webpack.config.js` file alone for development builds.
 
 to install:
 ```
@@ -321,13 +325,13 @@ module.exports = function (env) {
 
 ```
 
-`webpackMerge` runs `commonConfig()` in its argument and recieves `webpack.config.js`'s properties.
+`webpackMerge` runs `commonConfig()` in its argument and receives `webpack.config.js`'s properties.
 
-The first three plugins are mostly identical to what `webpack` includes for you by default when passed the `-p` flag, except some extra options in `UglifyJsPlugin` here, but now I was able to add `CompressionPlugin` to gzip the `.js` files output by Webpack. We'll get into how gzipped files can be served from Express, but \*Spoiler Alert\* you can use [`express-static-gzip`](https://www.npmjs.com/package/express-static-gzip) instead of `express.static`. `express-static-gzip` is a wrapper over `express.static` that lets you serve static gzip files from a directory.
+The first three plugins are mostly identical to what `webpack` includes for you by default when passed the `-p` flag, besides some extra options in `UglifyJsPlugin` here, but now I was able to add `CompressionPlugin` to gzip the `.js` bundles spit out by Webpack. We'll get into how gzipped files can be served from Express, but \*Spoiler Alert\* you can use [`express-static-gzip`](https://www.npmjs.com/package/express-static-gzip) instead of `express.static`. `express-static-gzip` is a wrapper over `express.static` that lets you serve static gzip files from a directory.
 
 There are likely better ways to gzip files automatically from `niginx`, but my `nginx`fu is lacking on that front.
 
-Now, you can add an npm script to build your prodution bundle:
+Now, you can add an npm script to build your production bundle:
 ```js
 "scripts": {
   "build-prod": "webpack --config webpack.prod.js"
@@ -336,7 +340,7 @@ Now, you can add an npm script to build your prodution bundle:
 
 ### Tree-Shaking
 
-Another amazing new feature in Webpack 2 is tree-shaking. Since Webpack 2 supports ES6 module syntax, it is now able to check for exports in your code during the bundling step that are not imported anywhere, and remove those exports. Then, when you uglify your JavaScript, all of the now-dead code gets stripped away. Since the unused modules lost their export calls, the code inside never gets touched. Thinking of this like the name "tree-shaking" implies. You have a dependency tree of code, and the branches of that tree that are never touched just fall off during the uglify step. Webpack will show you logs of the code being removed in the terminal during the uglify step.
+Another modern feature in Webpack 2 is tree-shaking. Since Webpack 2 supports ES6 module syntax, it is now able to check for exports in your code during the bundling step and determine if they're imported anywhere, and remove the exports that no other files import. Then, when you uglify your JavaScript, all of the now-dead export-less code get stripped away. Since the unused modules lost their export calls, the code inside never gets touched. Think of this like the name "tree-shaking" implies. You have a dependency tree of code, and the branches of that tree that are never touched just fall off during the uglify step. Webpack will show you verbose logs about the code being removed during the uglify step.
 
 There is a problem with this if you use Babel's `es2015` preset, but its easy to fix.
 
@@ -380,35 +384,39 @@ Note `enforce: 'pre`. That will allow your code to be linted *before* webpack's 
 
 #### One Caveat
 
-Keep in mind that `eslint-loader` will only see your code that gets bundled, so your server code will still need to be linted separately. If you're using Statnard and not Semistandard, this is doubly important to protect yourself from ASI related errors.
+Keep in mind that `eslint-loader` will only see the application code that gets bundled, so your server code will still need to be linted separately. If you're using Standard and not Semistandard, this is doubly important to protect yourself from ASI related errors. Again, TravisCI can add a final lint check to your build before deploying.
 
 # The Client
 
 Vote is a React application that leans heavily on Redux to share state across many components.
 
-The skeleton of the application is based on Brian Holt's Complete Intro To React workshops, though I did a heavy refactor of the Redux logic as the features got more complex. I ended up using a pattern based on [Ducks](https://github.com/erikras/ducks-modular-redux), though I ended using a few differing conventions.
+The skeleton of the application is based on Brian Holt's Complete Intro To React workshops, though I did a heavy refactor of the Redux logic as the features got more complex. I ended up using a pattern similar to [Ducks](https://github.com/erikras/ducks-modular-redux).
 
 ## React
 
 Why React?
 
-I've been a big fan of React because its very stripped down, and funnels you into making good decisions most of the time. It uses a lot of functional programming concepts and has great patterns for handling state and data flow.
+I've been a big fan of React because its very stripped down, and funnels you into making good decisions most of the time. It encourages functional programming concepts and has great patterns for handling immutable state and data flow.
 
 Is React good for everything?
 
-Of course not. There is no such thing as a one-size-fits-all framework. React work awesomely well for a lot of situations and teams, apps big and small, but if you have a large team of developers working independently on the same app, a more structured framework like Angular 2 or Ember may better serve a team's needs. React is very powerful while staying out of your way, but if a team of 10 or 15 developers are working on the same application independently, many different styles of solving the same common problems can make things harder to maintain and tie together, especially as an app grows. Even if React is a lot more fun, easier to work with, and faster to develop with, a framework with more structure and "magic" can be more maintainable over the long term, even if it is a pain at times. Like a lot of things in computer science, "it depends."
+Of course not. There is no such thing as a one-size-fits-all framework. React work awesomely well for a lot of situations and teams, apps big and small, but if you have a large team of developers working independently on the same app, a more structured framework like Angular 2 or Ember may better serve a team's needs depending on the company culture. React is very powerful while staying out of your way, but if a team of 10 or 15 developers are working on the same application independently, many different styles of solving the same common problems can make things harder to maintain and tie together, especially as an app grows. Even if React is a lot more fun, easier to work with, and faster to develop with, a framework with more structure and "magic" can potentially be more maintainable over the long term for big projects, even if it is a pain to wrestle with at time. Like a lot of things in computer science, "it depends." I've heard it said that when choosing a framework to use, it's good to pick the one with the least potential of being the worst possible choice down the line.
 
-The fact that Redux itself is so simple to reason about, and easy to test, and that React's UI's can be expressed so clearly with mostly plain JavaScript, those are reasons enough for React to be my go-to library for personal projects. If you know JavaScript, React will feel very natural. React components are basically functions that return UIs.
+The fact that Redux itself is so simple to reason about and test, and that React UI markup can be expressed so cleanly with JavaScript, those are reasons enough for React and Redux to be my go-to libraries for personal projects. If you know JavaScript, React will feel very natural. React components are just functions that return UIs.
 
 ### `React.createClass` vs ES6 classes
 
-Since [React v0.13](https://facebook.github.io/react/blog/2015/03/10/react-v0.13.html), ES6 classes have become the defacto standard for building React components with some [helpful encouragement](https://medium.com/@dan_abramov/how-to-use-classes-and-sleep-at-night-9af8de78ccb4#.8he89ybjd) from Dan Abramov.
+Since [React v0.13](https://facebook.github.io/react/blog/2015/03/10/react-v0.13.html), ES6 classes have become the defacto standard for building stateful React components with some [helpful encouragement](https://medium.com/@dan_abramov/how-to-use-classes-and-sleep-at-night-9af8de78ccb4#.8he89ybjd) from Dan Abramov.
 
-I recently used this style for the first time when I refactored my Free Code Camp Wikipedia search project, [Spiffy Wikipedia](https://github.com/itxchy/FCC-spiffy-wikipedia) with `create-react-app`. At first it felt annoying to have to bind each method with the constructors `this` keyword, but if you think about it, this a win from a performance standpoint since you can use a `react` replacement like `preact` which can strip away `react`'s auto-binding logic for `React.createClass` and just bind manually. Plus, it's a good idea to use stateless functional components as much as you can, until you need to use state, methods, or React lifecycle methods.
+I recently used this style for the first time while refactoring my Free Code Camp Wikipedia search project, [Spiffy Wikipedia](https://github.com/itxchy/FCC-spiffy-wikipedia), with `create-react-app` (it's deployed [here](https://spiffywikipedia.matttrifilo.com/)). At first it felt annoying to have to bind each method with the constructor's contextual `this`, but if you think about it, this a win from a performance standpoint since React doesn't need to use any "magic" to bind `this` for you like in `React.createClass` functions.
 
-For Vote however, I used the `React.createClass` style because that's what I'd been used to, and how Brian Holt taught Complete Intro To React.
+You can even use a `react` replacement like `preact` or `inferno` which strip away `react`'s `createClass` logic entirely (plus a lot of other things). The stripped-down half-siblings of React are mostly compatible with React's APIs, and they're better optimized for mobile devices. The developers behind Inferno have [good reasons for prioritizing mobile](https://github.com/infernojs/inferno#but-why).
 
-I don't really have a preference of one style over the other at this point, but I do like how I don't have to worry about forgetting a coma when using classes. Manually binding methods isn't a big deal. Looking at the broader community, classes seem to be the determined direction that most developers have committed to, so it's probably best not to fight the tide, and ensure your code is as readable as possible for the majority of React developers who are used to classes. That said, I doubt that Facebook would deprecate `React.createClass` in the foreseeable future since so many codebases rely on it.
+Another performance gain can be achieved by using [stateless functional components](https://hackernoon.com/react-stateless-functional-components-nine-wins-you-might-have-overlooked-997b0d933dbc#.8ebtfvkv9) as much as you can until you need to use state, methods, or React lifecycle methods.
+
+For Vote, I used the `React.createClass` style for stateful components because that's what I'd been used to, and how Brian Holt taught Complete Intro To React.
+
+Practically speaking, I don't really have a preference of one stateful component style over the other at this point in time, but I do like how I don't have to worry about forgetting a coma when using ES6 classes. Manually binding methods isn't a big deal. Looking at the broader community, ES6 classes undeniably the determined direction that most developers have committed to. It's probably best not to fight the tide, and ensure that your open source code is as readable as possible for the majority of React developers who are used to ES6 classes. Empathy is a virtue. That said, I doubt that Facebook would deprecate `React.createClass` in the foreseeable future since so many codebases rely on it.
 
 ### PropTypes
 
@@ -526,27 +534,44 @@ export default connect(mapStateToProps, mapDispatchToProps)(CreateAPoll)
 
 There is a lot going on here, but just take a look at all of the `propTypes` checking the props coming in from Redux.
 
-PropTypes allow you to type check your props to ensure your components receive the types they're expecting. This can catch a lot of bugs early. Using `isRequired` will throw a warning is an essential prop is ommitted.
+PropTypes allow you to type check your props to ensure your components receive the types they're expecting. This can catch a lot of bugs early. Using `isRequired` will throw a warning if an essential prop doesn't show up.
 
-Beyond typechecking, the `propTypes` property is great for documenting all of the props that your component is expecting.
+Beyond type checking, the `propTypes` property is great for documenting all of the props that your component is expecting.
 
 If you're using ES6 class syntax for React, you can include your `propTypes` as a `static` property. Here's an [example](https://github.com/reactjs/redux/blob/85e2368ea9ff9b308fc873921ddf41929638f130/examples/todomvc/src/components/Header.js#L5).
 
 Note that `static` properties are still only at [Stage-2](https://github.com/hemanth/es-next#class-property-declarations) in the [TC39 process](http://www.2ality.com/2015/11/tc39-process.html), so you'll need an extra Babel plugin called [`transform-class-properties`](https://babeljs.io/docs/plugins/transform-class-properties/) to transpile them.
 
-Otherwise, you can take on `propTypes` to your Component `class`
+Otherwise, you can tack on `propTypes` to your Component `class`
 separately:
 ```js
 import React, { Component } from 'react'
 const { string } = React.PropTypes
 
 class Greeting extends Component {
-  // lots of things
+  constructor (props) {
+    super (props)
+
+    this.greet = this.greet.bind(this)
+  }
+
+  greet () {
+    return `${this.props.greetingMessage} ${this.props.name}!`
+  }
+
+  render () {
+    return (
+      <h1>{this.greet}</h1>
+    )
+  }
 }
 
 Greeting.propTypes = {
   greetingMessage: string.isRequired
+  name: string.isRequired
 }
+
+export default Greeting
 ```
 
 Note the casing difference in `React.PropTypes` vs `Greeting.propTypes`.
@@ -555,9 +580,9 @@ Note the casing difference in `React.PropTypes` vs `Greeting.propTypes`.
 
 The official React docs have a great guide about how to [think about your component structure](https://facebook.github.io/react/docs/thinking-in-react.html).
 
-One of my favorite qualities of React is the ablitiy to compose components in your render function as JSX, effectivly treating them as if you're using custom HTML elements containing whatever you'd like and taking in any attributes you'd like. JSX is just JavaScript, so you can pass in anything to props AND regular HTML attributes that you can cram into a JavaScript expression, including arrow functions.
+One of my favorite qualities of React is the ability to compose components in your render function as JSX, effectively treating them as if you're using custom HTML elements containing whatever you'd like, taking in any attributes you'd like. JSX is just JavaScript, so you can pass in JaveScript expressions to component props as well as regular HTML attributes. These JavaScript expressions can include arrow functions as well.
 
->Digression: One great use for arrow functions in React's synthetic DOM event attributes is when you want to pass an argument to an `onClick` event. The native `onclick` handler won't let you pass your own arguments to it since `onclick` itself receives the mouse click event as its only argument. You can get around this easily in React:
+>Digression: One great handy use for arrow functions in React's synthetic DOM event attributes is when you want to pass an argument to an `onClick` event. The native `onclick` handler only accepts a function reference with no parameters. `onclick` will pass along the click event object to the function its calling as that function's parameter. You can get around this easily in React:
 ```jsx
 <a
   className='btn btn-danger delete-button'
@@ -566,13 +591,13 @@ One of my favorite qualities of React is the ablitiy to compose components in yo
   <i className='fa fa-trash-o' aria-hidden='true' />
 </a>
 ```
-This way, I was able to use an arrow function inside of `onClick`'s JavaScript expression to pass `this.deleteOption(index)` as the arrow function's implicit return value, complete with the index value passed in from the `map` function this example resides in.
+This way, I was able to use an arrow function inside of `onClick`'s JavaScript expression to pass `index` to `this.deleteOption(index)` as the arrow function's implicit return value. `index` will be the index value from a `map` function encapsulating this link.
 
-How to break up your UI into components can get subjective, but it makes sense to use the [Single Responsibily Principle](https://en.wikipedia.org/wiki/Single_responsibility_principle) as mentioned in the docs. In practice, this can get very difficult as apps grow, but simple code doesn't mean easy code.
+Decisions about how to break up your UI into components can get subjective, but it makes sense to use the [Single Responsibly Principle](https://en.wikipedia.org/wiki/Single_responsibility_principle) as mentioned in the docs. In practice, this can get difficult as applications grow, but simple code doesn't mean easy code.
 
 #### Spiffy Wikipedia Example
 
-For a simple example, let's put Vote aside for a moment and look at my other recently-refactored React project, [Spiffy Wikipedia](https://github.com/itxchy/FCC-spiffy-wikipedia). This project simply allows you to search Wikipedia for a topic using its API, and the results will get displayed.
+For a simple example, let's put Vote aside for a moment and look at my other recently-refactored React project, [Spiffy Wikipedia](https://github.com/itxchy/FCC-spiffy-wikipedia). This project simply allows you to search Wikipedia for a topic using its API, and the see some aesthetically pleasing results.
 
 Component tree:
 ```
@@ -582,6 +607,8 @@ Component tree:
   + SearchResults
     * Result
 ```
+
+##### Container Components
 
 `ReactDOM` renders [`App`](https://github.com/itxchy/FCC-spiffy-wikipedia/blob/master/src/components/App.js):
 ```js
@@ -601,13 +628,13 @@ class App extends Component {
 }
 ```
 
-##### Container Components
-
 App's responsibility as a [container component](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0#.qlp6sobvr) is to handle search requests from `SearchBar`, and pass the results down to `SearchResults` after performing an AJAX call to Wikipedia's API.
 
 As Dan Abromov puts it, container components are "concerned with *how things work.*"
 
-Notice that this component only displays other components. The main concern of App is with handling data and passing it down to its children.
+Notice that this component only displays other components. The main concern of `App` is with handling data and passing it down to its children.
+
+##### Presentational Components
 
 `Header`:
 ```js
@@ -626,9 +653,9 @@ export default Header
 
 ```
 
-##### Presentational Components
+Header is a very simple stateless functional component. It shows the header. Notice the `Header.css` import. It may seem trivial to make a separate component for such a simple piece of UI, but now, anytime I might want to change the header's look, I know exactly where to go. Everything about the header's presentation, from markup to styling, is encapsulated right here inside this component. It has one responsibility.
 
-Header is a very simple stateless functional component. It shows the header. Notice the `Header.css` import. It may seem trivial to make a separate component for such a simple piece of UI, but now, anytime I might want to change the header's look, I know exactly where to go. Everything about the header's presentation, from markup to styling, is encapsulated right here inside this component.
+##### Time to Refactor
 
 `SearchBar`:
 ```js
@@ -671,15 +698,13 @@ export default SearchBar
 
 ```
 
-##### Time to Refactor
-
 There is a code smell here.
 
-SearchBar is currently a presentational component with one responsibility, which is to present the search bar. It's doing that one responsibility, but with quite a bit of markup to put a form together, as well as a link to a random Wikipedia article.
+SearchBar is currently a presentational component with one responsibility, which is to present the search bar. It's doing that single responsibility, but with quite a bit of markup to put a form together, as well as a link to a random Wikipedia article.
 
-Do you keep everything encapsalated here, or do you break this up with components for "SearchForm", "Button" inside "SearchForm", and "ChanceLink"? This is where things get subjective. If you're not careful, you could end up making a component for every DOM element. On the other hand, it's good for readablility and maintainability to keep components as simple as possible.
+Do you keep everything encapsulated here, or do you break this up with components for "SearchForm", "Button" inside "SearchForm", and "ChanceLink"? This is where things get subjective. If you're not careful, you could end up making a component for every synthetic DOM element. On the other hand, it's good for readability and maintainability to keep components as simple as possible.
 
-One easy compromise would be to make a `SearchForm` component to be responsible for the form itself, and leave the chance button in `SearchBar` since its only one simple link element:
+One easy compromise would be to make a `SearchForm` component to be responsible for the form itself, and leave the chance link in `SearchBar` since its only one simple link element:
 ```js
 class SearchBar extends Component {
   constructor (props) {
@@ -721,21 +746,21 @@ SearchBar.propTypes = {
 }
 ```
 
-Now that render function is much easier to grok. I included the rest of the code here to illustrate how SearchBar's methods and state can be passed down as props.
+Now that render function is much cleaner. I included the rest of the code here to illustrate how SearchBar's methods and state can be passed down as props.
 
 ##### Data Flow
 
-As events happen in SearchForm, SearchForm itself doesn't alter data or handle events. SearchForm simply passes events up to SearchBar, either an input value change, or a submit event. If SearchBar gets an input change event from `this.handleSearchInputChange`, called from SearchForm, SearchBar updates its state, and passes that new state down to SearchForm's `searchText` prop as the new data. SearchForm can than update the form with the new data it receives. When SearchForm's form is submitted, it can call `this.handleSubmit`, which it received as a `handleSubmit` prop from SearchBar, and SearchBar will handle it by passing the form data up to App using App's `handleSearchSubmit` method, which App passed down to SearchBar as a prop called `onSearchSubmit`. SearchBar doesn't care about how to handle search submits.
+As events get triggered in the `SearchForm` component, SearchForm itself doesn't alter data or handle events. SearchForm simply passes events up to SearchBar, either an input value change, or a submit event. If SearchBar gets an input change event from `this.handleSearchInputChange`, called from SearchForm, SearchBar updates its state, and passes that new state down to SearchForm's `searchText` prop as the new data. SearchForm can than update the form with the new data it receives. When SearchForm's form is submitted, it can call SearchBar's `this.handleSubmit` method, which SearchForm received as a `handleSubmit` prop from SearchBar. SearchBar will handle the submit by passing the form data up to App using App's `handleSearchSubmit` method, which App passed down to SearchBar as a prop called `onSearchSubmit`. SearchBar doesn't care about the details of how to searches are actually submitted. That's `App`'s responsibility.
 
-The important takeaway is that data always moves in one direction. This is the essence of one-way data-binding. If anything breaks, its easy to trace where  something went wrong because data is moving only in a single direction when an event happens. Typing something into the form doesn't update the DOM form directly like you'd expect nativly. Instead, your keystroke is sending an event, which eventually culminates with React updating the form's text from its own state. This happens so fast, it feels native. This is called a [controlled component](https://facebook.github.io/react/docs/forms.html). React is handling the form state, instead of allowing the DOM to handle form state. Debugging errors in this sort of flow is a lot easier than in other paradigms where data can be passed in both directions. Two-way data binding makes it hard to determine the source of bugs in a lot of cases if you don't know where the data is coming from when a bug occurs. Thankfully, Angular has moved passed that, and a number of other frameworks have embraced one-way data-binding.
+The important takeaway is that data always moves in one direction. This is the essence of one-way data-binding. If anything breaks, its easy to trace where  something went wrong because data only moves in a single direction when an event happens. Typing something into the form doesn't update the DOM form directly like you'd expect natively. Instead, your keystroke is triggering a change event, which eventually culminates with React rendering the form's text from its own state. This happens so fast, it feels native. This behavior happens in what's called a [controlled component](https://facebook.github.io/react/docs/forms.html). React is handling the form state, instead of allowing the native DOM to handle form state in the browser. The process of debugging errors in this sort of flow is a lot easier than in other paradigms where data can be passed in both directions. Two-way data binding makes it hard to determine the source of bugs if you don't know where the data is coming from when a bug occurs. In large, complex apps, this can be a nightmare. Thankfully, Angular has moved passed that in later versions, and many other frameworks have embraced one-way data-binding.
 
 [React Dev Tools](https://facebook.github.io/react/blog/2015/09/02/new-react-developer-tools.html) even allow you to watch state updates in real time!
 
 ##### Escalating to Redux
 
-Now, what if I decided to add a dropdown of look-ahead search results SearchForm?
+Now, what if I decided to add a dropdown component of look-ahead search results SearchForm?
 
-It would make sense to include the dropdown's UI as a separate component, but what if it needs to call [`loadWikiData`](https://github.com/itxchy/FCC-spiffy-wikipedia/blob/master/src/components/App.js#L28) from `App.js`  every 400ms to load results?
+It would make sense to include the dropdown's UI as a separate component, but what if it needs to call [`loadWikiData`](https://github.com/itxchy/FCC-spiffy-wikipedia/blob/master/src/components/App.js#L28) from `App.js`  every 400 ms to load results?
 
 Let's reference the updated component tree:
 ```
@@ -748,40 +773,37 @@ Let's reference the updated component tree:
       * Result
 ```
 
-We don't need to flesh out the new components in code to realize we'd have a problem. To pull this off, we'd need to pass `App`'s `loadWikiData` method down as a prop through `SearchBar`, into `SearchForm`, and possibly even `LookAheadDropdown` depending on whether `SearchForm` gets refactored to include `handleSearchInputChange`, and `handleSubmit` instead of [SearchBar](https://github.com/itxchy/FCC-spiffy-wikipedia/blob/master/src/components/SearchBar/SearchBar.js) to furthur clarify each components' single responsibility. But that's not all! We'd need to pass [`state.data`](https://github.com/itxchy/FCC-spiffy-wikipedia/blob/master/src/components/App.js#L13) from `App` down the component tree to at least `SearchForm` as well.
+We don't need to flesh out the new components in code to realize we'd have a problem. To pull this off, we'd need to pass `App`'s `loadWikiData` method down as a prop through `SearchBar`, into `SearchForm`, and possibly even to `LookAheadDropdown` depending on whether `SearchForm` gets refactored to include `handleSearchInputChange` and `handleSubmit` instead of [SearchBar](https://github.com/itxchy/FCC-spiffy-wikipedia/blob/master/src/components/SearchBar/SearchBar.js) to further clarify each components' single responsibility. But that's not all! We'd need to pass [`state.data`](https://github.com/itxchy/FCC-spiffy-wikipedia/blob/master/src/components/App.js#L13) from `App` down the component tree to at least `SearchForm` as well.
 
-This is an example of the data tunneling problem. As the components get nested deeper, so do the levels of components that data and events need to pass through. This is when Redux's predictable complexity becomes more desirable than the unpredictable complexity of data tunneling which can grow over time.
+This is an example of the data tunneling problem. As the components get nested deeper, so do the layers of components that data and events need to pass through. This is when Redux's predictable complexity becomes more desirable than the unpredictable complexity of data tunneling which can grow over time.
 
 ## Redux
 
-In essense, Redux allows you to store and manage all of your React state outside of your React components.
+In essence, Redux allows you to store and manage all of your React state outside of your React components.
 
-// research https://blog.risingstack.com/flux-inspired-libraries-with-react/
-http://pixelhunter.me/post/110248593059/flux-solutions-compared-by-example
+It's uses a variation of the [Flux](https://facebook.github.io/flux/docs/in-depth-overview.html#content) architecture from Facebook. Flux is a pattern, not an implementation, that describes a "store", or multiple "stores", which are objects that hold on to your immutable state, "actions" which trigger state changes, and "dispatchers" which trigger actions based on UI events, or other events. When a store is updated, the view layer (usually React) receives the new state as props, and updates its UI with the changes. Flux has a lot of other pieces to it which I won't dig into here since you'll likely be using a Flux implementation library like Redux. Flux is complicated because it solves a much more complicated problem. Facebook's UI code is very complex, with many hundreds (thousands?) of deeply nested components, many needing to share props and state. Just imagine building Facebook UIs with React alone.
 
-It's uses a variation of the [Flux](https://facebook.github.io/flux/docs/in-depth-overview.html#content) arcitecture from Facebook. Flux is essentially a pattern that describes a "store", or multiple "stores", which are objects that hold on to your immutable state, "actions" which trigger state changes, and "dispatchers" which trigger actions based on UI events, or other events. When a store is updated, the view layer (usually React) recieves the new state, and updates its UI with the changes. Flux has a lot of other pieces to it which I won't dig into here since you'll likely be using a library like Redux to impliment flavors of the Flux pattern. Flux is complicated because it solves a much more complicated problem. Facebook's code is very complex, with many hundreds (thousands?) of deeply nested components, many needing to share props and state. Just imagine building Facebook UIs with React alone.
+There are [many libraries](https://github.com/voronianski/flux-comparison) implementing the Flux pattern, but Redux has been the most widely used lately and for good reason. Instead of allowing multiple stores, Redux uses a single store for all of your state. Any time an action is dispatched, a reducer function takes in the action plus the current state, and returns a new state object with the changes, not a mutated form of the state object which was passed in as a parameter. This allows for powerful features like time-travel debugging in [Redux Developer Tools](https://github.com/gaearon/redux-devtools), which does exactly what you'd expect. Since reducers create an entirely new state object each time, it's possible to track those unique objects over time, and pass your application back and forth between states with Redux Dev Tools. This single direction of data flow into the single store object makes debugging very easy since its easy to trace which reducers update state in order over time, and to see how each update affects the state object.
 
-There are [many libraries](https://github.com/voronianski/flux-comparison) implementing the Flux pattern, but Redux has been the most widely used lately and for good reason. Instead of allowing multiple stores, Redux uses a single store for all of your state. Any time an action is dispatched, a reducer function takes in the action plus the current state, and returns a new state object with the changes, not a mutated form of the state object which was passed in as a parameter. This allows for powerful features like time-travel debugging in Redux Developer Tools, which does exactly what you'd expect. Since store updates from reducers create an entirely new object each time, its possible to track those unique objects over time, and pass your application between states in the Redux Dev Tools. This single direction of flow into the single store object makes debugging very easy since its easy to trace which reducers update state in order over time.
-
-For big apps, this allows you to decouple your components so they don't need to worry about the flow of state, state-altering methods, or events being passed through the component tree. It all flows in from, and to, Redux, a la carte style.
+For big apps, Redux allows you to decouple your components so they don't need to worry about the flow of state, state-altering methods, or events being passed through the component tree. It all flows in and out of Redux, a la carte style.
 
 ### When Do You Need Redux?
 
-Not all apps need Redux, and you shouldn't use it if you're not running into the problems it's here to solve. There are tradeoffs.
+Not all apps need Redux, and you shouldn't use it if you're not running into the problems it's meant to solve. There are trade-offs.
 
-On the one hand, Redux allows you share state between components easily, and keep components decoupled and portable.
+On one hand, Redux allows you share state between components easily, and keep components decoupled and portable.
 
-On the other hand, Redux adds complexity and weight to your app, making it more tedious to add features and maintain.
+On the other hand, Redux adds complexity and weight to your app, making it more tedious to add features and maintain. It also increases your app's surface area for bugs.
 
 At what point do you *need* Redux?
 
-Some people don't mind data-tunneling for small to mid-size apps, but its probably a good idea to bring in Redux once you find yourself with state and props that need to be passed at least two layers deep in muliple parts of your application. As the app grows, these pcomplexities will start to snowball.
+Many people don't mind data-tunneling for small to mid-size apps, but its probably a good idea to bring in Redux once you find yourself with state and props that need to be passed at least two layers deep in multiple parts of your application. As your app grows, those complexities will start to snowball, and make refactoring more and more difficult.
 
-If, on the other hand, you have an app with one component a few layers deep that needs to tunnel some state, and no others, then you'll probably be fine just handling the data-tunneling in that instance. The added complexity of Redux would outweigh the complexity of maintaining one data-tunneling instance without Redux.
+If, on the other hand, you have an app with one component a few layers deep that needs to tunnel some state, and no others, then you'll probably be fine just handling the data-tunneling in that instance. The added complexity of Redux would outweigh the complexity of maintaining one data-tunneling occurrence without Redux.
 
-For Vote, adding Redux was a no-brainer. Many components need access to the `user` object in state, which alone would have been a nightmare to pass between components. A higher-order componet could have been an option, but there are a number of other bits of state and methods, like `flashMessage`'s state-altering, which are used in multiple components in different branches of the component tree. Using higher-order components for everything would get hairy fast.
+For Vote, adding Redux was a no-brainer. Many components need access to the `user` object in state, which alone would have been a nightmare to pass between components. A higher-order component could have been an option, but there are a number of other bits of state and methods, like `flashMessage`'s state-altering methods, which are used in multiple components in different branches of the component tree. Using higher-order components for everything would get hairy fast.
 
-The added complexity of Redux didn't hold a handle to the add compexity without it.
+The added complexity of Redux didn't hold a candle to the added complexity without it.
 
 ### A Ducks Pattern Variant
 
