@@ -61,6 +61,9 @@ Needless to say, I've learned more from this project than anything else I've wor
     - [Logging](#logging)
   - [Security](#security)
     - [Watch this talk](#watch-this-talk)
+    - [Securing Express](#securing-express)
+    - [HTTPS](#https)
+- [This All Comes Back to JavaScript](#this-all-comes-back-to-javascript)
 
 <!-- /MarkdownTOC -->
 
@@ -2037,6 +2040,34 @@ Note the use of `log.info` and `log.error`. Both logs will be printed to the con
 
 ### [Watch this talk](https://www.youtube.com/watch?v=POmnL-PruAs&t=12s)
 
-There are a lot of good reasons to not build your own authentication scheme. Good security is a constantly moving target and even if you manage to build a good, secure authentication shceme that's following ALL of the current best practices, how often are you going to upgrade it? Once a week? Once a month? Once a quarter?
+There are a lot of reasons not build your own authentication strategy. Good security is a constantly moving target and even if you manage to build a reasonably secure authentication strategy that's penetration tested and following current best practices, how often are you going to audit it for new vulnerablities, known and unknown? Once a week? Once a month? Never? Before you know it, your users' [JWT's start getting stolen](https://auth0.com/forum/t/stealing-jwt-from-authenticated-user/352/4).
 
-Your
+Security is very hard to get right, and its best left to professionals who deal with it full time.
+
+### Securing Express
+
+[Passport](http://passportjs.org/) has over 300 authentication strategies developed by professionals. They're free, open source, and easier to implement that building something half-baked from scratch.
+
+Express has a lot of [great advice](https://expressjs.com/en/advanced/best-practice-security.html) on how to secure your server. So does [Stangeloop](https://blog.risingstack.com/node-js-security-checklist/), and[RisingStack](https://blog.risingstack.com/node-hero-node-js-security-tutorial/).
+
+[`helmet`](https://github.com/helmetjs/helmet) is mandatory.
+
+For simple [XSS](https://www.owasp.org/index.php/Cross-site_Scripting_(XSS)) protection, [`express-sanitized`](https://www.npmjs.com/package/express-sanitized) makes it very easy.
+
+### HTTPS
+
+Finally, use HTTPS if you aren't already. No more excuses. It's very easy to set up with [certbot](https://certbot.eff.org/).
+
+# This All Comes Back to JavaScript
+
+You can try to learn as many frameworks, libraries and tools as you'd like, but if you don't have a good understanding of JavaScript itself, you're in for a lot of pain. I've been there.
+
+Getting a comfortable understanding of prototypal inheritance, lexical scope, closure, this, CommonJS/ES6 modules, higher-order functions, and aysnc fucntions make everything you do easier. You can pick up on new frameworks faster because you start to recogize the design patterns they're based on, and pick up on the conventions that many libraries follow. Think about all the libraries that using chaining functions similar to jQuery, or open source projects that use constructor functions to build their library's API. You begin to reconize the same coding patterns over and over and once you understand them, you can start working on other people's code a lot more effectively. Thankfully, linting is a very common practice. All it takes to get comfortable is to just put in the time. A lot of it. Talent (if that even exists) *may* give some people a head start for a time, but the people who are willing to put in the work consistently and stay curious reach new peaks every day. That can be anyone. If you want to be a "good developer", it starts with *deciding* to be a good developer, and doing what it takes to become what you think that is. That idea will change a lot over time. A big part of that is knowing that you'll never know everything or even most things, and there are more new technologies coming out every day than you could ever learn. Part of learning to build software is learning to be ok with the unknowns, and hopefully find some exileration in the potential to discover new things every day.
+
+JavaScript is a hard language to master. It has a lot of quirks, gotchas, and [wats](https://www.destroyallsoftware.com/talks/wat), but it's powerful and expressive, and its been evolving very quickly since ES5. It's here to stay, and its everywhere. [It's even in space](https://nodejs.org/static/documents/casestudies/Node_CaseStudy_Nasa_FNL.pdf).
+
+To get the most out of the language, it really helps to spend some time coding in JavaScript all by itself every once in awhile. No frameworks, no loDash, just ES6.
+
+My favorite learning resource has been [You Don't Know JS](https://github.com/getify/You-Dont-Know-JS). Kyle Simpson goes very deep into the guts of the language in a very clear, concise way. I've jumped around the books and had to re-read a lot of the chapters over the past couple of years, but the concepts are crystalizing more and more every time I revisit them.
+
+And again, I have to recommend Zen and the Art of Motorcycle Maintenance. It will change your life.
