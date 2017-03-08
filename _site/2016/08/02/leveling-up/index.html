@@ -90,7 +90,7 @@
   <span class="post-date">08/02/2016</span>
   <p>At the end of May, I finally completed my <a href="https://www.freecodecamp.com/itxchy/front-end-certification">Front End Certification</a> for Free Code Camp.</p>
 
-<p>Since then, I’ve spent some time refactoring a few of my older projects to get them to a place where I don’t cringe every time I look at the source code. They were pretty grisly. My Pomodoro app from last year in particular was a hacky mess. It was my first project trying out AngularJS, and while it worked, it broke pretty much every relavent style in <a href="https://github.com/johnpapa/angular-styleguide/blob/master/a1/README.md">John Papa’s style guide</a>. Here’s the <a href="http://codepen.io/dprsky/pen/OymXEp">old source</a> if you have a strong stomach. All of the logic was in one controller and $scope was polluted with almost every variable in the project. Not even one service to handle business logic. The controller was in charge or user interactions, business logic, <em>and</em> state. The horror. It must be destroyed. I didn’t even know how to use a service versus a controller at the time. It’s a small app, and the design-pattern-less layout of the code was well commented, but it would have quickly turned into a field of thorns if it ever needed new features. Good code should be mostly self-documenting anyway. I took this as an oppurtunity to refactor the app’s code <a href="https://johnpapa.net/angular-app-structuring-guidelines/">structure</a> and logic to separate concerns (UI elements, <a href="https://johnpapa.net/sharing-data-in-an-angular-controller-or-an-angular-service/">state</a>, application logic, user interaction handling) and get some practice using Angular 1.5’s great new <a href="https://toddmotto.com/exploring-the-angular-1-5-component-method/">component method</a>, modeled after Angular 2’s component pattern. That’s a story for another blog post, but it was a humbling learning experience, and Angular 1’s paradigm makes so much more sense now on every level.</p>
+<p>Since then, I’ve spent some time refactoring a few of my older projects to get them to a place where I don’t cringe every time I look at the source code. They were pretty grisly. My Pomodoro app from last year in particular was a hacky mess. It was my first project trying out AngularJS, and while it worked, it broke pretty much every relevant style in <a href="https://github.com/johnpapa/angular-styleguide/blob/master/a1/README.md">John Papa’s style guide</a>. Here’s the <a href="http://codepen.io/dprsky/pen/OymXEp">old source</a> if you have a strong stomach. All of the logic was in one controller and $scope was polluted with almost every variable in the project. Not even one service to handle business logic. The controller was in charge or user interactions, business logic, <em>and</em> state. The horror. It must be destroyed. I didn’t even know how to use a service versus a controller at the time. It’s a small app, and the design-pattern-less layout of the code was well commented, but it would have quickly turned into a field of thorns if it ever needed new features. Good code should be mostly self-documenting anyway. I took this as an opportunity to refactor the app’s code <a href="https://johnpapa.net/angular-app-structuring-guidelines/">structure</a> and logic to separate concerns (UI elements, <a href="https://johnpapa.net/sharing-data-in-an-angular-controller-or-an-angular-service/">state</a>, application logic, user interaction handling) and get some practice using Angular 1.5’s great new <a href="https://toddmotto.com/exploring-the-angular-1-5-component-method/">component method</a>, modeled after Angular 2’s component pattern. That’s a story for another blog post, but it was a humbling learning experience, and Angular 1’s paradigm makes so much more sense now on every level.</p>
 
 <p>The new pomodoro source code is <a href="https://github.com/itxchy/FCC-pomodoro">here</a>.</p>
 
@@ -112,7 +112,7 @@
 
 <p>One boilerplate that stands out to me is <a href="https://github.com/erikras/react-redux-universal-hot-example">React Redux Universal Hot Example</a>.</p>
 
-<p>I haven’t used it, but its stack uses very familier tools, nothing exotic. It’s well documented–even the <a href="https://react-redux.herokuapp.com/">demo app</a> has <a href="https://github.com/erikras/react-redux-universal-hot-example/blob/master/docs/ExploringTheDemoApp/ExploringTheDemoApp.md">a guide</a>, and the source is heavily commented. It also has over 100 contributers and close to 1000 commits. When I start working on some server-side rendered React apps for Free Code Camp’s full stack projects, this will likely be my starter.</p>
+<p>I haven’t used it, but its stack uses very familiar tools, nothing exotic. It’s well documented–even the <a href="https://react-redux.herokuapp.com/">demo app</a> has <a href="https://github.com/erikras/react-redux-universal-hot-example/blob/master/docs/ExploringTheDemoApp/ExploringTheDemoApp.md">a guide</a>, and the source is heavily commented. It also has over 100 contributers and close to 1000 commits. When I start working on some server-side rendered React apps for Free Code Camp’s full stack projects, this will likely be my starter.</p>
 
 <p>Over the next few months, I will be finishing a redesign for a friend’s business site, working through Free Code Camp’s back end challenges with Express, and learning all I can about NodeJS, Express, ReactJS, and Redux. The rest of the summer should be very exciting.</p>
 
@@ -146,6 +146,15 @@
 <div class="related">
   <h2>Related Posts</h2>
   <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2017/03/07/lessons-learned-from-my-first-full-stack-application/">
+            Lessons Learned from My First Full Stack Application
+            <small>07 Mar 2017</small>
+          </a>
+        </h3>
+      </li>
     
       <li>
         <h3>

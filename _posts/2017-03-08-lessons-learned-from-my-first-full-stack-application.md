@@ -2,7 +2,7 @@
 layout: post
 title: Lessons Learned from My First Full Stack Application
 comments: true
-date: 2017-03-08T10:20:00Z
+date: 2017-03-08T03:40:00Z
 ---
 
 For the past few months, I've been working on my first full stack application challenge for Free Code Camp, a web application for creating and sharing polls. It's finally [deployed](https://fcc-vote.matttrifilo.com)! You can view the source on [GitHub](https://github.com/itxchy/FCC-vote).

@@ -4,13 +4,2200 @@
  <title>Matt Trifilo</title>
  <link href="http://blog.matttrifilo.com/atom.xml" rel="self"/>
  <link href="http://blog.matttrifilo.com/"/>
- <updated>2017-03-08T03:37:52-06:00</updated>
+ <updated>2017-03-08T03:49:15-06:00</updated>
  <id>http://blog.matttrifilo.com</id>
  <author>
    <name>Matt Trifilo</name>
    <email>matt.trifilo@gmail.com</email>
  </author>
 
+ 
+ <entry>
+   <title>Lessons Learned from My First Full Stack Application</title>
+   <link href="http://blog.matttrifilo.com/2017/03/07/lessons-learned-from-my-first-full-stack-application/"/>
+   <updated>2017-03-07T21:40:00-06:00</updated>
+   <id>http://blog.matttrifilo.com/2017/03/07/lessons-learned-from-my-first-full-stack-application</id>
+   <content type="html">&lt;p&gt;For the past few months, I’ve been working on my first full stack application challenge for Free Code Camp, a web application for creating and sharing polls. It’s finally &lt;a href=&quot;https://fcc-vote.matttrifilo.com&quot;&gt;deployed&lt;/a&gt;! You can view the source on &lt;a href=&quot;https://github.com/itxchy/FCC-vote&quot;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;I took my time on this project in particular because while I was familiar with React, Express, and MongoDB at a rudimentary level, I’d never used them together to build a modern CRUD application. Piling on to that, I had no experience at all with Redux or the Flux architecture in general, much less how to pass state around in a larger React/Redux application. This was also my first experience visualizing data with D3.js.&lt;/p&gt;
+
+&lt;p&gt;I’ve learned more from this project than anything else I’ve ever made to date, and this seems like a good time to take a step back to reflect on and share some of the most useful lessons I’ve learned from this project.&lt;/p&gt;
+
+&lt;!--break--&gt;
+
+&lt;p&gt;This is a very long post, so feel free to jump around.&lt;/p&gt;
+
+&lt;!-- MarkdownTOC --&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;#thank-you-virtual-mentors&quot;&gt;Thank You Virtual Mentors&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#an-overview-of-vote&quot;&gt;An Overview of Vote&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#tooling&quot;&gt;Tooling&lt;/a&gt;
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#linting-with-standard-js-use-with-caution&quot;&gt;Linting with Standard JS (Use with caution)&lt;/a&gt;
+        &lt;ul&gt;
+          &lt;li&gt;&lt;a href=&quot;#why-standard-or-semistandard&quot;&gt;Why Standard (or Semistandard)?&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#using-standard-without-react&quot;&gt;Using Standard Without React&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#using-standard-with-react&quot;&gt;Using Standard With React&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#webpack-2&quot;&gt;Webpack 2&lt;/a&gt;
+        &lt;ul&gt;
+          &lt;li&gt;&lt;a href=&quot;#optimizing-your-bundles&quot;&gt;Optimizing Your Bundle(s)&lt;/a&gt;
+            &lt;ul&gt;
+              &lt;li&gt;&lt;a href=&quot;#analyzing-a-bundle-with-webpack-bundle-analyzer&quot;&gt;Analyzing a Bundle with &lt;code class=&quot;highlighter-rouge&quot;&gt;webpack-bundle-analyzer&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+              &lt;li&gt;&lt;a href=&quot;#splitting-bundles&quot;&gt;Splitting Bundles&lt;/a&gt;&lt;/li&gt;
+              &lt;li&gt;&lt;a href=&quot;#optimizing-bundles-for-production&quot;&gt;Optimizing Bundles for Production&lt;/a&gt;&lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#tree-shaking&quot;&gt;Tree-Shaking&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#linting-with-webpack&quot;&gt;Linting with Webpack&lt;/a&gt;
+            &lt;ul&gt;
+              &lt;li&gt;&lt;a href=&quot;#one-caveat&quot;&gt;One Caveat&lt;/a&gt;&lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#the-client&quot;&gt;The Client&lt;/a&gt;
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#react&quot;&gt;React&lt;/a&gt;
+        &lt;ul&gt;
+          &lt;li&gt;&lt;a href=&quot;#reactcreateclass-vs-es6-classes&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;React.createClass&lt;/code&gt; vs ES6 classes&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#proptypes&quot;&gt;PropTypes&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#component-hierarchy&quot;&gt;Component Hierarchy&lt;/a&gt;
+            &lt;ul&gt;
+              &lt;li&gt;&lt;a href=&quot;#spiffy-wikipedia-example&quot;&gt;Spiffy Wikipedia Example&lt;/a&gt;&lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#redux&quot;&gt;Redux&lt;/a&gt;
+        &lt;ul&gt;
+          &lt;li&gt;&lt;a href=&quot;#when-do-you-need-redux&quot;&gt;When Do You Need Redux?&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#a-ducks-pattern-variant&quot;&gt;A Ducks Pattern Variant&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#thunks-middleware&quot;&gt;Thunks Middleware&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#unit-testing&quot;&gt;Unit Testing&lt;/a&gt;
+        &lt;ul&gt;
+          &lt;li&gt;&lt;a href=&quot;#testing-react-with-jest-and-enzyme&quot;&gt;Testing React with Jest and Enzyme&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#testing-redux-with-jest&quot;&gt;Testing Redux with Jest&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#styling&quot;&gt;Styling&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#the-server&quot;&gt;The Server&lt;/a&gt;
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#server-side-rendering&quot;&gt;Server Side Rendering&lt;/a&gt;
+        &lt;ul&gt;
+          &lt;li&gt;&lt;a href=&quot;#reactcreateelement-refresher&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;React.createElement&lt;/code&gt; Refresher&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#pre-transpiling-for-node-using-babel&quot;&gt;Pre-Transpiling For Node Using Babel&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#express-api-routes&quot;&gt;Express API Routes&lt;/a&gt;
+        &lt;ul&gt;
+          &lt;li&gt;&lt;a href=&quot;#restful-dialog-between-machines&quot;&gt;RESTful Dialog Between Machines&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#crud-logic&quot;&gt;CRUD Logic&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#avoiding-callback-hell-with-asyncawait&quot;&gt;Avoiding Callback Hell With Async/Await&lt;/a&gt;
+            &lt;ul&gt;
+              &lt;li&gt;&lt;a href=&quot;#not-so-fast&quot;&gt;Not So Fast…&lt;/a&gt;&lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#the-database-mongodb&quot;&gt;The Database: MongoDB&lt;/a&gt;
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#schema&quot;&gt;Schema&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#mongoose&quot;&gt;Mongoose&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#development-database-vs-production-database&quot;&gt;Development Database vs Production Database&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#production&quot;&gt;Production&lt;/a&gt;
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#continuous-integration&quot;&gt;Continuous Integration&lt;/a&gt;
+        &lt;ul&gt;
+          &lt;li&gt;&lt;a href=&quot;#staging-vs-production&quot;&gt;Staging vs Production&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#logging&quot;&gt;Logging&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#security&quot;&gt;Security&lt;/a&gt;
+        &lt;ul&gt;
+          &lt;li&gt;&lt;a href=&quot;#watch-this-talk&quot;&gt;Watch this talk&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#securing-express&quot;&gt;Securing Express&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#https&quot;&gt;HTTPS&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#this-all-comes-back-to-javascript&quot;&gt;This All Comes Back to JavaScript&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;!-- /MarkdownTOC --&gt;
+
+&lt;h1 id=&quot;thank-you-virtual-mentors&quot;&gt;Thank You Virtual Mentors&lt;/h1&gt;
+
+&lt;p&gt;First off, I’d like to thank &lt;a href=&quot;https://twitter.com/holtbt&quot;&gt;Brian Holt&lt;/a&gt; for both of his great Complete Intro To React workshops on &lt;a href=&quot;https://frontendmasters.com/courses/?u=563312949abcfdd369685f8abe03f2bec24ead42&quot;&gt;Front End Masters&lt;/a&gt;. The workflow he shares is a simple and scalable way to think about building React applications. As you go, you bring in new tools only as you need them, and refactor fast and often. I can’t recommend his workshops enough, even if you’ve been using React for years. The insights he shares are well worth the Front End Masters subscription. Check out all of Kyle Simpson’s workshops while you’re at it!&lt;/p&gt;
+
+&lt;p&gt;I’d also like to thank &lt;a href=&quot;https://twitter.com/remzolotykh?lang=en&quot;&gt;Rem Zolotykh&lt;/a&gt; for putting together such a thorough &lt;a href=&quot;https://www.youtube.com/playlist?list=PLuNEz8XtB51K-x3bwCC9uNM_cxXaiCcRY&quot;&gt;Youtube series&lt;/a&gt; about building a React/Redux application with jwt authentication. While you should never use a custom authentication strategy like this for real-world production apps (use Passport instead), he offered a detailed overview of how to build an authentication flow using JSON web tokens, localStorage, and the proper headers. It was also very helpful to get another perspective of how to wire up React and Redux, and handle forms with controlled components.&lt;/p&gt;
+
+&lt;p&gt;Finally, I owe a heavy amount of gratitude to Robert M. Pirsig. While working on this project, I hit a lot of brick walls. To unwind after getting put in my place by a waterfall of error messages, I would read &lt;a href=&quot;https://www.amazon.com/Zen-Art-Motorcycle-Maintenance-Inquiry/dp/0060589469&quot;&gt;Zen and the Art of Motorcycle Maintenance&lt;/a&gt;. After picking at the first half for about a year, I finished the second half within a few weeks while working on this project. The explorations of Quality in the book correlate directly with programming, and with life in general. It put a lot of mental blocks I had with thinking about code into a much broader perspective, and inspired a deeper sense of kinship with the craft. It changed the way I perceive and approach bugs. I’ve gained an appreciation for them, as frustrating and ego-crushing as they can be. Each hard bug illuminates a gap in knowledge with an opportunity to learn something profound, and you grow because of it. As Ryan Holiday’s cult-classic is titled, “&lt;a href=&quot;https://www.amazon.com/Obstacle-Way-Timeless-Turning-Triumph/dp/1591846358&quot;&gt;The Obstacle is the Way&lt;/a&gt;.” In turn, this leads to writing better &lt;em&gt;quality&lt;/em&gt; software naturally and becoming better prepared and energized to contribute fresh perspectives and innovations to open source projects, companies you’re working for, or your even an entire industry by finding your own &lt;a href=&quot;https://www.amazon.com/Blue-Ocean-Strategy-Expanded-Uncontested/dp/1625274491/ref=sr_1_2?ie=UTF8&amp;amp;qid=1417408285&amp;amp;sr=8-2&amp;amp;keywords=blue+ocean+strategy&quot;&gt;blue ocean&lt;/a&gt; with your own open source project or company. Quality wins out in the end. Customers know it when they find it. A bug may seem trivial at first, but if you consider that an entire application may rely on that trivial bug being fixed in order to run the way it needs to, it’s not so trivial after all, and deserves attention and careful thought.&lt;/p&gt;
+
+&lt;p&gt;There seem to be a lot of nods to Stoicism in Zen and the Art of Motorcycle Maintenance, and I’m looking forward to to re-reading it after I learn a bit more about the Stoics. “The Obstacle Is the Way” at on the top of my list.&lt;/p&gt;
+
+&lt;h1 id=&quot;an-overview-of-vote&quot;&gt;An Overview of Vote&lt;/h1&gt;
+
+&lt;p&gt;The user stories for this Free Code Camp project can be viewed &lt;a href=&quot;https://www.freecodecamp.com/challenges/build-a-voting-app&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Basically, Vote allows you to create and manage polls as an authenticated user, vote once on any poll whether you’re authenticated or not, and share a single poll with friends and strangers.&lt;/p&gt;
+
+&lt;p&gt;This project is far from perfect. You can’t search or sort polls, but the time spent adding too much functionality beyond the user stories for a toy app like this is better spent on new projects at this point. This app won’t be a “&lt;a href=&quot;https://news.ycombinator.com/show&quot;&gt;Show HN&lt;/a&gt;” post. Learning the process and mechanics of building something like this was the primary goal, and it payed dividends in hard lessons.&lt;/p&gt;
+
+&lt;p&gt;Let’s dig in!&lt;/p&gt;
+
+&lt;h1 id=&quot;tooling&quot;&gt;Tooling&lt;/h1&gt;
+
+&lt;p&gt;If you’re going to build a good table, you’d better know what tools to use when, why, and how. Otherwise your food will slide into your lap.&lt;/p&gt;
+
+&lt;h2 id=&quot;linting-with-standard-js-use-with-caution&quot;&gt;Linting with Standard JS (Use with caution)&lt;/h2&gt;
+
+&lt;p&gt;I was skeptical of &lt;a href=&quot;http://standardjs.com/&quot;&gt;Standard JS&lt;/a&gt; at first,
+but I gave it a chance at the recommendation of Brian Holt in his workshop, and really enjoyed the simplicity.&lt;/p&gt;
+
+&lt;p&gt;A lot of &lt;a href=&quot;https://github.com/getify/You-Dont-Know-JS/blob/master/types%20&amp;amp;%20grammar/ch5.md#error-correction&quot;&gt;very&lt;/a&gt; &lt;a href=&quot;http://www.2ality.com/2011/05/semicolon-insertion.html&quot;&gt;smart&lt;/a&gt; &lt;a href=&quot;https://google.github.io/styleguide/javascriptguide.xml#Semicolons&quot;&gt;people&lt;/a&gt; caution (with good reason) that omitting semi-colons, and relying on JavaScript’s &lt;a href=&quot;https://www.ecma-international.org/ecma-262/5.1/#sec-7.9&quot;&gt;Automatic Semicolon Insertion&lt;/a&gt; feature to insert every semi-colon for you under the hood should be avoided. For companies with a large teams of developers, omitting semi-colons adds another layer of risk, simply because of the added exposure to ASI-related bugs if any code isn’t linted properly. Plus, you need to place your trust in the linter to catch every edge case.&lt;/p&gt;
+
+&lt;p&gt;That said, the common &lt;a href=&quot;http://standardjs.com/rules.html#semicolons&quot;&gt;gotchas&lt;/a&gt; of omitting semi-colons are well known and Standard has lint rules to stop you from making those mistakes, assuming that all of your code is always linted. Continuous integration tools like TravisCI can run a final lint check for you before allowing the code to be deployed to staging. If any lint errors are present, the build will fail and it won’t get deployed. I think Standard is fine for personal projects and smaller companies, as long as linting is strictly enforced.&lt;/p&gt;
+
+&lt;p&gt;For safety, &lt;a href=&quot;https://github.com/Flet/semistandard&quot;&gt;Semistandard&lt;/a&gt; (Standard plus semicolons) is available, and you’ll still get all of the benefits of a simple, effective style guide that you don’t need to spend time tweaking. This is good for having the peace of mind of knowing the risk of ASI bugs is off the table.&lt;/p&gt;
+
+&lt;h3 id=&quot;why-standard-or-semistandard&quot;&gt;Why Standard (or Semistandard)?&lt;/h3&gt;
+
+&lt;p&gt;Eslint is a powerful tool, but I’d spent more time than I’d like to admit experimenting with linting rules, and researching whether to use a popular style guide from companies like &lt;a href=&quot;https://github.com/airbnb/javascript&quot;&gt;AirBnB&lt;/a&gt; and which one, plus managing &lt;code class=&quot;highlighter-rouge&quot;&gt;.eslintrc&lt;/code&gt; changes across different projects.&lt;/p&gt;
+
+&lt;p&gt;Standard JS takes all of that choice out of the equation and enforces a simple, reliable style guide that CAN’T be changed. If you change it with custom lint rules, than you’re not coding in Standard.&lt;/p&gt;
+
+&lt;p&gt;This idea is in the spirit of &lt;a href=&quot;https://www.python.org/dev/peps/pep-0008/&quot;&gt;PEP 8&lt;/a&gt; from Python. If you know PEP 8 well, you’ll have an easy time reading other people’s Python code. Standard seeks to offer the same consistency for JavaScript.&lt;/p&gt;
+
+&lt;p&gt;While I don’t think it would be good for JavaScript to officially standardize any single style guide, Standard offers a set of rules for eslint that let you set-it-and-forget-it, freeing up valuable brain cycles for other things.&lt;/p&gt;
+
+&lt;h3 id=&quot;using-standard-without-react&quot;&gt;Using Standard Without React&lt;/h3&gt;
+
+&lt;p&gt;Standard itself is very easy to &lt;a href=&quot;https://github.com/feross/standard#install&quot;&gt;install and use&lt;/a&gt;. The docs are straightforward.&lt;/p&gt;
+
+&lt;p&gt;Running Standard alone in the terminal works, but the default lint error output is hard to read in the terminal.&lt;/p&gt;
+
+&lt;p&gt;Instead of using Standard directly, you can install a package called &lt;code class=&quot;highlighter-rouge&quot;&gt;snazzy&lt;/code&gt;, which will give you nicely formatted results with colors.&lt;/p&gt;
+
+&lt;p&gt;If you have a new project, here’s what you can do:&lt;/p&gt;
+
+&lt;p&gt;Install:
+&lt;code class=&quot;highlighter-rouge&quot;&gt;bash
+$ yarn add -D snazzy
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;If you already have standard installed globally, install &lt;code class=&quot;highlighter-rouge&quot;&gt;standard&lt;/code&gt; as a dev dependency to work with snazzy in your project without errors:
+&lt;code class=&quot;highlighter-rouge&quot;&gt;yarn add -D standard snazzy&lt;/code&gt;. The smarties behind Yarn &lt;a href=&quot;https://yarnpkg.com/en/docs/cli/add#toc-caveats&quot;&gt;discourage&lt;/a&gt; using global dependencies in most cases, so keep them local whenever possible so your projects can stay portable between machines. NPM works just fine too if you’re not using yarn.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Add a lint script to &lt;code class=&quot;highlighter-rouge&quot;&gt;package.json&lt;/code&gt;:
+&lt;code class=&quot;highlighter-rouge&quot;&gt;
+&quot;scripts&quot;: {
+  &quot;lint&quot;: &quot;snazzy&quot;
+}
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;If you’re using &lt;code class=&quot;highlighter-rouge&quot;&gt;npm&lt;/code&gt;, mute the annoying &lt;code class=&quot;highlighter-rouge&quot;&gt;err!&lt;/code&gt; messages by adding &lt;code class=&quot;highlighter-rouge&quot;&gt;exit 0&lt;/code&gt; to your script: &lt;code class=&quot;highlighter-rouge&quot;&gt;&quot;lint&quot;: &quot;snazzy; exit 0&lt;/code&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Run it:
+&lt;code class=&quot;highlighter-rouge&quot;&gt;
+$ yarn run lint
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;That’s it! Standard will magically find your JavaScript (excluding &lt;code class=&quot;highlighter-rouge&quot;&gt;node_modules&lt;/code&gt;) and return your lint errors, or nothing if everything passes.&lt;/p&gt;
+
+&lt;h3 id=&quot;using-standard-with-react&quot;&gt;Using Standard With React&lt;/h3&gt;
+
+&lt;p&gt;Using Standard with React will require an eslint config file, but it’s still very easy.&lt;/p&gt;
+
+&lt;p&gt;install:
+&lt;code class=&quot;highlighter-rouge&quot;&gt;
+$ yarn add -D eslint-config-standard eslint-config-standard-react eslint-plugin-promise eslint-plugin-react eslint-plugin-standard
+&lt;/code&gt;
+&amp;gt; If you have &lt;code class=&quot;highlighter-rouge&quot;&gt;eslint&lt;/code&gt; installed globally, add &lt;code class=&quot;highlighter-rouge&quot;&gt;eslint&lt;/code&gt; to the above command so that your config points to the local copy of &lt;code class=&quot;highlighter-rouge&quot;&gt;eslint&lt;/code&gt; to avoid errors.&lt;/p&gt;
+
+&lt;p&gt;Create a file called &lt;code class=&quot;highlighter-rouge&quot;&gt;.eslintrc&lt;/code&gt; in your root directory and add this:
+&lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;extends&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;standard&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;standard-react&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Add an &lt;code class=&quot;highlighter-rouge&quot;&gt;eslint&lt;/code&gt; command with your source code directory to your lint script:
+&lt;code class=&quot;highlighter-rouge&quot;&gt;
+&quot;scripts&quot;: {
+  &quot;lint&quot;: &quot;eslint src&quot;
+}
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Unlike &lt;code class=&quot;highlighter-rouge&quot;&gt;standard&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;snazzy&lt;/code&gt;, you need to specify where eslint should look for your &lt;code class=&quot;highlighter-rouge&quot;&gt;.js&lt;/code&gt; files. In the script above, eslint will check a directory called &lt;code class=&quot;highlighter-rouge&quot;&gt;src&lt;/code&gt;. You can add multiple directories separated by spaces.&lt;/p&gt;
+
+&lt;p&gt;What if you use extensions like &lt;code class=&quot;highlighter-rouge&quot;&gt;.jsx&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;.es6&lt;/code&gt;? &lt;code class=&quot;highlighter-rouge&quot;&gt;eslint&lt;/code&gt; has a flag for that:
+&lt;code class=&quot;highlighter-rouge&quot;&gt;
+&quot;scripts&quot;: {
+  &quot;lint&quot;: &quot;eslint --ext .js --ext .jsx src&quot;
+}
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;The CLI has many more options depending on your needs. &lt;a href=&quot;http://eslint.org/docs/user-guide/command-line-interface&quot;&gt;The docs are very helpful&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Finally, run it:
+&lt;code class=&quot;highlighter-rouge&quot;&gt;
+yarn run lint
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Happy linting!&lt;/p&gt;
+
+&lt;p&gt;You can also delegate linting to &lt;code class=&quot;highlighter-rouge&quot;&gt;webpack&lt;/code&gt; using &lt;code class=&quot;highlighter-rouge&quot;&gt;eslint-loader&lt;/code&gt;, so can see lint errors every time a new bundle is compiled. More on that in a bit.&lt;/p&gt;
+
+&lt;p&gt;I’ve turned off linting in Sublime Text because I find it more distracting then helpful. Plus it creates a latency while saving, and I save files all the time. If you don’t like linting in a terminal, eslint plugins are available for the major text editors.&lt;/p&gt;
+
+&lt;h2 id=&quot;webpack-2&quot;&gt;Webpack 2&lt;/h2&gt;
+
+&lt;p&gt;In a nutshell, Webpack bundles up your application’s assets into a bundle files to reduce HTTP requests. This lets you import things (js, jpg’s, css) into your JavaScript modules, and Webpack will bundle up everything smartly so that your dependency tree remains intact.&lt;/p&gt;
+
+&lt;p&gt;Very recently, Webpack 2 was &lt;a href=&quot;https://medium.com/webpack/webpack-2-2-the-final-release-76c3d43bf144#.plxnf4o9g&quot;&gt;finally released&lt;/a&gt; and it’s awesome!&lt;/p&gt;
+
+&lt;p&gt;They’ve made the &lt;a href=&quot;https://webpack.js.org/guides/migrating/&quot;&gt;migration process&lt;/a&gt; almost painless. Webpack 2 will validate your &lt;code class=&quot;highlighter-rouge&quot;&gt;webpack.config.js&lt;/code&gt; for you, so you don’t need &lt;code class=&quot;highlighter-rouge&quot;&gt;webpack-validator&lt;/code&gt; anymore. If you mess something up, Webpack will give you a helpful error message outlining what doesn’t match their API, and how you can fix it.&lt;/p&gt;
+
+&lt;p&gt;The &lt;a href=&quot;https://webpack.js.org/configuration/&quot;&gt;documentation&lt;/a&gt; is very well thought out and organized so I encourage you to check it out if you’ve never used Webpack before, or haven’t upgraded from version 1.&lt;/p&gt;
+
+&lt;p&gt;While webpack seems to perform a basic task (files in -&amp;gt; bundle(s) out), its configuration can get complex depending on what you need it to do. The documentation for version 2 is thankfully much more clear and simplified than version 1, so go through the concepts and guides on &lt;a href=&quot;https://webpack.js.org/&quot;&gt;webpack.js.org&lt;/a&gt; if you don’t know where to start. It will get you up and running in no time.&lt;/p&gt;
+
+&lt;h3 id=&quot;optimizing-your-bundles&quot;&gt;Optimizing Your Bundle(s)&lt;/h3&gt;
+
+&lt;p&gt;As your project grows, so will your bundle. It will probably get huge. The development version of Vote had a bundle that was over 3 MB before optimizing. For production, it now has a &lt;code class=&quot;highlighter-rouge&quot;&gt;vendor.js&lt;/code&gt; bundle for larger dependencies, and a &lt;code class=&quot;highlighter-rouge&quot;&gt;bundle.js&lt;/code&gt; bundle for the app itself. Each bundle weighs in under 200 kb minfied and gzipped. They’re still heave, but much better than before. The main bundle can get broken up even further with &lt;a href=&quot;https://webpack.js.org/guides/code-splitting/&quot;&gt;code spitting&lt;/a&gt; so the client will only request of the pieces of the app it needs for the current view, instead of the entire app at once.&lt;/p&gt;
+
+&lt;p&gt;Before configuring the &lt;code class=&quot;highlighter-rouge&quot;&gt;vendor.js&lt;/code&gt; bundle for Vote, I first had to figure out which dependencies were bulking up the &lt;code class=&quot;highlighter-rouge&quot;&gt;bundle.js&lt;/code&gt; file the most.&lt;/p&gt;
+
+&lt;h4 id=&quot;analyzing-a-bundle-with-webpack-bundle-analyzer&quot;&gt;Analyzing a Bundle with &lt;code class=&quot;highlighter-rouge&quot;&gt;webpack-bundle-analyzer&lt;/code&gt;&lt;/h4&gt;
+
+&lt;p&gt;One of the coolest plugins I’ve come across for Webpack is the &lt;a href=&quot;https://www.npmjs.com/package/webpack-bundle-analyzer&quot;&gt;webpack-bundle-analyzer&lt;/a&gt;. It gives you a highly-interactive visualization of your bundle(s) to show you the elephants in the room.&lt;/p&gt;
+
+&lt;p&gt;It’s as easy as installing:
+&lt;code class=&quot;highlighter-rouge&quot;&gt;
+$ yarn add -D webpack-bundle-analyzer
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;and including it with your plugins in your Webpack config:
+```js
+const BundleAnalyzerPlugin = require(‘webpack-bundle-analyzer’).BundleAnalyzerPlugin&lt;/p&gt;
+
+&lt;p&gt;module.exports = {&lt;/p&gt;
+
+&lt;p&gt;// rest of config…&lt;/p&gt;
+
+&lt;p&gt;plugins: {
+    new BundleAnalyzerPlugin()
+  }
+}&lt;/p&gt;
+
+&lt;p&gt;```&lt;/p&gt;
+
+&lt;p&gt;Now, anytime you build a new bundle, &lt;code class=&quot;highlighter-rouge&quot;&gt;BundleAnalyzerPlugin&lt;/code&gt; will spin up a server, and open your browser to a visualization of your bundle(s) and dependencies scaled to size. The plugin can take a config object as a parameter, but the defaults should be just fine for most cases. The config options are in the &lt;a href=&quot;https://github.com/th0r/webpack-bundle-analyzer&quot;&gt;docs&lt;/a&gt;. To “turn it off,” you can simply comment out the plugin.&lt;/p&gt;
+
+&lt;p&gt;For Vote, I used this tool to determine which vendor dependencies should be extracted into a &lt;code class=&quot;highlighter-rouge&quot;&gt;vendor.js&lt;/code&gt; bundle.&lt;/p&gt;
+
+&lt;h4 id=&quot;splitting-bundles&quot;&gt;Splitting Bundles&lt;/h4&gt;
+
+&lt;p&gt;A lot of quick wins can be gained by splitting up your bundle. To start, putting your 3rd party libraries in a &lt;code class=&quot;highlighter-rouge&quot;&gt;vendor.js&lt;/code&gt; bundle will not only reduce the file size of the two, but you’ll also be able to take advantage of caching 3rd party dependencies that likely won’t change nearly as often as your application’s code. Your users would only need to download your bulky dependencies once, and they’ll be ready to go almost immediately on future visits. Boom! Just be sure to include a &lt;a href=&quot;https://webpack.js.org/guides/caching/&quot;&gt;chunkHash&lt;/a&gt; with each bundle so that browsers won’t serve old cached bundles after you deploy a new build.&lt;/p&gt;
+
+&lt;p&gt;The implementations for splitting up bundles can get &lt;a href=&quot;https://survivejs.com/webpack/building/splitting-bundles/&quot;&gt;deep&lt;/a&gt; very quickly, so split them up based on how you expect your app to grow, and split more deeply as you need to.&lt;/p&gt;
+
+&lt;p&gt;Some great advice on how to shrink down certain dependencies, and deal with multiple copies of dependencies with different versions can be found in &lt;a href=&quot;https://medium.freecodecamp.com/manually-tuning-webpack-builds-284923f47f44#.799l57uja&quot;&gt;this great post&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;After splitting out your 3rd party dependencies, you can also take advantage of &lt;a href=&quot;https://webpack.js.org/guides/code-splitting-import/&quot;&gt;code splitting&lt;/a&gt; for your application code as well so your users only need to download the necessary code for each “page” of your single page app, instead of the whole thing at once.&lt;/p&gt;
+
+&lt;p&gt;For simplicity, I decided to add just the largest libraries to Vote’s &lt;code class=&quot;highlighter-rouge&quot;&gt;vendor.js&lt;/code&gt; bundle. &lt;code class=&quot;highlighter-rouge&quot;&gt;d3&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;jquery&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;react&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;react-dom&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;moment&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Those dependencies alone made the main &lt;code class=&quot;highlighter-rouge&quot;&gt;bundle.js&lt;/code&gt; much smaller, without an overly-large &lt;code class=&quot;highlighter-rouge&quot;&gt;vendor.js&lt;/code&gt; file.&lt;/p&gt;
+
+&lt;p&gt;If you have a lot more dependencies and modules in a large application, you can spit up your bundles in many different ways, but in this case for Vote, I’m not going to spend the time code splitting further since this app is not getting any larger.&lt;/p&gt;
+
+&lt;h4 id=&quot;optimizing-bundles-for-production&quot;&gt;Optimizing Bundles for Production&lt;/h4&gt;
+
+&lt;p&gt;Making Webpack 2 builds for &lt;a href=&quot;https://webpack.js.org/guides/production-build/&quot;&gt;production&lt;/a&gt; can be as easy as running &lt;code class=&quot;highlighter-rouge&quot;&gt;webpack -p&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;That one flag will minify all of your JavaScript with Webpack’s &lt;code class=&quot;highlighter-rouge&quot;&gt;UglifyJsPlugin&lt;/code&gt;, set all of your loaders’ minimize option to &lt;code class=&quot;highlighter-rouge&quot;&gt;true&lt;/code&gt;, and set the Node environment variable to ‘production’, allowing your code’s production optimizations can take effect. This is important for React as it has a lot of production optimizations.&lt;/p&gt;
+
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;webpack -p&lt;/code&gt; command is very handy for many situations, but for Vote, I wanted to gzip my JavaScript to shrink the bundles even further. That required a bit of config.&lt;/p&gt;
+
+&lt;p&gt;A quick way to cleanly create a production config file for webpack is to use &lt;code class=&quot;highlighter-rouge&quot;&gt;webpack-merge&lt;/code&gt;. This allows you to combine a separate config file with your main &lt;code class=&quot;highlighter-rouge&quot;&gt;webpack.config.js&lt;/code&gt; file to limit code duplication and keep your config files clean and easy to extend. To keep things simple, I decided to simply add a &lt;code class=&quot;highlighter-rouge&quot;&gt;webpack.prod.js&lt;/code&gt; file for production builds, and use my &lt;code class=&quot;highlighter-rouge&quot;&gt;webpack.config.js&lt;/code&gt; file alone for development builds.&lt;/p&gt;
+
+&lt;p&gt;to install:
+&lt;code class=&quot;highlighter-rouge&quot;&gt;
+$ yarn add -D webpack-merge
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Then, instead of exporting your config objects directly, you’ll need to return the config objects as functions. Easy.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;webpack.config.js&lt;/code&gt;:
+```js
+const webpack = require(‘webpack’)&lt;/p&gt;
+
+&lt;p&gt;module.exports = function () {
+  return {
+    // config…
+  }
+}
+```&lt;/p&gt;
+
+&lt;p&gt;The production config function will actually use &lt;code class=&quot;highlighter-rouge&quot;&gt;webpack-merge&lt;/code&gt; to include &lt;code class=&quot;highlighter-rouge&quot;&gt;webpack.config.js&lt;/code&gt;’s config properties as &lt;code class=&quot;highlighter-rouge&quot;&gt;commonConfig&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;```js
+const webpack = require(‘webpack’)
+const CompressionPlugin = require(‘compression-webpack-plugin’)
+const webpackMerge = require(‘webpack-merge’)
+const commonConfig = require(‘./webpack.config.js’)&lt;/p&gt;
+
+&lt;p&gt;module.exports = function (env) {
+  return webpackMerge(commonConfig(), {
+    plugins: [
+      new webpack.LoaderOptionsPlugin({
+        minimize: true,
+        debug: false
+      }),
+      new webpack.DefinePlugin({
+        ‘process.env’: {
+          ‘NODE_ENV’: JSON.stringify(‘production’)
+        }
+      }),
+      new webpack.optimize.UglifyJsPlugin({
+        beautify: false,
+        compress: {
+          screw_ie8: true
+        },
+        comments: false
+      }),
+      new CompressionPlugin({
+        asset: “[path].gz[query]”,
+        algorithm: “gzip”,
+        test: /.js$/,
+        threshold: 10240,
+        minRatio: 0.8
+      })
+    ]
+  })
+}&lt;/p&gt;
+
+&lt;p&gt;```&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;webpackMerge&lt;/code&gt; runs &lt;code class=&quot;highlighter-rouge&quot;&gt;commonConfig()&lt;/code&gt; in its argument and receives &lt;code class=&quot;highlighter-rouge&quot;&gt;webpack.config.js&lt;/code&gt;’s properties.&lt;/p&gt;
+
+&lt;p&gt;The first three plugins are mostly identical to what &lt;code class=&quot;highlighter-rouge&quot;&gt;webpack&lt;/code&gt; includes for you by default when passed the &lt;code class=&quot;highlighter-rouge&quot;&gt;-p&lt;/code&gt; flag, besides some extra options in &lt;code class=&quot;highlighter-rouge&quot;&gt;UglifyJsPlugin&lt;/code&gt; here, but now I was able to add &lt;code class=&quot;highlighter-rouge&quot;&gt;CompressionPlugin&lt;/code&gt; to gzip the &lt;code class=&quot;highlighter-rouge&quot;&gt;.js&lt;/code&gt; bundles spit out by Webpack. We’ll get into how gzipped files can be served from Express, but *Spoiler Alert* you can use &lt;a href=&quot;https://www.npmjs.com/package/express-static-gzip&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;express-static-gzip&lt;/code&gt;&lt;/a&gt; instead of &lt;code class=&quot;highlighter-rouge&quot;&gt;express.static&lt;/code&gt;. &lt;code class=&quot;highlighter-rouge&quot;&gt;express-static-gzip&lt;/code&gt; is a wrapper over &lt;code class=&quot;highlighter-rouge&quot;&gt;express.static&lt;/code&gt; that lets you serve static gzip files from a directory.&lt;/p&gt;
+
+&lt;p&gt;There are likely better ways to gzip files automatically from &lt;code class=&quot;highlighter-rouge&quot;&gt;niginx&lt;/code&gt;, but my &lt;code class=&quot;highlighter-rouge&quot;&gt;nginx&lt;/code&gt;fu is lacking on that front.&lt;/p&gt;
+
+&lt;p&gt;Now, you can add an npm script to build your production bundle:
+&lt;code class=&quot;highlighter-rouge&quot;&gt;js
+&quot;scripts&quot;: {
+  &quot;build-prod&quot;: &quot;webpack --config webpack.prod.js&quot;
+}
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;tree-shaking&quot;&gt;Tree-Shaking&lt;/h3&gt;
+
+&lt;p&gt;Another modern feature in Webpack 2 is tree-shaking. Since Webpack 2 supports ES6 module syntax, it is now able to check for exports in your code during the bundling step and determine if they’re imported anywhere, and remove the exports that no other files import. Then, when you uglify your JavaScript, all of the now-dead export-less code get stripped away. Since the unused modules lost their export calls, the code inside never gets touched. Think of this like the name “tree-shaking” implies. You have a dependency tree of code, and the branches of that tree that are never touched just fall off during the uglify step. Webpack will show you verbose logs about the code being removed during the uglify step.&lt;/p&gt;
+
+&lt;p&gt;There is a problem with this if you use Babel’s &lt;code class=&quot;highlighter-rouge&quot;&gt;es2015&lt;/code&gt; preset, but its easy to fix.&lt;/p&gt;
+
+&lt;p&gt;Just set &lt;code class=&quot;highlighter-rouge&quot;&gt;modules&lt;/code&gt; to false in your &lt;code class=&quot;highlighter-rouge&quot;&gt;.babelrc&lt;/code&gt;:
+&lt;code class=&quot;highlighter-rouge&quot;&gt;
+&quot;presets&quot;: [
+    &quot;react&quot;,
+    [&quot;es2015&quot;, { &quot;modules&quot;: false }]
+  ],
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Babel’s &lt;code class=&quot;highlighter-rouge&quot;&gt;es2015&lt;/code&gt; preset will convert your your ES6 modules to CommonJS modules by default, so just turn it off and your ES6 modules will be respected.&lt;/p&gt;
+
+&lt;h3 id=&quot;linting-with-webpack&quot;&gt;Linting with Webpack&lt;/h3&gt;
+
+&lt;p&gt;Remember Standard? You can use &lt;a href=&quot;https://github.com/MoOx/eslint-loader&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;eslint-loader&lt;/code&gt;&lt;/a&gt; to lint your code before Webpack bundles everything. I did this based on Brian Holt’s recommendation in Complete Intro to React.&lt;/p&gt;
+
+&lt;p&gt;First install:
+&lt;code class=&quot;highlighter-rouge&quot;&gt;
+yarn add -D eslint-loader
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Then, add this to your config:
+&lt;code class=&quot;highlighter-rouge&quot;&gt;js
+module.exports = {
+  // rest of config...
+  module: {
+    rules: [
+      {
+        test: /\.js?$/,
+        enforce: &#39;pre&#39;,
+        loader: &#39;eslint-loader&#39;,
+        exclude: /node_modules/
+      }
+    ]
+  }
+}
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Note &lt;code class=&quot;highlighter-rouge&quot;&gt;enforce: &#39;pre&lt;/code&gt;. That will allow your code to be linted &lt;em&gt;before&lt;/em&gt; webpack’s build step.&lt;/p&gt;
+
+&lt;h4 id=&quot;one-caveat&quot;&gt;One Caveat&lt;/h4&gt;
+
+&lt;p&gt;Keep in mind that &lt;code class=&quot;highlighter-rouge&quot;&gt;eslint-loader&lt;/code&gt; will only see the application code that gets bundled, so your server code will still need to be linted separately. If you’re using Standard and not Semistandard, this is doubly important to protect yourself from ASI related errors. Again, TravisCI can add a final lint check to your build before deploying.&lt;/p&gt;
+
+&lt;h1 id=&quot;the-client&quot;&gt;The Client&lt;/h1&gt;
+
+&lt;p&gt;Vote is a React application that leans heavily on Redux to share state across many components.&lt;/p&gt;
+
+&lt;p&gt;The skeleton of the application is based on Brian Holt’s Complete Intro To React workshops, though I did a heavy refactor of the Redux logic as the features got more complex. I ended up using a pattern similar to &lt;a href=&quot;https://github.com/erikras/ducks-modular-redux&quot;&gt;Ducks&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;react&quot;&gt;React&lt;/h2&gt;
+
+&lt;p&gt;Why React?&lt;/p&gt;
+
+&lt;p&gt;I’ve been a big fan of React because its very stripped down, and funnels you into making good decisions most of the time. It encourages functional programming concepts and has great patterns for handling immutable state and data flow.&lt;/p&gt;
+
+&lt;p&gt;Is React good for everything?&lt;/p&gt;
+
+&lt;p&gt;Of course not. There is no such thing as a one-size-fits-all framework. React work awesomely well for a lot of situations and teams, apps big and small, but if you have a large team of developers working independently on the same app, a more structured framework like Angular 2 or Ember may better serve a team’s needs depending on the company culture. React is very powerful while staying out of your way, but if a team of 10 or 15 developers are working on the same application independently, many different styles of solving the same common problems can make things harder to maintain and tie together, especially as an app grows. Even if React is a lot more fun, easier to work with, and faster to develop with, a framework with more structure and “magic” can potentially be more maintainable over the long term for big projects, even if it is a pain to wrestle with at time. Like a lot of things in computer science, “it depends.” I’ve heard it said that when choosing a framework to use, it’s good to pick the one with the least potential of being the worst possible choice down the line.&lt;/p&gt;
+
+&lt;p&gt;The fact that Redux itself is so simple to reason about and test, and that React UI markup can be expressed so cleanly with JavaScript, those are reasons enough for React and Redux to be my go-to libraries for personal projects. If you know JavaScript, React will feel very natural. React components are just functions that return UIs.&lt;/p&gt;
+
+&lt;h3 id=&quot;reactcreateclass-vs-es6-classes&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;React.createClass&lt;/code&gt; vs ES6 classes&lt;/h3&gt;
+
+&lt;p&gt;Since &lt;a href=&quot;https://facebook.github.io/react/blog/2015/03/10/react-v0.13.html&quot;&gt;React v0.13&lt;/a&gt;, ES6 classes have become the defacto standard for building stateful React components with some &lt;a href=&quot;https://medium.com/@dan_abramov/how-to-use-classes-and-sleep-at-night-9af8de78ccb4#.8he89ybjd&quot;&gt;helpful encouragement&lt;/a&gt; from Dan Abramov.&lt;/p&gt;
+
+&lt;p&gt;I recently used this style for the first time while refactoring my Free Code Camp Wikipedia search project, &lt;a href=&quot;https://github.com/itxchy/FCC-spiffy-wikipedia&quot;&gt;Spiffy Wikipedia&lt;/a&gt;, with &lt;code class=&quot;highlighter-rouge&quot;&gt;create-react-app&lt;/code&gt; (it’s deployed &lt;a href=&quot;https://spiffywikipedia.matttrifilo.com/&quot;&gt;here&lt;/a&gt;). At first it felt annoying to have to bind each method with the constructor’s contextual &lt;code class=&quot;highlighter-rouge&quot;&gt;this&lt;/code&gt;, but if you think about it, this a win from a performance standpoint since React doesn’t need to use any “magic” to bind &lt;code class=&quot;highlighter-rouge&quot;&gt;this&lt;/code&gt; for you like in &lt;code class=&quot;highlighter-rouge&quot;&gt;React.createClass&lt;/code&gt; functions.&lt;/p&gt;
+
+&lt;p&gt;You can even use a &lt;code class=&quot;highlighter-rouge&quot;&gt;react&lt;/code&gt; replacement like &lt;code class=&quot;highlighter-rouge&quot;&gt;preact&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;inferno&lt;/code&gt; which strip away &lt;code class=&quot;highlighter-rouge&quot;&gt;react&lt;/code&gt;’s &lt;code class=&quot;highlighter-rouge&quot;&gt;createClass&lt;/code&gt; logic entirely (plus a lot of other things). The stripped-down half-siblings of React are mostly compatible with React’s APIs, and they’re better optimized for mobile devices. The developers behind Inferno have &lt;a href=&quot;https://github.com/infernojs/inferno#but-why&quot;&gt;good reasons for prioritizing mobile&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Another performance gain can be achieved by using &lt;a href=&quot;https://hackernoon.com/react-stateless-functional-components-nine-wins-you-might-have-overlooked-997b0d933dbc#.8ebtfvkv9&quot;&gt;stateless functional components&lt;/a&gt; as much as you can until you need to use state, methods, or React lifecycle methods.&lt;/p&gt;
+
+&lt;p&gt;For Vote, I used the &lt;code class=&quot;highlighter-rouge&quot;&gt;React.createClass&lt;/code&gt; style for stateful components because that’s what I’d been used to, and how Brian Holt taught Complete Intro To React.&lt;/p&gt;
+
+&lt;p&gt;Practically speaking, I don’t really have a preference of one stateful component style over the other at this point in time, but I do like how I don’t have to worry about forgetting a coma when using ES6 classes. Manually binding methods isn’t a big deal. Looking at the broader community, ES6 classes undeniably the determined direction that most developers have committed to. It’s probably best not to fight the tide, and ensure that your open source code is as readable as possible for the majority of React developers who are used to ES6 classes. Empathy is a virtue. That said, I doubt that Facebook would deprecate &lt;code class=&quot;highlighter-rouge&quot;&gt;React.createClass&lt;/code&gt; in the foreseeable future since so many codebases rely on it.&lt;/p&gt;
+
+&lt;h3 id=&quot;proptypes&quot;&gt;PropTypes&lt;/h3&gt;
+
+&lt;p&gt;The true value of React’s &lt;a href=&quot;https://facebook.github.io/react/docs/typechecking-with-proptypes.html&quot;&gt;PropTypes&lt;/a&gt; really shine while building larger apps.&lt;/p&gt;
+
+&lt;p&gt;Take this example from Vote’s Create A Poll page component:
+```js
+import React from ‘react’
+import NewPollTitle from ‘./NewPollTitle’
+import PendingPollOptions from ‘./PendingPollOptions’
+import SaveOrReset from ‘./SaveOrReset’
+import { connect } from ‘react-redux’
+import {
+  updateOption,
+  setNewPollTitle,
+  setTitleEditable,
+  submitNewPoll,
+  resetNewPoll,
+  resetPollSaved
+} from ‘../../redux/modules/createNewPoll’
+const { object, func, string, bool, array } = React.PropTypes&lt;/p&gt;
+
+&lt;p&gt;const CreateAPoll = React.createClass({
+  propTypes: {
+    poll: object,
+    dispatchUpdateOption: func.isRequired,
+    newPollTitle: string,
+    titleEditable: bool,
+    dispatchSetNewPollTitle: func.isRequired,
+    dispatchSetTitleEditable: func.isRequired,
+    newPollOptions: array,
+    dispatchSubmitPoll: func.isRequired,
+    dispatchResetNewPoll: func.isRequired,
+    dispatchResetPollSaved: func.isRequired,
+    pollSaved: string,
+    user: object
+  },
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.pollSaved) {
+      this.context.router.push(&lt;code class=&quot;highlighter-rouge&quot;&gt;/v/${nextProps.pollSaved}&lt;/code&gt;)
+      this.props.dispatchResetPollSaved()
+    }
+  },
+  render () {
+    const newPoll = true
+    return (
+      &amp;lt;div&amp;gt;
+        &amp;lt;h1 className=&#39;view-title text-center&#39;&amp;gt;Create a New Poll&amp;lt;/h1&amp;gt;
+        &amp;lt;NewPollTitle
+          newPollTitle={this.props.newPollTitle}
+          titleEditable={this.props.titleEditable}
+          dispatchSetNewPollTitle={this.props.dispatchSetNewPollTitle}
+          dispatchSetTitleEditable={this.props.dispatchSetTitleEditable}
+        /&amp;gt;
+        &amp;lt;PendingPollOptions
+          poll={this.props.poll}
+          dispatchUpdateOption={this.props.dispatchUpdateOption}
+        /&amp;gt;
+        &amp;lt;SaveOrReset
+          newPollTitle={this.props.newPollTitle}
+          newPollOptions={this.props.newPollOptions}
+          dispatchResetNewPoll={this.props.dispatchResetNewPoll}
+          dispatchSubmitPoll={this.props.dispatchSubmitPoll}
+          user={this.props.user}
+          poll={this.props.poll}
+          newPoll={newPoll}
+          pollID={null}
+        /&amp;gt;
+      &amp;lt;/div&amp;gt;
+    )
+  }
+})&lt;/p&gt;
+
+&lt;p&gt;CreateAPoll.contextTypes = {
+  router: object.isRequired
+}&lt;/p&gt;
+
+&lt;p&gt;const mapStateToProps = (state) =&amp;gt; {
+  return {
+    poll: state.newPoll,
+    newPollTitle: state.newPoll.newPollTitle,
+    titleEditable: state.newPoll.titleEditable,
+    newPollOptions: state.newPoll.newPollOptions,
+    pollSaved: state.newPoll.pollSaved,
+    user: state.user
+  }
+}&lt;/p&gt;
+
+&lt;p&gt;const mapDispatchToProps = (dispatch) =&amp;gt; {
+  return {
+    dispatchUpdateOption (newOptions) {
+      dispatch(updateOption(newOptions))
+    },
+    dispatchSetNewPollTitle (pollTitle) {
+      dispatch(setNewPollTitle(pollTitle))
+    },
+    dispatchSetTitleEditable (bool) {
+      dispatch(setTitleEditable(bool))
+    },
+    dispatchResetNewPoll (newPoll) {
+      dispatch(resetNewPoll())
+    },
+    dispatchSubmitPoll (newPoll) {
+      dispatch(submitNewPoll(newPoll))
+    },
+    dispatchResetPollSaved () {
+      dispatch(resetPollSaved())
+    }
+  }
+}&lt;/p&gt;
+
+&lt;p&gt;export default connect(mapStateToProps, mapDispatchToProps)(CreateAPoll)&lt;/p&gt;
+
+&lt;p&gt;```&lt;/p&gt;
+
+&lt;p&gt;There is a lot going on here, but just take a look at all of the &lt;code class=&quot;highlighter-rouge&quot;&gt;propTypes&lt;/code&gt; checking the props coming in from Redux.&lt;/p&gt;
+
+&lt;p&gt;PropTypes allow you to type check your props to ensure your components receive the types they’re expecting. This can catch a lot of bugs early. Using &lt;code class=&quot;highlighter-rouge&quot;&gt;isRequired&lt;/code&gt; will throw a warning if an essential prop doesn’t show up.&lt;/p&gt;
+
+&lt;p&gt;Beyond type checking, the &lt;code class=&quot;highlighter-rouge&quot;&gt;propTypes&lt;/code&gt; property is great for documenting all of the props that your component is expecting.&lt;/p&gt;
+
+&lt;p&gt;If you’re using ES6 class syntax for React, you can include your &lt;code class=&quot;highlighter-rouge&quot;&gt;propTypes&lt;/code&gt; as a &lt;code class=&quot;highlighter-rouge&quot;&gt;static&lt;/code&gt; property. Here’s an &lt;a href=&quot;https://github.com/reactjs/redux/blob/85e2368ea9ff9b308fc873921ddf41929638f130/examples/todomvc/src/components/Header.js#L5&quot;&gt;example&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Note that &lt;code class=&quot;highlighter-rouge&quot;&gt;static&lt;/code&gt; properties are still only at &lt;a href=&quot;https://github.com/hemanth/es-next#class-property-declarations&quot;&gt;Stage-2&lt;/a&gt; in the &lt;a href=&quot;http://www.2ality.com/2015/11/tc39-process.html&quot;&gt;TC39 process&lt;/a&gt;, so you’ll need an extra Babel plugin called &lt;a href=&quot;https://babeljs.io/docs/plugins/transform-class-properties/&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;transform-class-properties&lt;/code&gt;&lt;/a&gt; to transpile them.&lt;/p&gt;
+
+&lt;p&gt;Otherwise, you can tack on &lt;code class=&quot;highlighter-rouge&quot;&gt;propTypes&lt;/code&gt; to your Component &lt;code class=&quot;highlighter-rouge&quot;&gt;class&lt;/code&gt;
+separately:
+```js
+import React, { Component } from ‘react’
+const { string } = React.PropTypes&lt;/p&gt;
+
+&lt;p&gt;class Greeting extends Component {
+  constructor (props) {
+    super (props)&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;this.greet = this.greet.bind(this)   }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;greet () {
+    return &lt;code class=&quot;highlighter-rouge&quot;&gt;${this.props.greetingMessage} ${this.props.name}!&lt;/code&gt;
+  }&lt;/p&gt;
+
+&lt;p&gt;render () {
+    return (
+      &amp;lt;h1&amp;gt;{this.greet}&amp;lt;/h1&amp;gt;
+    )
+  }
+}&lt;/p&gt;
+
+&lt;p&gt;Greeting.propTypes = {
+  greetingMessage: string.isRequired
+  name: string.isRequired
+}&lt;/p&gt;
+
+&lt;p&gt;export default Greeting
+```&lt;/p&gt;
+
+&lt;p&gt;Note the casing difference in &lt;code class=&quot;highlighter-rouge&quot;&gt;React.PropTypes&lt;/code&gt; vs &lt;code class=&quot;highlighter-rouge&quot;&gt;Greeting.propTypes&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;component-hierarchy&quot;&gt;Component Hierarchy&lt;/h3&gt;
+
+&lt;p&gt;The official React docs have a great guide about how to &lt;a href=&quot;https://facebook.github.io/react/docs/thinking-in-react.html&quot;&gt;think about your component structure&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;One of my favorite qualities of React is the ability to compose components in your render function as JSX, effectively treating them as if you’re using custom HTML elements containing whatever you’d like, taking in any attributes you’d like. JSX is just JavaScript, so you can pass in JaveScript expressions to component props as well as regular HTML attributes. These JavaScript expressions can include arrow functions as well.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Digression: One great handy use for arrow functions in React’s synthetic DOM event attributes is when you want to pass an argument to an &lt;code class=&quot;highlighter-rouge&quot;&gt;onClick&lt;/code&gt; event. The native &lt;code class=&quot;highlighter-rouge&quot;&gt;onclick&lt;/code&gt; handler only accepts a function reference with no parameters. &lt;code class=&quot;highlighter-rouge&quot;&gt;onclick&lt;/code&gt; will pass along the click event object to the function its calling as that function’s parameter. You can get around this easily in React:
+&lt;code class=&quot;highlighter-rouge&quot;&gt;jsx
+&amp;lt;a
+  className=&#39;btn btn-danger delete-button&#39;
+  onClick={() =&amp;gt; this.deleteOption(index)}
+  aria-label=&#39;Delete&#39; &amp;gt;
+  &amp;lt;i className=&#39;fa fa-trash-o&#39; aria-hidden=&#39;true&#39; /&amp;gt;
+&amp;lt;/a&amp;gt;
+&lt;/code&gt;
+This way, I was able to use an arrow function inside of &lt;code class=&quot;highlighter-rouge&quot;&gt;onClick&lt;/code&gt;’s JavaScript expression to pass &lt;code class=&quot;highlighter-rouge&quot;&gt;index&lt;/code&gt; to &lt;code class=&quot;highlighter-rouge&quot;&gt;this.deleteOption(index)&lt;/code&gt; as the arrow function’s implicit return value. &lt;code class=&quot;highlighter-rouge&quot;&gt;index&lt;/code&gt; will be the index value from a &lt;code class=&quot;highlighter-rouge&quot;&gt;map&lt;/code&gt; function encapsulating this link.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Decisions about how to break up your UI into components can get subjective, but it makes sense to use the &lt;a href=&quot;https://en.wikipedia.org/wiki/Single_responsibility_principle&quot;&gt;Single Responsibly Principle&lt;/a&gt; as mentioned in the docs. In practice, this can get difficult as applications grow, but simple code doesn’t mean easy code.&lt;/p&gt;
+
+&lt;h4 id=&quot;spiffy-wikipedia-example&quot;&gt;Spiffy Wikipedia Example&lt;/h4&gt;
+
+&lt;p&gt;For a simple example, let’s put Vote aside for a moment and look at my other recently-refactored React project, &lt;a href=&quot;https://github.com/itxchy/FCC-spiffy-wikipedia&quot;&gt;Spiffy Wikipedia&lt;/a&gt;. This project simply allows you to search Wikipedia for a topic using its API, and the see some aesthetically pleasing results.&lt;/p&gt;
+
+&lt;p&gt;Component tree:
+&lt;code class=&quot;highlighter-rouge&quot;&gt;
+- App
+  + Header
+  + SearchBar
+  + SearchResults
+    * Result
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;h5 id=&quot;container-components&quot;&gt;Container Components&lt;/h5&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ReactDOM&lt;/code&gt; renders &lt;a href=&quot;https://github.com/itxchy/FCC-spiffy-wikipedia/blob/master/src/components/App.js&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;App&lt;/code&gt;&lt;/a&gt;:
+```js
+class App extends Component {&lt;/p&gt;
+
+&lt;p&gt;// … check the GitHub repo for the complete code&lt;/p&gt;
+
+&lt;p&gt;render () {
+    return (
+      &amp;lt;div className=&#39;App&#39;&amp;gt;
+        &amp;lt;Header /&amp;gt;
+        &amp;lt;SearchBar onSearchSubmit={this.handleSearchSubmit} /&amp;gt;
+        &amp;lt;SearchResults searchResults={this.state.data} error={this.state.error} /&amp;gt;
+      &amp;lt;/div&amp;gt;
+    )
+  }
+}
+```&lt;/p&gt;
+
+&lt;p&gt;App’s responsibility as a &lt;a href=&quot;https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0#.qlp6sobvr&quot;&gt;container component&lt;/a&gt; is to handle search requests from &lt;code class=&quot;highlighter-rouge&quot;&gt;SearchBar&lt;/code&gt;, and pass the results down to &lt;code class=&quot;highlighter-rouge&quot;&gt;SearchResults&lt;/code&gt; after performing an AJAX call to Wikipedia’s API.&lt;/p&gt;
+
+&lt;p&gt;As Dan Abromov puts it, container components are “concerned with &lt;em&gt;how things work.&lt;/em&gt;”&lt;/p&gt;
+
+&lt;p&gt;Notice that this component only displays other components. The main concern of &lt;code class=&quot;highlighter-rouge&quot;&gt;App&lt;/code&gt; is with handling data and passing it down to its children.&lt;/p&gt;
+
+&lt;h5 id=&quot;presentational-components&quot;&gt;Presentational Components&lt;/h5&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Header&lt;/code&gt;:
+```js
+import React from ‘react’
+import ‘./Header.css’&lt;/p&gt;
+
+&lt;p&gt;function Header (props) {
+  return (
+    &amp;lt;header&amp;gt;
+      &amp;lt;h1&amp;gt;Spiffy Wikipedia&amp;lt;/h1&amp;gt;
+    &amp;lt;/header&amp;gt;
+  )
+}&lt;/p&gt;
+
+&lt;p&gt;export default Header&lt;/p&gt;
+
+&lt;p&gt;```&lt;/p&gt;
+
+&lt;p&gt;Header is a very simple stateless functional component. It shows the header. Notice the &lt;code class=&quot;highlighter-rouge&quot;&gt;Header.css&lt;/code&gt; import. It may seem trivial to make a separate component for such a simple piece of UI, but now, anytime I might want to change the header’s look, I know exactly where to go. Everything about the header’s presentation, from markup to styling, is encapsulated right here inside this component. It has one responsibility.&lt;/p&gt;
+
+&lt;h5 id=&quot;time-to-refactor&quot;&gt;Time to Refactor&lt;/h5&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;SearchBar&lt;/code&gt;:
+```js
+import React, { Component } from ‘react’
+import ‘./SearchBar.css’
+import { Form, FormGroup, FormControl, Button } from ‘react-bootstrap’&lt;/p&gt;
+
+&lt;p&gt;class SearchBar extends Component {&lt;/p&gt;
+
+&lt;p&gt;// … check the GitHub repo for the complete code&lt;/p&gt;
+
+&lt;p&gt;render () {
+    return (
+      &amp;lt;div className=&#39;form-container&#39;&amp;gt;
+        &amp;lt;Form inline onSubmit={this.handleSubmit}&amp;gt;
+          &lt;formgroup controlid=&quot;searchInput&quot; bssize=&quot;large&quot;&gt;
+            &amp;lt;FormControl
+              type=&#39;text&#39;
+              value={this.state.searchText}
+              placeholder=&#39;What are you looking for?&#39;
+              className=&#39;search-input&#39;
+              onChange={this.handleSearchInputChange}
+            /&amp;gt;
+          &lt;/formgroup&gt;
+          &lt;button type=&quot;submit&quot; bssize=&quot;large&quot; id=&quot;search-submit&quot;&gt;
+            Search
+          &lt;/button&gt;
+        &amp;lt;/Form&amp;gt;
+        &lt;a classname=&quot;chance-link&quot; href=&quot;https://en.wikipedia.org/wiki/Special:Random&quot;&gt;Take a chance!&lt;/a&gt;
+      &amp;lt;/div&amp;gt;
+    )
+  }
+}&lt;/p&gt;
+
+&lt;p&gt;SearchBar.propTypes = {
+  onSearchSubmit: func.isRequired
+}&lt;/p&gt;
+
+&lt;p&gt;export default SearchBar&lt;/p&gt;
+
+&lt;p&gt;```&lt;/p&gt;
+
+&lt;p&gt;There is a code smell here.&lt;/p&gt;
+
+&lt;p&gt;SearchBar is currently a presentational component with one responsibility, which is to present the search bar. It’s doing that single responsibility, but with quite a bit of markup to put a form together, as well as a link to a random Wikipedia article.&lt;/p&gt;
+
+&lt;p&gt;Do you keep everything encapsulated here, or do you break this up with components for “SearchForm”, “Button” inside “SearchForm”, and “ChanceLink”? This is where things get subjective. If you’re not careful, you could end up making a component for every synthetic DOM element. On the other hand, it’s good for readability and maintainability to keep components as simple as possible.&lt;/p&gt;
+
+&lt;p&gt;One easy compromise would be to make a &lt;code class=&quot;highlighter-rouge&quot;&gt;SearchForm&lt;/code&gt; component to be responsible for the form itself, and leave the chance link in &lt;code class=&quot;highlighter-rouge&quot;&gt;SearchBar&lt;/code&gt; since its only one simple link element:
+```js
+class SearchBar extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      searchText: ‘’
+    }
+    this.handleSearchInputChange = this.handleSearchInputChange.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
+  }&lt;/p&gt;
+
+&lt;p&gt;handleSearchInputChange (event) {
+    this.setState({ searchText: event.target.value })
+  }&lt;/p&gt;
+
+&lt;p&gt;handleSubmit (event) {
+    event.preventDefault()
+    if (!this.state.searchText) {
+      return
+    }
+    this.props.onSearchSubmit(this.state.searchText.trim())
+    this.setState({ searchText: ‘’ })
+  }
+  render () {
+    return (
+      &amp;lt;div className=&#39;form-container&#39;&amp;gt;
+        &amp;lt;SearchForm
+          handleSubmit={this.handleSubmit}
+          searchText={this.state.searchText}
+          handleSearchInputChange={this.handleSearchInputChange} /&amp;gt;
+        &lt;a classname=&quot;chance-link&quot; href=&quot;https://en.wikipedia.org/wiki/Special:Random&quot;&gt;Take a chance!&lt;/a&gt;
+      &amp;lt;/div&amp;gt;
+    )
+  }
+}&lt;/p&gt;
+
+&lt;p&gt;SearchBar.propTypes = {
+  onSearchSubmit: func.isRequired
+}
+```&lt;/p&gt;
+
+&lt;p&gt;Now that render function is much cleaner. I included the rest of the code here to illustrate how SearchBar’s methods and state can be passed down as props.&lt;/p&gt;
+
+&lt;h5 id=&quot;data-flow&quot;&gt;Data Flow&lt;/h5&gt;
+
+&lt;p&gt;As events get triggered in the &lt;code class=&quot;highlighter-rouge&quot;&gt;SearchForm&lt;/code&gt; component, SearchForm itself doesn’t alter data or handle events. SearchForm simply passes events up to SearchBar, either an input value change, or a submit event. If SearchBar gets an input change event from &lt;code class=&quot;highlighter-rouge&quot;&gt;this.handleSearchInputChange&lt;/code&gt;, called from SearchForm, SearchBar updates its state, and passes that new state down to SearchForm’s &lt;code class=&quot;highlighter-rouge&quot;&gt;searchText&lt;/code&gt; prop as the new data. SearchForm can than update the form with the new data it receives. When SearchForm’s form is submitted, it can call SearchBar’s &lt;code class=&quot;highlighter-rouge&quot;&gt;this.handleSubmit&lt;/code&gt; method, which SearchForm received as a &lt;code class=&quot;highlighter-rouge&quot;&gt;handleSubmit&lt;/code&gt; prop from SearchBar. SearchBar will handle the submit by passing the form data up to App using App’s &lt;code class=&quot;highlighter-rouge&quot;&gt;handleSearchSubmit&lt;/code&gt; method, which App passed down to SearchBar as a prop called &lt;code class=&quot;highlighter-rouge&quot;&gt;onSearchSubmit&lt;/code&gt;. SearchBar doesn’t care about the details of how to searches are actually submitted. That’s &lt;code class=&quot;highlighter-rouge&quot;&gt;App&lt;/code&gt;’s responsibility.&lt;/p&gt;
+
+&lt;p&gt;The important takeaway is that data always moves in one direction. This is the essence of one-way data-binding. If anything breaks, its easy to trace where  something went wrong because data only moves in a single direction when an event happens. Typing something into the form doesn’t update the DOM form directly like you’d expect natively. Instead, your keystroke is triggering a change event, which eventually culminates with React rendering the form’s text from its own state. This happens so fast, it feels native. This behavior happens in what’s called a &lt;a href=&quot;https://facebook.github.io/react/docs/forms.html&quot;&gt;controlled component&lt;/a&gt;. React is handling the form state, instead of allowing the native DOM to handle form state in the browser. The process of debugging errors in this sort of flow is a lot easier than in other paradigms where data can be passed in both directions. Two-way data binding makes it hard to determine the source of bugs if you don’t know where the data is coming from when a bug occurs. In large, complex apps, this can be a nightmare. Thankfully, Angular has moved passed that in later versions, and many other frameworks have embraced one-way data-binding.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://facebook.github.io/react/blog/2015/09/02/new-react-developer-tools.html&quot;&gt;React Dev Tools&lt;/a&gt; even allow you to watch state updates in real time!&lt;/p&gt;
+
+&lt;h5 id=&quot;escalating-to-redux&quot;&gt;Escalating to Redux&lt;/h5&gt;
+
+&lt;p&gt;Now, what if I decided to add a dropdown component of look-ahead search results SearchForm?&lt;/p&gt;
+
+&lt;p&gt;It would make sense to include the dropdown’s UI as a separate component, but what if it needs to call &lt;a href=&quot;https://github.com/itxchy/FCC-spiffy-wikipedia/blob/master/src/components/App.js#L28&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;loadWikiData&lt;/code&gt;&lt;/a&gt; from &lt;code class=&quot;highlighter-rouge&quot;&gt;App.js&lt;/code&gt;  every 400 ms to load results?&lt;/p&gt;
+
+&lt;p&gt;Let’s reference the updated component tree:
+&lt;code class=&quot;highlighter-rouge&quot;&gt;
+- App (WikiContainer)
+    + SearchBar
+      * SearchForm
+        - LookAheadDropdown
+          + LookAheadResult
+    + SearchResults
+      * Result
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;We don’t need to flesh out the new components in code to realize we’d have a problem. To pull this off, we’d need to pass &lt;code class=&quot;highlighter-rouge&quot;&gt;App&lt;/code&gt;’s &lt;code class=&quot;highlighter-rouge&quot;&gt;loadWikiData&lt;/code&gt; method down as a prop through &lt;code class=&quot;highlighter-rouge&quot;&gt;SearchBar&lt;/code&gt;, into &lt;code class=&quot;highlighter-rouge&quot;&gt;SearchForm&lt;/code&gt;, and possibly even to &lt;code class=&quot;highlighter-rouge&quot;&gt;LookAheadDropdown&lt;/code&gt; depending on whether &lt;code class=&quot;highlighter-rouge&quot;&gt;SearchForm&lt;/code&gt; gets refactored to include &lt;code class=&quot;highlighter-rouge&quot;&gt;handleSearchInputChange&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;handleSubmit&lt;/code&gt; instead of &lt;a href=&quot;https://github.com/itxchy/FCC-spiffy-wikipedia/blob/master/src/components/SearchBar/SearchBar.js&quot;&gt;SearchBar&lt;/a&gt; to further clarify each components’ single responsibility. But that’s not all! We’d need to pass &lt;a href=&quot;https://github.com/itxchy/FCC-spiffy-wikipedia/blob/master/src/components/App.js#L13&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;state.data&lt;/code&gt;&lt;/a&gt; from &lt;code class=&quot;highlighter-rouge&quot;&gt;App&lt;/code&gt; down the component tree to at least &lt;code class=&quot;highlighter-rouge&quot;&gt;SearchForm&lt;/code&gt; as well.&lt;/p&gt;
+
+&lt;p&gt;This is an example of the data tunneling problem. As the components get nested deeper, so do the layers of components that data and events need to pass through. This is when Redux’s predictable complexity becomes more desirable than the unpredictable complexity of data tunneling which can grow over time.&lt;/p&gt;
+
+&lt;h2 id=&quot;redux&quot;&gt;Redux&lt;/h2&gt;
+
+&lt;p&gt;In essence, Redux allows you to store and manage all of your React state outside of your React components.&lt;/p&gt;
+
+&lt;p&gt;It’s uses a variation of the &lt;a href=&quot;https://facebook.github.io/flux/docs/in-depth-overview.html#content&quot;&gt;Flux&lt;/a&gt; architecture from Facebook. Flux is a pattern, not an implementation, that describes a “store”, or multiple “stores”, which are objects that hold on to your immutable state, “actions” which trigger state changes, and “dispatchers” which trigger actions based on UI events, or other events. When a store is updated, the view layer (usually React) receives the new state as props, and updates its UI with the changes. Flux has a lot of other pieces to it which I won’t dig into here since you’ll likely be using a Flux implementation library like Redux. Flux is complicated because it solves a much more complicated problem. Facebook’s UI code is very complex, with many hundreds (thousands?) of deeply nested components, many needing to share props and state. Just imagine building Facebook UIs with React alone.&lt;/p&gt;
+
+&lt;p&gt;There are &lt;a href=&quot;https://github.com/voronianski/flux-comparison&quot;&gt;many libraries&lt;/a&gt; implementing the Flux pattern, but Redux has been the most widely used lately and for good reason. Instead of allowing multiple stores, Redux uses a single store for all of your state. Any time an action is dispatched, a reducer function takes in the action plus the current state, and returns a new state object with the changes, not a mutated form of the state object which was passed in as a parameter. This allows for powerful features like time-travel debugging in &lt;a href=&quot;https://github.com/gaearon/redux-devtools&quot;&gt;Redux Developer Tools&lt;/a&gt;, which does exactly what you’d expect. Since reducers create an entirely new state object each time, it’s possible to track those unique objects over time, and pass your application back and forth between states with Redux Dev Tools. This single direction of data flow into the single store object makes debugging very easy since its easy to trace which reducers update state in order over time, and to see how each update affects the state object.&lt;/p&gt;
+
+&lt;p&gt;For big apps, Redux allows you to decouple your components so they don’t need to worry about the flow of state, state-altering methods, or events being passed through the component tree. It all flows in and out of Redux, a la carte style.&lt;/p&gt;
+
+&lt;h3 id=&quot;when-do-you-need-redux&quot;&gt;When Do You Need Redux?&lt;/h3&gt;
+
+&lt;p&gt;Not all apps need Redux, and you shouldn’t use it if you’re not running into the problems it’s meant to solve. There are trade-offs.&lt;/p&gt;
+
+&lt;p&gt;On one hand, Redux allows you share state between components easily, and keep components decoupled and portable.&lt;/p&gt;
+
+&lt;p&gt;On the other hand, Redux adds complexity and weight to your app, making it more tedious to add features and maintain. It also increases your app’s surface area for bugs.&lt;/p&gt;
+
+&lt;p&gt;At what point do you &lt;em&gt;need&lt;/em&gt; Redux?&lt;/p&gt;
+
+&lt;p&gt;Many people don’t mind data-tunneling for small to mid-size apps, but its probably a good idea to bring in Redux once you find yourself with state and props that need to be passed at least two layers deep in multiple parts of your application. As your app grows, those complexities will start to snowball, and refactoring will become more and more difficult.&lt;/p&gt;
+
+&lt;p&gt;If, on the other hand, you have an app with one component a few layers deep that needs to tunnel some state, then you’ll probably be fine just handling the data-tunneling in that instance. The added complexity of Redux would outweigh the complexity of maintaining one data-tunneling occurrence without Redux.&lt;/p&gt;
+
+&lt;p&gt;For Vote, adding Redux was a no-brainer. Many components need access to the &lt;code class=&quot;highlighter-rouge&quot;&gt;user&lt;/code&gt; object in state, which alone would have been a nightmare to pass between components. A higher-order component could have been an option, but there are a number of other bits of state and methods, like &lt;code class=&quot;highlighter-rouge&quot;&gt;flashMessage&lt;/code&gt;’s state-altering methods, which are used in multiple components in different branches of the component tree. Using higher-order components for everything would get hairy fast.&lt;/p&gt;
+
+&lt;p&gt;The added complexity of Redux didn’t hold a candle to the added complexity without it.&lt;/p&gt;
+
+&lt;h3 id=&quot;a-ducks-pattern-variant&quot;&gt;A Ducks Pattern Variant&lt;/h3&gt;
+
+&lt;p&gt;At first, my Redux code lived in a single &lt;code class=&quot;highlighter-rouge&quot;&gt;store.js&lt;/code&gt; file which got unruly very quickly.&lt;/p&gt;
+
+&lt;p&gt;After some research, I read about the &lt;a href=&quot;https://medium.com/@scbarrus/the-ducks-file-structure-for-redux-d63c41b7035c#.yawhsa7sx&quot;&gt;Ducks&lt;/a&gt; Pattern which looked very promising.&lt;/p&gt;
+
+&lt;p&gt;I ended up with a variation of that pattern which worked out well for my needs:
+&lt;code class=&quot;highlighter-rouge&quot;&gt;
+/redux
+  /modules
+    module.js
+    ...
+  Store.js
+  rootReducer.js
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Very simple.&lt;/p&gt;
+
+&lt;p&gt;Store.js:
+```js
+import { applyMiddleware, compose, createStore } from ‘redux’
+import thunk from ‘redux-thunk’
+import rootReducer from ‘./rootReducer’&lt;/p&gt;
+
+&lt;p&gt;export const store = createStore(rootReducer, compose(
+    applyMiddleware(thunk),
+    typeof window === ‘object’ &amp;amp;&amp;amp; typeof window.devToolsExtension !== ‘undefined’ ? window.devToolsExtension() : (f) =&amp;gt; f
+))&lt;/p&gt;
+
+&lt;p&gt;export default store
+```&lt;/p&gt;
+
+&lt;p&gt;The Store.js file simply initializes the store with middleware and the rootReducer. Thanks again to Brian Holt for teaching that very handy devTools initialization parameter. Before that, I used &lt;code class=&quot;highlighter-rouge&quot;&gt;remote-dev-tools&lt;/code&gt; to spin up a separate server to run the dev tools externally while server side rendering. This one-liner is much simpler.&lt;/p&gt;
+
+&lt;p&gt;rootReducer.js:
+```js
+import { combineReducers } from ‘redux’
+import flashMessages from ‘./modules/flashMessage’
+import newPoll from ‘./modules/createNewPoll’
+import user from ‘./modules/auth’
+import allPolls from ‘./modules/getAllPolls’
+import newVote from ‘./modules/submitVote’
+import clientFormValidation from ‘./modules/clientFormValidation’
+import userSignupRequest from ‘./modules/userSignupRequest’
+import userPolls from ‘./modules/getUserPolls’
+import singlePoll from ‘./modules/getSinglePoll’
+import editPoll from ‘./modules/editPoll’
+import deletedPoll from ‘./modules/deletePoll’&lt;/p&gt;
+
+&lt;p&gt;export default combineReducers({
+  flashMessages,
+  newPoll,
+  user,
+  allPolls,
+  newVote,
+  clientFormValidation,
+  userSignupRequest,
+  userPolls,
+  singlePoll,
+  editPoll,
+  deletedPoll
+})&lt;/p&gt;
+
+&lt;p&gt;```&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;rootReducer.js&lt;/code&gt; combines all of the reducer slices into one root reducer.&lt;/p&gt;
+
+&lt;p&gt;One important note is that the name of the exported reducer slice inside each module determines the name of the module’s individual state object in the store.&lt;/p&gt;
+
+&lt;p&gt;Let’s look at the &lt;code class=&quot;highlighter-rouge&quot;&gt;createNewPoll.js&lt;/code&gt; module:
+```js
+import axios from ‘axios’
+import { addFlashMessage } from ‘./flashMessage’&lt;/p&gt;
+
+&lt;p&gt;export const DEFAULT_STATE = {
+  newPollTitle: ‘’,
+  titleEditable: true,
+  newPollOptions: [
+    ‘’,
+    ‘’
+  ],
+  pollSaved: null
+}&lt;/p&gt;
+
+&lt;p&gt;// &lt;strong&gt;**&lt;/strong&gt;* Action Types &lt;strong&gt;**&lt;/strong&gt;* /&lt;/p&gt;
+
+&lt;p&gt;const SET_NEW_POLL_TITLE = ‘SET_NEW_POLL_TITLE’
+const SET_NEW_TITLE_EDITABLE = ‘SET_TITLE_EDITABLE’
+const UPDATE_OPTION = ‘UPDATE_OPTION’
+const RESET_NEW_POLL = ‘RESET_NEW_POLL’
+const POLL_SAVED = ‘POLL_SAVED’
+const RESET_POLL_SAVED = ‘RESET_POLL_SAVED’&lt;/p&gt;
+
+&lt;p&gt;// &lt;strong&gt;**&lt;/strong&gt;* Action Creators &lt;strong&gt;**&lt;/strong&gt;* /&lt;/p&gt;
+
+&lt;p&gt;/**
+ * Sets state.newPollTitle
+ *
+ * @param {string} pollTitle
+ */
+export function setNewPollTitle (pollTitle) {
+  return { type: SET_NEW_POLL_TITLE, value: pollTitle }
+}
+/**
+ * Sets state.titleEditable
+ *
+ * @param {boolean} bool
+ */
+export function setTitleEditable (bool) {
+  return { type: SET_NEW_TITLE_EDITABLE, value: bool }
+}
+/**
+ * Sets state.newPollOptions
+ *
+ * @param {array} updatedOptions - An array of at least 2 strings
+ */
+export function updateOption (updatedOptions) {
+  return { type: UPDATE_OPTION, value: updatedOptions }
+}
+/**
+ * Resets state to DEFAULT_STATE
+ */
+export function resetNewPoll () {
+  return { type: RESET_NEW_POLL }
+}
+/**
+ * Sets state.pollSaved as a new Poll’s ID
+ *
+ * @param {string} pollId - A new poll’s mongoDB _id
+ */
+export function pollSaved (pollId) {
+  return { type: POLL_SAVED, pollId }
+}
+/**
+ * Sets state.pollSaved as null
+ */
+export function resetPollSaved () {
+  return { type: RESET_POLL_SAVED }
+}
+/**
+ * Submits a new poll to the server
+ *
+ * @param {object} newPoll - an object containing a new poll’s title, at least two
+ * options, and the owner (user). Sample: { title: ‘What number?’, options: [‘one’, ‘two’], owner: ‘Lloyd’}
+ *
+ */
+export function submitNewPoll (newPoll) {
+  return dispatch =&amp;gt; {
+    axios.post(‘/api/polls’, newPoll)
+      .then(res =&amp;gt; {
+        console.log(‘newPoll submitted successfully!’, res.data.poll._id)
+        dispatch(resetNewPoll())
+        dispatch(addFlashMessage({ type: ‘success’, text: ‘Poll saved!’ }))
+        dispatch(pollSaved(res.data.poll._id))
+      })
+      .catch(err =&amp;gt; {
+        console.error(‘ERROR: redux: newPoll could not be saved’, err)
+        dispatch(addFlashMessage({ type: ‘error’, text: ‘Something went wrong. Poll coudn&#39;t be saved.’ }))
+      })
+  }
+}&lt;/p&gt;
+
+&lt;p&gt;// &lt;strong&gt;**&lt;/strong&gt;* Reducers &lt;strong&gt;**&lt;/strong&gt;* /&lt;/p&gt;
+
+&lt;p&gt;const setNewPollTitleReducer = (state, action) =&amp;gt; {
+  if (typeof action.value !== ‘string’) {
+    console.error(‘ERROR: redux: setNewPollTitle wasn&#39;t passed a string:’, action.value)
+    return Object.assign({}, state)
+  }
+  return Object.assign({}, state, { newPollTitle: action.value })
+}
+const setTitleEditableReducer = (state, action) =&amp;gt; {
+  if (typeof action.value !== ‘boolean’) {
+    console.error(‘ERROR: redux: setTitleEditable was not passed a boolean:’, action.value)
+    return Object.assign({}, state, { titleEditable: true })
+  }
+  return Object.assign({}, state, { titleEditable: action.value })
+}
+const updateOptionReducer = (state, action) =&amp;gt; {
+  if (action.value.length &amp;lt; 2) {
+    console.error(‘ERROR: redux: less than two options were passed to updateOption:’, action.value)
+    return Object.assign({}, state)
+  }
+  return Object.assign({}, state, { newPollOptions: action.value })
+}
+const resetNewPollReducer = (state, action) =&amp;gt; {
+  const newState = {}
+  const blankPollState = DEFAULT_STATE
+  Object.assign(newState, state, blankPollState)
+  return newState
+}
+const pollSavedReducer = (state, action) =&amp;gt; {
+  if (typeof action.pollId !== ‘string’) {
+    console.error(‘ERROR: redux: pollSaved was not passed an id as a string:’, action.pollId)
+    return Object.assign({}, state, { pollSaved: false })
+  }
+  return Object.assign({}, state, { pollSaved: action.pollId })
+}
+const resetPollSavedReducer = (state, action) =&amp;gt; {
+  return Object.assign({}, state, { pollSaved: null })
+}&lt;/p&gt;
+
+&lt;p&gt;// &lt;strong&gt;**&lt;/strong&gt;* Root Reducer Slice &lt;strong&gt;**&lt;/strong&gt;* /
+export default function newPoll (state = DEFAULT_STATE, action) {
+  switch (action.type) {
+    case SET_NEW_POLL_TITLE:
+      return setNewPollTitleReducer(state, action)
+    case SET_NEW_TITLE_EDITABLE:
+      return setTitleEditableReducer(state, action)
+    case UPDATE_OPTION:
+      return updateOptionReducer(state, action)
+    case RESET_NEW_POLL:
+      return resetNewPollReducer(state, action)
+    case POLL_SAVED:
+      return pollSavedReducer(state, action)
+    case RESET_POLL_SAVED:
+      return resetPollSavedReducer(state, action)
+    default:
+      return state
+  }
+}&lt;/p&gt;
+
+&lt;p&gt;```&lt;/p&gt;
+
+&lt;p&gt;There is a lot going in this file, but it progresses logically. For a &lt;code class=&quot;highlighter-rouge&quot;&gt;newPoll&lt;/code&gt;, the actions, action creators, reducer functions, and the rootReducerSlice are all right here, and not in separate files. Adding a new feature is as easy as adding the relevant code to each section, instead of bouncing back and forth between files. It’s easier to reason about as well (for me at least).&lt;/p&gt;
+
+&lt;p&gt;One way to make this cleaner would be to group the Action Types, Actions, and Reducers together for each feature, and maybe even put each feature into separate files to be imported into this current one for the Root Reducer Slice to use.&lt;/p&gt;
+
+&lt;p&gt;Here’s how grouping just the action creators and reducers together can look:
+```js
+import axios from ‘axios’
+import { addFlashMessage } from ‘./flashMessage’&lt;/p&gt;
+
+&lt;p&gt;export const DEFAULT_STATE = {
+  newPollTitle: ‘’,
+  titleEditable: true,
+  newPollOptions: [
+    ‘’,
+    ‘’
+  ],
+  pollSaved: null
+}&lt;/p&gt;
+
+&lt;p&gt;// &lt;strong&gt;**&lt;/strong&gt;* Action Types &lt;strong&gt;**&lt;/strong&gt;* /&lt;/p&gt;
+
+&lt;p&gt;const SET_NEW_POLL_TITLE = ‘SET_NEW_POLL_TITLE’
+const SET_NEW_TITLE_EDITABLE = ‘SET_NEW_TITLE_EDITABLE’
+const UPDATE_OPTION = ‘UPDATE_OPTION’
+const RESET_NEW_POLL = ‘RESET_NEW_POLL’
+const POLL_SAVED = ‘POLL_SAVED’
+const RESET_POLL_SAVED = ‘RESET_POLL_SAVED’&lt;/p&gt;
+
+&lt;p&gt;// &lt;strong&gt;**&lt;/strong&gt;* Action Creators &amp;amp; Reducers&lt;strong&gt;**&lt;/strong&gt;* /&lt;/p&gt;
+
+&lt;p&gt;/**
+ * Sets state.newPollTitle
+ *
+ * @param {string} pollTitle
+ */
+export function setNewPollTitle (pollTitle) {
+  return { type: SET_NEW_POLL_TITLE, value: pollTitle }
+}
+const setNewPollTitleReducer = (state, action) =&amp;gt; {
+  if (typeof action.value !== ‘string’) {
+    console.error(‘ERROR: redux: setNewPollTitle wasn&#39;t passed a string:’, action.value)
+    return Object.assign({}, state)
+  }
+  return Object.assign({}, state, { newPollTitle: action.value })
+}
+/**
+ * Sets state.titleEditable
+ *
+ * @param {boolean} bool
+ */
+export function setTitleEditable (bool) {
+  return { type: SET_NEW_TITLE_EDITABLE, value: bool }
+}
+const setTitleEditableReducer = (state, action) =&amp;gt; {
+  if (typeof action.value !== ‘boolean’) {
+    console.error(‘ERROR: redux: setTitleEditable was not passed a boolean:’, action.value)
+    return Object.assign({}, state, { titleEditable: true })
+  }
+  return Object.assign({}, state, { titleEditable: action.value })
+}
+/**
+ * Sets state.newPollOptions
+ *
+ * @param {array} updatedOptions - An array of at least 2 strings
+ */
+export function updateOption (updatedOptions) {
+  return { type: UPDATE_OPTION, value: updatedOptions }
+}
+const updateOptionReducer = (state, action) =&amp;gt; {
+  if (action.value.length &amp;lt; 2) {
+    console.error(‘ERROR: redux: less than two options were passed to updateOption:’, action.value)
+    return Object.assign({}, state)
+  }
+  return Object.assign({}, state, { newPollOptions: action.value })
+}
+/**
+ * Resets state to DEFAULT_STATE
+ */
+export function resetNewPoll () {
+  return { type: RESET_NEW_POLL }
+}
+const resetNewPollReducer = (state, action) =&amp;gt; {
+  const newState = {}
+  const blankPollState = DEFAULT_STATE
+  Object.assign(newState, state, blankPollState)
+  return newState
+}
+/**
+ * Sets state.pollSaved as a new Poll’s ID
+ *
+ * @param {string} pollId - A new poll’s mongoDB _id
+ */
+export function pollSaved (pollId) {
+  return { type: POLL_SAVED, pollId }
+}
+const pollSavedReducer = (state, action) =&amp;gt; {
+  if (typeof action.pollId !== ‘string’) {
+    console.error(‘ERROR: redux: pollSaved was not passed an id as a string:’, action.pollId)
+    return Object.assign({}, state, { pollSaved: false })
+  }
+  return Object.assign({}, state, { pollSaved: action.pollId })
+}
+/**
+ * Sets state.pollSaved as null
+ */
+export function resetPollSaved () {
+  return { type: RESET_POLL_SAVED }
+}
+const resetPollSavedReducer = (state, action) =&amp;gt; {
+  return Object.assign({}, state, { pollSaved: null })
+}
+/**
+ * Submits a new poll to the server
+ *
+ * @param {object} newPoll - an object containing a new poll’s title, at least two
+ * options, and the owner (user). Sample: { title: ‘What number?’, options: [‘one’, ‘two’], owner: ‘Lloyd’}
+ *
+ */
+export function submitNewPoll (newPoll) {
+  return dispatch =&amp;gt; {
+    axios.post(‘/api/polls’, newPoll)
+      .then(res =&amp;gt; {
+        console.log(‘newPoll submitted successfully!’, res.data.poll._id)
+        dispatch(resetNewPoll())
+        dispatch(addFlashMessage({ type: ‘success’, text: ‘Poll saved!’ }))
+        dispatch(pollSaved(res.data.poll._id))
+      })
+      .catch(err =&amp;gt; {
+        console.error(‘ERROR: redux: newPoll could not be saved’, err)
+        dispatch(addFlashMessage({ type: ‘error’, text: ‘Something went wrong. Poll coudn&#39;t be saved.’ }))
+      })
+  }
+}&lt;/p&gt;
+
+&lt;p&gt;// &lt;strong&gt;**&lt;/strong&gt;* Root Reducer Slice &lt;strong&gt;**&lt;/strong&gt;* /&lt;/p&gt;
+
+&lt;p&gt;export default function newPoll (state = DEFAULT_STATE, action) {
+  switch (action.type) {
+    case SET_NEW_POLL_TITLE:
+      return setNewPollTitleReducer(state, action)
+    case SET_NEW_TITLE_EDITABLE:
+      return setTitleEditableReducer(state, action)
+    case UPDATE_OPTION:
+      return updateOptionReducer(state, action)
+    case RESET_NEW_POLL:
+      return resetNewPollReducer(state, action)
+    case POLL_SAVED:
+      return pollSavedReducer(state, action)
+    case RESET_POLL_SAVED:
+      return resetPollSavedReducer(state, action)
+    default:
+      return state
+  }
+}&lt;/p&gt;
+
+&lt;p&gt;```&lt;/p&gt;
+
+&lt;p&gt;The file is still pretty long, but this refactor is already much easier to reason about. Keeping Each action creator and its corresponding reducer together eliminate the need to scroll back and forth while changing things, or adding a new action/reducer flow.&lt;/p&gt;
+
+&lt;h3 id=&quot;thunks-middleware&quot;&gt;Thunks Middleware&lt;/h3&gt;
+
+&lt;p&gt;Out of the box, Redux only supports a strictly synchronous &lt;a href=&quot;http://redux.js.org/docs/basics/DataFlow.html&quot;&gt;data flow&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Thankfully, middleware make it easy to dispatch functions and promises, instead of synchronous action creators alone. This allows you to perform operations after a action is dispatched, but before the reducer is called.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/gaearon/redux-thunk&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;redux-thunk&lt;/code&gt;&lt;/a&gt; for example, will hijack a dispatched action when a function is returned and tell Redux “Hey, I’ve got this. Do other things, and I’ll get back to you.” Once an async operation, like commonly a promise, gets resolved or rejected, you can dispatch any actions you’d like depending on result of the promise, and Redux will handle those resulting action dispatches. The final actions must return normal action objects with at least a &lt;code class=&quot;highlighter-rouge&quot;&gt;type&lt;/code&gt; property.&lt;/p&gt;
+
+&lt;p&gt;You can uses a thunk for dispatching actions conditionally as well. A thunk function is simply a wrapper function used to delay the evaluation inside of it.&lt;/p&gt;
+
+&lt;p&gt;You can dispatch more than one action in a &lt;code class=&quot;highlighter-rouge&quot;&gt;.then&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;.catch&lt;/code&gt; callback after a promise is resolved or rejected, but the final actions dispatched must return normal action objects, each with at least a &lt;code class=&quot;highlighter-rouge&quot;&gt;type&lt;/code&gt; property. The module’s root reducer will use the &lt;code class=&quot;highlighter-rouge&quot;&gt;action.type&lt;/code&gt; property of the dispatched action in its switch statement to determine which reducer to run (if any).&lt;/p&gt;
+
+&lt;p&gt;Handling async actions in Redux is simple using thunks.&lt;/p&gt;
+
+&lt;p&gt;Note the &lt;code class=&quot;highlighter-rouge&quot;&gt;axios&lt;/code&gt; call from the example above:
+```js
+/**
+ * Submits a new poll to the server
+ *
+ * @param {object} newPoll - an object containing a new poll’s title, at least two
+ * options, and the owner (user). Sample: { title: ‘What number?’, options: [‘one’, ‘two’], owner: ‘Lloyd’}
+ *
+ */
+export function submitNewPoll (newPoll) {
+  return dispatch =&amp;gt; {&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// You can dispatch a &quot;loading&quot; action here
+
+axios.post(&#39;/api/polls&#39;, newPoll)
+  .then(res =&amp;gt; {
+    console.log(&#39;newPoll submitted successfully!&#39;, res.data.poll._id)
+    dispatch(resetNewPoll())
+    dispatch(addFlashMessage({ type: &#39;success&#39;, text: &#39;Poll saved!&#39; }))
+    dispatch(pollSaved(res.data.poll._id))
+
+    // dispatch loading done!
+  })
+  .catch(err =&amp;gt; {
+    console.error(&#39;ERROR: redux: newPoll could not be saved&#39;, err)
+    dispatch(addFlashMessage({ type: &#39;error&#39;, text: &#39;Something went wrong. Poll coudn\&#39;t be saved.&#39; }))
+
+    // dispatch loading done!
+  })   } } ```
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;After getting a response from the API, a certain set of action creators will get dispatched if the response is successful and the promise is resolved, and other action creators will get dispatched if the response is an error and the promise gets rejected.&lt;/p&gt;
+
+&lt;p&gt;Writing a thunk action involves simply returning a function taking in &lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch&lt;/code&gt; as its parameter, and making your async request (a side effect) within the function.&lt;/p&gt;
+
+&lt;p&gt;Action creators in Redux are meant to be pure functions by default, but thunks allow you to make them “impure” and handle side effects effectively.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/redux-saga/redux-saga&quot;&gt;redux-saga&lt;/a&gt; may be worth looking into as well if you have some complex async logic to handle. Sagas allow &lt;a href=&quot;https://redux-saga.github.io/redux-saga/docs/advanced/TaskCancellation.html&quot;&gt;cancellation&lt;/a&gt; and &lt;a href=&quot;https://redux-saga.github.io/redux-saga/docs/advanced/Concurrency.html&quot;&gt;“concurrency”&lt;/a&gt; in your async operations using generators.&lt;/p&gt;
+
+&lt;p&gt;Note that &lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Web/JavaScript/EventLoop&quot;&gt;“concurrency” in JavaScript&lt;/a&gt; as its used redux-saga involves an event loop on a single thread, and not multiple processes on individual threads like in other languages.&lt;/p&gt;
+
+&lt;p&gt;With web workers however, you can now take advantage of multi-threading with JavaScript. Check out [&lt;code class=&quot;highlighter-rouge&quot;&gt;Hampsters.js]&lt;/code&gt;(https://github.com/austinksmith/Hamsters.js) for that awesomeness. It’s best not to go that route until you absolutely need to.&lt;/p&gt;
+
+&lt;h2 id=&quot;unit-testing&quot;&gt;Unit Testing&lt;/h2&gt;
+
+&lt;p&gt;A lot of wins are gained with unit tests. They force you to think about common edge cases in your business logic and how to handle them, they act as documentation for how your logic works in detail, and they encourage simple, decoupled code. If your code is hard to test, that’s a code smell. As you develop your app, you’re probably going to break things you’ve already worked on as you add more features. Well thought out unit tests will let you know right away when something breaks so you don’t end up with a nasty surprise later on. Just having a test runner touch a good majority of your code frequently is a good sanity check, and it builds confidence in your codebase as it grows even if a lot of people are working on it at the same time.&lt;/p&gt;
+
+&lt;p&gt;There are many great testing libraries and frameworks out there to choose from. I’ve been using &lt;a href=&quot;https://facebook.github.io/jest/&quot;&gt;Jest&lt;/a&gt; lately, but &lt;a href=&quot;https://mochajs.org/&quot;&gt;Mocha&lt;/a&gt; and &lt;a href=&quot;https://github.com/substack/tape&quot;&gt;Tape&lt;/a&gt; are very popular and current as well. Any of them are fine.&lt;/p&gt;
+
+&lt;h3 id=&quot;testing-react-with-jest-and-enzyme&quot;&gt;Testing React with Jest and Enzyme&lt;/h3&gt;
+
+&lt;p&gt;Jest is well suited for React. You can write &lt;a href=&quot;https://facebook.github.io/jest/docs/snapshot-testing.html#content&quot;&gt;snapshot&lt;/a&gt; tests of your components, which render components into markup as JSON using whatever props you’d like. The test fails if the markup changes, and you’ll see a diff of what changed similar to a Git diff. You can update the snapshot by running &lt;code class=&quot;highlighter-rouge&quot;&gt;jest --updateSnapshot&lt;/code&gt; or just &lt;code class=&quot;highlighter-rouge&quot;&gt;jest -u&lt;/code&gt;. Snapshots are far from bulletproof, but they’re cheap and disposable, and will ensure that your markup is rendering as expected.&lt;/p&gt;
+
+&lt;p&gt;For simplicity, let’s go back to &lt;code class=&quot;highlighter-rouge&quot;&gt;[SpiffyWikipedia&lt;/code&gt;](https://github.com/itxchy/FCC-spiffy-wikipedia/blob/master/src/components/SearchResults/SearchResults.test.js) for a snapshot example:
+```js
+import React from ‘react’
+import { shallow } from ‘enzyme’
+import { shallowToJson } from ‘enzyme-to-json’
+import SearchResults from ‘./SearchResults’&lt;/p&gt;
+
+&lt;p&gt;test(‘SearchResults snapshot test’, () =&amp;gt; {
+  const component = shallow(&amp;lt;SearchResults error={null} searchResults={[]} /&amp;gt;)
+  const tree = shallowToJson(component)
+  expect(tree).toMatchSnapshot()
+})&lt;/p&gt;
+
+&lt;p&gt;```&lt;/p&gt;
+
+&lt;p&gt;We’ll get to &lt;code class=&quot;highlighter-rouge&quot;&gt;enzyme&lt;/code&gt; in a moment.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;shallow&lt;/code&gt; renders the component, &lt;code class=&quot;highlighter-rouge&quot;&gt;shallowToJson&lt;/code&gt; creates a JSON tree from &lt;code class=&quot;highlighter-rouge&quot;&gt;shallow&lt;/code&gt;’s render, and you just need to &lt;code class=&quot;highlighter-rouge&quot;&gt;expect&lt;/code&gt; the tree &lt;code class=&quot;highlighter-rouge&quot;&gt;.toMatchSnapshot&lt;/code&gt;. &lt;code class=&quot;highlighter-rouge&quot;&gt;expect&lt;/code&gt; comes with Jest for free.&lt;/p&gt;
+
+&lt;p&gt;If no snapshot file exists, Jest will create one for you. A directory will appear called &lt;code class=&quot;highlighter-rouge&quot;&gt;__snapshots__&lt;/code&gt; in same directory as your test file.&lt;/p&gt;
+
+&lt;p&gt;Beyond snapshots, &lt;code class=&quot;highlighter-rouge&quot;&gt;enzyme&lt;/code&gt; from AirBnB is essential for testing your components more deeply. &lt;code class=&quot;highlighter-rouge&quot;&gt;enzyme&lt;/code&gt; is also commonly used with Mocha.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;enzyme&lt;/code&gt; comes with a few different rendering functions for your components like &lt;a href=&quot;http://airbnb.io/enzyme/docs/api/shallow.html&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;shallow&lt;/code&gt;&lt;/a&gt; and &lt;a href=&quot;http://airbnb.io/enzyme/docs/api/shallow.html&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;mount&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Shallow only renders the component passed to it, and none of its children. It doesn’t render a full DOM, so you won’t get access to DOM API’s or component lifecycle methods. The trade-off is that Shallow is fast. It’s great for testing that markup is showing up properly based on props or state in more detail than snapshots. Shallow should be used as much as possible before using &lt;code class=&quot;highlighter-rouge&quot;&gt;mount&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Another example from &lt;code class=&quot;highlighter-rouge&quot;&gt;SpiffyWikipedia&lt;/code&gt;:
+```js
+import React from ‘react’
+import { shallow } from ‘enzyme’
+import { shallowToJson } from ‘enzyme-to-json’
+import testData from ‘../../testData.json’
+import SearchResults from ‘./SearchResults’
+import Result from ‘../Result/Result’&lt;/p&gt;
+
+&lt;p&gt;test(‘SearchResults snapshot test’, () =&amp;gt; {
+  const component = shallow(&amp;lt;SearchResults error={null} searchResults={[]} /&amp;gt;)
+  const tree = shallowToJson(component)
+  expect(tree).toMatchSnapshot()
+})&lt;/p&gt;
+
+&lt;p&gt;test(‘SearchResults should render a Results component for each Result’, () =&amp;gt; {
+  const component = shallow(&amp;lt;SearchResults error={null} searchResults={testData} /&amp;gt;)
+  expect(component.find(Result).length).toEqual(testData[1].length)
+})&lt;/p&gt;
+
+&lt;p&gt;test(‘SearchResults should render “Nothing Found” if there are no results’, () =&amp;gt; {
+  const component = shallow(&amp;lt;SearchResults error={null} searchResults={[“nothing”, [], [], [], []]} /&amp;gt;)
+  expect(component.text()).toEqual(‘Nothing Found’)
+})&lt;/p&gt;
+
+&lt;p&gt;test(‘SearchResults should render “An error occured.” if an error is passed to props’, () =&amp;gt; {
+  const component = shallow(&amp;lt;SearchResults error= searchResults={null} /&amp;gt;)
+  expect(component.text()).toEqual(‘An error occured.’)
+})&lt;/p&gt;
+
+&lt;p&gt;test(‘SearchResults should render “An error occured.” if nothis is passed to seachResults or error as props’, () =&amp;gt; {
+  const component = shallow(&amp;lt;SearchResults error={null} searchResults={null} /&amp;gt;)
+  expect(component.text()).toEqual(‘An error occured.’)
+})
+```&lt;/p&gt;
+
+&lt;p&gt;These tests are simply testing that the correct markup and components appear depending on what prop values are passed into &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;SearchResults /&amp;gt;&lt;/code&gt;. Shallow has a lot of properties you can use, and they have great &lt;a href=&quot;http://airbnb.io/enzyme/docs/api/shallow.html&quot;&gt;documentation&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;The &lt;a href=&quot;https://github.com/itxchy/FCC-spiffy-wikipedia/blob/master/src/components/SearchBar/SearchBar.js&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;SearchBar&lt;/code&gt;&lt;/a&gt; component was a bit more complicated to test. A few events needed to be simulated, so &lt;code class=&quot;highlighter-rouge&quot;&gt;mount&lt;/code&gt; was used instead of &lt;code class=&quot;highlighter-rouge&quot;&gt;shallow&lt;/code&gt;:
+```js
+import React from ‘react’
+import { shallow, mount } from ‘enzyme’
+import { shallowToJson } from ‘enzyme-to-json’
+import SearchBar from ‘./SearchBar’&lt;/p&gt;
+
+&lt;p&gt;test(‘SearchBar snapshot test’, () =&amp;gt; {
+  const submitHandler = jest.fn()
+  const component = shallow(&amp;lt;SearchBar onSearchSubmit={submitHandler} /&amp;gt;)
+  const tree = shallowToJson(component)
+  expect(tree).toMatchSnapshot()
+})&lt;/p&gt;
+
+&lt;p&gt;test(‘SeachBar should change state.searchText on every keystroke’, () =&amp;gt; {
+  const submitHandler = jest.fn()
+  const component = mount(&amp;lt;SearchBar onSearchSubmit={submitHandler} /&amp;gt;)
+  component.find(‘.search-input’).simulate(‘change’, { target: { value: ‘search term’} })
+  expect(component.state(‘searchText’)).toEqual(‘search term’)
+})&lt;/p&gt;
+
+&lt;p&gt;test(‘SearchBar should call onSearchSubmit from props on populated form submit’, () =&amp;gt; {
+  const submitHandler = jest.fn()
+  const component = mount(&amp;lt;SearchBar onSearchSubmit={submitHandler} /&amp;gt;)
+  component.setState({ searchText: ‘Prince’ })
+  component.find(‘#search-submit’).simulate(‘click’)
+  expect(submitHandler).toHaveBeenCalledWith(‘Prince’)
+})&lt;/p&gt;
+
+&lt;p&gt;test(‘SearchBar should not call onSearchSubmit from props if input is empty’, () =&amp;gt; {
+  const submitHandler = jest.fn()
+  const component = mount(&amp;lt;SearchBar onSearchSubmit={submitHandler} /&amp;gt;)
+  component.find(‘#search-submit’).simulate(‘click’)
+  expect(submitHandler).not.toHaveBeenCalled()
+})&lt;/p&gt;
+
+&lt;p&gt;```&lt;/p&gt;
+
+&lt;p&gt;Mount renders full DOM allowing you to interact with DOM API’s as well as component lifecycle methods.&lt;/p&gt;
+
+&lt;p&gt;In the tests above, form change events and button click events are simulated to test how the component handles them.&lt;/p&gt;
+
+&lt;p&gt;This is about as deep as I’ve gotten with testing React components. You can test all sorts of aspects of their behavior, but I think its a good idea to let your React components focus mainly on presentation, and limit business logic in React as much as possible. If you’re components have a lot of complex operations going on, you can easily abstract that logic out of React and into small external modules that are much easier to test thoroughly. By the time your app needs Redux, most of your business logic will be handled by your action creators and reducers which are very easy to test as they’re just JavaScript. Nothing magical or fancy.&lt;/p&gt;
+
+&lt;h3 id=&quot;testing-redux-with-jest&quot;&gt;Testing Redux with Jest&lt;/h3&gt;
+
+&lt;p&gt;Testing Redux is as easy as simulating an action being reduced into new state, and testing that new state against your expectations. Let’s look at few examples from Vote.&lt;/p&gt;
+
+&lt;p&gt;A few action creators alongside their reducers in &lt;a href=&quot;https://github.com/itxchy/FCC-vote/blob/master/redux/modules/createNewPoll.js&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;createNewPoll.js&lt;/code&gt;&lt;/a&gt;:
+```js
+// … /&lt;/p&gt;
+
+&lt;p&gt;/**
+ * Sets state.newPollOptions
+ *
+ * @param {array} updatedOptions - An array of at least 2 strings
+ */
+export function updateOption (updatedOptions) {
+  return { type: UPDATE_OPTION, value: updatedOptions }
+}
+const updateOptionReducer = (state, action) =&amp;gt; {
+  if (action.value.length &amp;lt; 2) {
+    console.error(‘ERROR: redux: less than two options were passed to updateOption:’, action.value)
+    return Object.assign({}, state)
+  }
+  return Object.assign({}, state, { newPollOptions: action.value })
+}
+/**
+ * Resets state to DEFAULT_STATE
+ */
+export function resetNewPoll () {
+  return { type: RESET_NEW_POLL }
+}
+const resetNewPollReducer = (state, action) =&amp;gt; {
+  const newState = {}
+  Object.assign(newState, state, DEFAULT_STATE)
+  return newState
+}
+/**
+ * Sets state.pollSaved as a new Poll’s ID
+ *
+ * @param {string} pollId - A new poll’s mongoDB _id
+ */
+export function pollSaved (pollId) {
+  return { type: POLL_SAVED, pollId }
+}
+const pollSavedReducer = (state, action) =&amp;gt; {
+  if (typeof action.pollId !== ‘string’) {
+    console.error(‘ERROR: redux: pollSaved was not passed an id as a string:’, action.pollId)
+    return Object.assign({}, state, { pollSaved: false })
+  }
+  return Object.assign({}, state, { pollSaved: action.pollId })
+}&lt;/p&gt;
+
+&lt;p&gt;// … /
+```&lt;/p&gt;
+
+&lt;p&gt;And here are their tests in &lt;a href=&quot;https://github.com/itxchy/FCC-vote/blob/master/redux/modules/createNewPoll.spec.js&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;createNewPoll.spec.js&lt;/code&gt;&lt;/a&gt;:
+```js
+// … /&lt;/p&gt;
+
+&lt;p&gt;describe(‘updateOption’, () =&amp;gt; {
+    it(‘should set state.newPollOptions as the array of option strings passed to it’, () =&amp;gt; {
+      let state = newPollReducerSlice(null, updateOption([‘thing 1’, ‘thing 2’]))
+      expect(state.newPollOptions).toEqual(expect.arrayContaining([‘thing 1’, ‘thing 2’]))
+    })
+    it(‘should return previous state if less than two option strings are given’, () =&amp;gt; {
+      let state = Object.assign({}, DEFAULT_STATE, { newPollOptions: [‘thing 1’, ‘thing 2’]})
+      let newState = newPollReducerSlice(state, updateOption([‘thing 3’]))
+      expect(newState.newPollOptions).toEqual(expect.arrayContaining([‘thing 1’, ‘thing 2’]))
+    })
+  })&lt;/p&gt;
+
+&lt;p&gt;describe(‘resetNewPoll’, () =&amp;gt; {
+    it(‘should return the createNewPoll module to its default state’, () =&amp;gt; {
+      let state = Object.assign({}, DEFAULT_STATE, { newPollTitle: ‘Things’ })
+      expect(state.newPollTitle).toBe(‘Things’)
+      let newState = newPollReducerSlice(state, resetNewPoll())
+      expect(newState).toEqual(DEFAULT_STATE)
+    })
+  })&lt;/p&gt;
+
+&lt;p&gt;describe(‘pollSaved’, () =&amp;gt; {
+    it(‘should set state.pollSaved as a string of a new poll&#39;s id’, () =&amp;gt; {
+      let state = newPollReducerSlice(null, pollSaved(‘asdfASDF’))
+      expect(state.pollSaved).toBe(‘asdfASDF’)
+    })
+    it(‘should set state.pollSaved as false if a string is not passed to pollSaved’, () =&amp;gt; {
+      let state = newPollReducerSlice(null, pollSaved(undefined))
+      expect(state.pollSaved).toBe(false)
+    })
+  })&lt;/p&gt;
+
+&lt;p&gt;// … /
+```&lt;/p&gt;
+
+&lt;p&gt;In each test, &lt;code class=&quot;highlighter-rouge&quot;&gt;createNewPoll.js&lt;/code&gt;’s root reducer slice is returning a new state object based on the previous state, and an action or an action creator’s returned action. Then, its just a matter of seeing if the new state is what you expect it to be. If not, you know exactly where to look for the bug.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;A root reducer slice is simply the module’s exported reducer that gets passed to combineReducer in the rootReducer.js file. It’s a bit confusing to think about at first. Put another way, the root reducer is Redux’s main reducer that reduces everything into its one state object. The root reducer is comprised of a number of root reducer slices, each being an individual modules main reducer. A module’s main reducer (or root reducer slice) will call one of the many individual reducers in that module if an action’s type gets matched. That reducer will return a new state, and it will be passed back to combineReducers into Redux’s main root reducer, and Redux’s store will have a brand new state object.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;A lot more edge cases need to be considered for these tests like wrong types out-of-range values, super long strings, etc. being passed as parameters to action creators, but this is a good start. In production apps with real clients, thousands of users will use and abuse your forms every day. Applications need to be hardened against bad data. This is important for security too, but more on that later.&lt;/p&gt;
+
+&lt;h2 id=&quot;styling&quot;&gt;Styling&lt;/h2&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;webpack&lt;/code&gt; makes it easy to modularize your CSS and import individual CSS modules into your React components. &lt;code class=&quot;highlighter-rouge&quot;&gt;create-react-app&lt;/code&gt; encourages this by default, and I really enjoyed this workflow in my &lt;a href=&quot;https://github.com/itxchy/FCC-spiffy-wikipedia/blob/master/src/components/Result/Result.css&quot;&gt;Spiffy Wikipeda&lt;/a&gt; app. Maintaining CSS styles is getting easier all the time. &lt;a href=&quot;https://github.com/postcss/postcss&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;PostCSS&lt;/code&gt;&lt;/a&gt; offers many powerful plugins as well, which will work with your favorite CSS preprocessor.&lt;/p&gt;
+
+&lt;p&gt;For vote, I’ll admit I didn’t focus as much attention on styling as I should have. For simplicity, I elected to keep my SASS and CSS considerations separate from my React code. I used &lt;code class=&quot;highlighter-rouge&quot;&gt;webpack&lt;/code&gt;’s &lt;code class=&quot;highlighter-rouge&quot;&gt;ExtractTextPlugin&lt;/code&gt; to bundle all of the compiled CSS into a separate css file, and import the &lt;code class=&quot;highlighter-rouge&quot;&gt;main.scss&lt;/code&gt; directly into &lt;a href=&quot;https://github.com/itxchy/FCC-vote/blob/master/components/BrowserEntry.jsx#L4&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;BrowserEntry.js&lt;/code&gt;&lt;/a&gt; so Webpack would know about it.&lt;/p&gt;
+
+&lt;p&gt;All of my SCSS files were stored in a separate &lt;code class=&quot;highlighter-rouge&quot;&gt;sass&lt;/code&gt; directory, the idea being to keep styling concerns and React component concerns separate. But isn’t the &lt;em&gt;styling&lt;/em&gt; of a component part of a component’s concerns? Depends on who you ask I guess, but importing your SASS or CSS modules directly into the components that need them makes a lot of sense. Instead of going through a separate directory tree looking for the style module that’s responsible for your component, and managing the file structure of a separate style directory, it makes sense to keep your CSS or SASS together with the components they’re styling. This is good for a faster workflow, and it makes it easier to use CSS conventions like &lt;a href=&quot;https://en.bem.info/methodology/key-concepts/&quot;&gt;BEM&lt;/a&gt;. Instead of mirroring your CSS directory with your component directory, you can keep your components even more self contained in their file structure.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../public/img/css-structure.png&quot; alt=&quot;Styling in its own directory compared with keeping styles with their components.&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;How&lt;/em&gt; to &lt;a href=&quot;https://webpack.js.org/guides/code-splitting-css/&quot;&gt;bundle your CSS&lt;/a&gt; is another consideration. Using &lt;code class=&quot;highlighter-rouge&quot;&gt;ExtractTextPlugin&lt;/code&gt; will allow you to load your CSS in a separate script tag, requiring an additional network request. Including your CSS in a JavaScript bundle will save a network request, but will add to the bundle’s weight.&lt;/p&gt;
+
+&lt;h1 id=&quot;the-server&quot;&gt;The Server&lt;/h1&gt;
+
+&lt;p&gt;Vote uses Express to handle page requests, as well as API requests for CRUD operations with MongoDB.&lt;/p&gt;
+
+&lt;h2 id=&quot;server-side-rendering&quot;&gt;Server Side Rendering&lt;/h2&gt;
+
+&lt;p&gt;Vote’s React markup is rendered on the &lt;a href=&quot;https://github.com/itxchy/FCC-vote/blob/master/server.js&quot;&gt;server&lt;/a&gt; into a string using &lt;code class=&quot;highlighter-rouge&quot;&gt;ReactDOMServer.renderToString&lt;/code&gt;, and passed down to the client. By the time the client bootstraps the JavaScript bundles, the client-side application code from the bundle takes over user interactions. This is great for a few reasons. First, client-side React doesn’t need to re-render the page’s markup when it finally bootstraps in the browser. Second, this allows the server to respond with markup as if it were static (it’s made into static markup on the fly), which is great for users with slow connections. A lot of people are stuck with 2G around the world. Instead of having to wait many seconds for a bundle to download before seeing anything, the pre-rendered markup will show up almost immediately. Once the app’s bundle finishes downloading, the app will be interactive. This is great for SEO, since the pre-rendered markup is crawlable for search engine bots.&lt;/p&gt;
+
+&lt;p&gt;The code itself is very simple. Thanks again to Brain Holt for teaching this pattern in the first Complete Intro To React!&lt;/p&gt;
+
+&lt;p&gt;```js
+app.use((req, res) =&amp;gt; {
+  match({ routes: Routes(), location: req.url }, (error, redirectLocation, renderProps) =&amp;gt; {&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;if (error) {
+  res.status(500).send(error.message)
+
+} else if (redirectLocation) {
+  res.redirect(302, redirectLocation.pathname + redirectLocation.search)
+
+} else if (renderProps) {
+  const body = ReactDOMServer.renderToString(
+    React.createElement(
+      Provider, { store }, React.createElement(RouterContext, renderProps)
+    )
+  )
+  res.status(200).send(template({ body }))
+} else {
+  res.status(404).send(&#39;404: Page Not Found&#39;)
+}   }) }) ```
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Note: that this code works for React Router 2. The &lt;a href=&quot;https://github.com/ReactTraining/react-router/blob/master/docs/guides/ServerRendering.md&quot;&gt;documentation&lt;/a&gt; for server-side rendering doesn’t mention any changes of this pattern from v2 to v3 , but you’ve been warned.&lt;/p&gt;
+
+  &lt;p&gt;React Router 4 is looking amazing and you should probably just make the jump if you’re starting a new project. The final version will be released very soon, and the &lt;a href=&quot;https://reacttraining.com/react-router/&quot;&gt;documentation&lt;/a&gt; got a complete revamp. You can use &lt;a href=&quot;https://reacttraining.com/react-router/#staticrouter&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;StaticRouter&amp;gt;&lt;/code&gt;&lt;/a&gt; and &lt;a href=&quot;https://reacttraining.com/react-router/#match&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;match&lt;/code&gt;&lt;/a&gt; for server-side rendering if you’re using version 4. Brian Holt explains how to tie them together in his second Complete Intro to React course on Front End Masters. It’s worth it! React Router has had a lot of API churn over the past few years, but it the twitter whispers are reliable, version 4 will be the last major API redesign for the foreseeable future. I’m glad Ryan Florence and Michael Jackson elected to take the heat from disgruntled users while working tirelessly to build a more finalized router API that will be much better for the long term. The breaking changes were well worth it to get to this point.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;The code above seems pretty busy at first glance, but let’s break this down.&lt;/p&gt;
+
+&lt;p&gt;```js
+app.use((req, res) =&amp;gt; {&lt;/p&gt;
+
+&lt;p&gt;match({ routes: Routes(), location: req.url }, (error, redirectLocation, renderProps) =&amp;gt; {
+    // handle the result
+  })&lt;/p&gt;
+
+&lt;p&gt;})
+```&lt;/p&gt;
+
+&lt;p&gt;When a request is received by Express, the &lt;code class=&quot;highlighter-rouge&quot;&gt;match&lt;/code&gt; function from &lt;code class=&quot;highlighter-rouge&quot;&gt;react-router&lt;/code&gt; is called. It takes two parameters, the first being an object where it can learn about your application’s &lt;code class=&quot;highlighter-rouge&quot;&gt;routes&lt;/code&gt; (returned from a function in this case), and a &lt;code class=&quot;highlighter-rouge&quot;&gt;location&lt;/code&gt; (the request’s URL) to match to the routes. It can also take in a &lt;code class=&quot;highlighter-rouge&quot;&gt;history&lt;/code&gt; property if you’d like.&lt;/p&gt;
+
+&lt;p&gt;One aside: in your &lt;code class=&quot;highlighter-rouge&quot;&gt;index.html&lt;/code&gt; file, make sure you include a forward slash in your bundle script locations or you might get basename errors when reloading nested routes, or navigating to nested routes directly:&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;html
+    &amp;lt;script src=&quot;/public/vendor.js&quot; charset=&quot;utf-8&quot;&amp;gt;&amp;lt;/script&amp;gt;
+    &amp;lt;script src=&quot;/public/bundle.js&quot; charset=&quot;utf-8&quot;&amp;gt;&amp;lt;/script&amp;gt;
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;match&lt;/code&gt;’s second argument is a callback with three parameters, &lt;code class=&quot;highlighter-rouge&quot;&gt;error&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;redirectLocation&lt;/code&gt;, and &lt;code class=&quot;highlighter-rouge&quot;&gt;renderProps&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;The meat of that callback simply handles an &lt;code class=&quot;highlighter-rouge&quot;&gt;error&lt;/code&gt; if it is defined, a &lt;code class=&quot;highlighter-rouge&quot;&gt;redirectLocation&lt;/code&gt; if it is defined, &lt;code class=&quot;highlighter-rouge&quot;&gt;renderProps&lt;/code&gt; if it is defined (this is how you know there is a successful match between the requested &lt;code class=&quot;highlighter-rouge&quot;&gt;location&lt;/code&gt; and a known route), and finally falls back on a 404 error if none of the callback’s parameters are defined. If there is no error, no renderProps, and no redirect, then there is no match.&lt;/p&gt;
+
+&lt;p&gt;```js
+app.use((req, res) =&amp;gt; {&lt;/p&gt;
+
+&lt;p&gt;match({ routes: Routes(), location: req.url }, (error, redirectLocation, renderProps) =&amp;gt; {
+    if (error) {&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  res.status(500).send(error.message) // 500, something went wrong. You&#39;ll want to send a calming 500.html page instead of the error message itself
+
+} else if (redirectLocation) {
+
+  res.redirect(302, redirectLocation.pathname + redirectLocation.search) // 302 redirect. redirectLocation is a LocationDescriptor object that tells you where to go next.
+
+} else if (renderProps) {
+
+  const body = ReactDOMServer.renderToString(
+    React.createElement(
+      Provider, { store }, React.createElement(RouterContext, renderProps)
+    )
+  ) // Render the things.
+
+  res.status(200).send(template({ body })) // 200 success! A match exists, inject the markup into &amp;lt;%= body %&amp;gt; in index.html and send it out.
+} else {
+  res.status(404).send(&#39;404: Page Not Found&#39;) // No match, must be a 404.
+}   }) }) ```
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;More about &lt;a href=&quot;https://github.com/ReactTraining/react-router/blob/master/docs/Glossary.md#locationdescriptor&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;LocationDescriptor&lt;/code&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;The actual rendering happens thanks to &lt;code class=&quot;highlighter-rouge&quot;&gt;ReactDOMServer.renderToString&lt;/code&gt;. Since this is happening on the server, using JSX would add necessary complexity since JSX needs to be transpiled. Instead, using &lt;code class=&quot;highlighter-rouge&quot;&gt;React.createElement&lt;/code&gt; for the two elements we need works out fine without too much nesting.&lt;/p&gt;
+
+&lt;h4 id=&quot;reactcreateelement-refresher&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;React.createElement&lt;/code&gt; Refresher&lt;/h4&gt;
+
+&lt;p&gt;JSX is syntax to make it easier to compose components. Components are just functions, so we can easily write our components without JSX. &lt;a href=&quot;https://facebook.github.io/react/docs/react-without-jsx.html&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;React.createElement&lt;/code&gt;&lt;/a&gt; takes in three parameters: &lt;code class=&quot;highlighter-rouge&quot;&gt;component&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;props&lt;/code&gt;, and &lt;code class=&quot;highlighter-rouge&quot;&gt;children&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;js
+const body = ReactDOMServer.renderToString(
+  React.createElement(
+    Provider, { store }, React.createElement(RouterContext, renderProps)
+  )
+)
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;In JSX, this would translate to:
+&lt;code class=&quot;highlighter-rouge&quot;&gt;jsx
+const body = (
+  &amp;lt;Provider store={store}&amp;gt;
+    &amp;lt;RouterContext renderProps={renderProps} /&amp;gt;
+  &amp;lt;/Provider&amp;gt;
+)
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Those two elements will render into the entire page’s markup.&lt;/p&gt;
+
+&lt;h3 id=&quot;pre-transpiling-for-node-using-babel&quot;&gt;Pre-Transpiling For Node Using Babel&lt;/h3&gt;
+
+&lt;p&gt;One obstacle to rendering a React application on the server is that Node doesn’t understand JSX or ES6 module syntax, not to mention any other ES2016-ES2017+ syntax we might have leaned on Babel to transpile in the application code.&lt;/p&gt;
+
+&lt;p&gt;There are a few options to transpile the application code for the server.&lt;/p&gt;
+
+&lt;p&gt;Brian Holt teaches with &lt;code class=&quot;highlighter-rouge&quot;&gt;babel-register&lt;/code&gt;, which can be required into your server code.
+&lt;code class=&quot;highlighter-rouge&quot;&gt;js
+require(&#39;babel-register&#39;)({ ignore: /node_modules/ } )
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;I ended up adding an option to ignore &lt;code class=&quot;highlighter-rouge&quot;&gt;node_modules&lt;/code&gt; because I think there was a &lt;code class=&quot;highlighter-rouge&quot;&gt;.babelrc&lt;/code&gt; file somewhere in a 3rd party module that was overriding my own.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;This works great for development, but you don’t want to use this in &lt;a href=&quot;https://github.com/thejameskyle/babel-handbook/blob/master/translations/en/user-handbook.md#babel-register&quot;&gt;production&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;For server-side code, it’s better to transpile ahead of time, instead of &lt;code class=&quot;highlighter-rouge&quot;&gt;babel&lt;/code&gt; Transpiling the same code over and over again on the server.&lt;/p&gt;
+
+&lt;p&gt;To pull this off, I made a &lt;code class=&quot;highlighter-rouge&quot;&gt;production&lt;/code&gt; directory, and set up some &lt;code class=&quot;highlighter-rouge&quot;&gt;npm&lt;/code&gt; scripts to transpile a copy of all of the application code that the server needs to render, and then put that process into the production build step.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;js
+  &quot;scripts&quot;: {
+    &quot;build:prod&quot;: &quot;npm run babel:prod &amp;amp;&amp;amp; webpack --config webpack.prod.js&quot;,
+    &quot;babel:clear&quot;: &quot;del production/*&quot;,
+    &quot;babel:components&quot;: &quot;NODE_ENV=server babel components -d production/components&quot;,
+    &quot;babel:redux&quot;: &quot;NODE_ENV=server babel redux -d production/redux&quot;,
+    &quot;babel:auth&quot;: &quot; NODE_ENV=server babel auth -d production/auth&quot;,
+    &quot;copy:sass&quot;: &quot;mkdir production/sass &amp;amp;&amp;amp; cp -r sass/* production/sass&quot;,
+    &quot;babel:routes&quot;: &quot;NODE_ENV=server babel routes -d production/routes&quot;,
+    &quot;babel:prod&quot;: &quot;npm run babel:clear &amp;amp;&amp;amp; npm run copy:sass &amp;amp;&amp;amp; npm run babel:routes &amp;amp;&amp;amp; npm run babel:components &amp;amp;&amp;amp; npm run babel:redux &amp;amp;&amp;amp; npm run babel:auth&quot;,
+    ...
+  }
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Now, when running &lt;code class=&quot;highlighter-rouge&quot;&gt;build:prod&lt;/code&gt;, all of my application files will be transpiled, and the &lt;code class=&quot;highlighter-rouge&quot;&gt;sass&lt;/code&gt; folder will be copied to the production directory too so that the application doesn’t panic (gross, I know). I’m a a new convert for keeping styles with their components in the same directory to begin with in React apps.&lt;/p&gt;
+
+&lt;p&gt;That’s great, but there are a few more steps.&lt;/p&gt;
+
+&lt;p&gt;It would be a drag to have to transpile everything every time a file changes during development, so it would be nice to still be able to use &lt;code class=&quot;highlighter-rouge&quot;&gt;babel-register&lt;/code&gt; outside of a ‘production’ environment.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;js
+if (process.env.NODE_ENV !== &#39;production&#39;) {
+  require(&#39;babel-register&#39;)({ ignore: /node_modules/ })
+}
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Finally, the correct application files need to be required based on the environment:
+```js
+const { store } = process.env.NODE_ENV === ‘production’ ? require(‘./production/redux/Store.js’) : require(‘./redux/Store.js’)&lt;/p&gt;
+
+&lt;p&gt;const { Routes } = process.env.NODE_ENV === ‘production’ ? require(‘./production/components/Routes.js’) : require(‘./components/Routes.jsx’)
+```&lt;/p&gt;
+
+&lt;p&gt;Now it’s closer to production ready.&lt;/p&gt;
+
+&lt;p&gt;When the app is in a production environment, &lt;code class=&quot;highlighter-rouge&quot;&gt;babel-register&lt;/code&gt; won’t be run, and React will render the pre-transpiled version of the app. During development, &lt;code class=&quot;highlighter-rouge&quot;&gt;babel-register&lt;/code&gt; will transpile on the fly, and ReactDOMServer can point to our actual application code without a lengthy transpilation step before-hand.&lt;/p&gt;
+
+&lt;h2 id=&quot;express-api-routes&quot;&gt;Express API Routes&lt;/h2&gt;
+
+&lt;p&gt;Vote’s API was meant to be &lt;a href=&quot;http://www.restapitutorial.com/lessons/whatisrest.html&quot;&gt;RESTful&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;restful-dialog-between-machines&quot;&gt;RESTful Dialog Between Machines&lt;/h3&gt;
+
+&lt;p&gt;REST is more of a paradigm than a standard that describes an interface between a client and a server that is uniform, stateless, and explicit. Resources are passed between computers (usually in JSON, but XML is still prevalent) in a predictable way, so that the two distinct applications don’t have to care about what languages, libraries, or even hardware each are using. REST is method of communication with its own customs and dialect.&lt;/p&gt;
+
+&lt;p&gt;REST stands for REpresentational State Transfer.&lt;/p&gt;
+
+&lt;h3 id=&quot;crud-logic&quot;&gt;CRUD Logic&lt;/h3&gt;
+
+&lt;p&gt;Making a polling application was a great exercise for creating a server API since a number of simple Create Read Update Delete operations would be necessary.&lt;/p&gt;
+
+&lt;p&gt;From &lt;a href=&quot;https://github.com/itxchy/FCC-vote/blob/master/routes/polls.js&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;polls.js&lt;/code&gt;&lt;/a&gt;
+```js
+/**
+ * Retrieves all polls
+ */
+router.get(‘/’, (req, res) =&amp;gt; {
+  Poll.find()
+    .select(‘_id title options totalVotes owner’)
+    .exec()
+    .then(polls =&amp;gt; {
+      return res.json(polls)
+    })
+    .catch(err =&amp;gt; res.status(500).json({ ‘error retrieving all polls’: err }))
+})&lt;/p&gt;
+
+&lt;p&gt;/**
+ * Retrieves all of a user’s polls
+ */
+router.get(‘/:user’, (req, res) =&amp;gt; {
+  Poll.find({ owner: req.params.user })
+    .select(‘_id title options totalVotes owner’)
+    .exec()
+    .then(polls =&amp;gt; {
+      return res.json(polls)
+    })
+    .catch(err =&amp;gt; res.status(500).json({ ‘error retrieving current user&#39;s polls’: err }))
+})&lt;/p&gt;
+
+&lt;p&gt;/**
+ * Retrieves a single poll based on poll ID
+ */
+router.get(‘/id/:id’, (req, res) =&amp;gt; {
+  Poll.find({ _id: req.params.id })
+    .select(‘_id title options totalVotes owner’)
+    .exec()
+    .then(poll =&amp;gt; {
+      console.log(‘mongo returned this poll:’, poll)
+      return res.json(poll)
+    })
+    .catch(err =&amp;gt; res.status(500).json({ ‘error retrieveing single poll’: err }))
+})&lt;/p&gt;
+
+&lt;p&gt;/**
+ * Deletes a poll forever based on ID
+ */
+router.delete(‘/delete/:id’, (req, res) =&amp;gt; {
+  Poll.find({ _id: req.params.id })
+    .remove()
+    .exec()
+    .then(poll =&amp;gt; {
+      console.log(‘This poll has been deleted!:’, poll)
+      return res.json(poll)
+    })
+    .catch(err =&amp;gt; res.status(500).json({‘error deleting poll’: err}))
+})&lt;/p&gt;
+
+&lt;p&gt;```&lt;/p&gt;
+
+&lt;p&gt;This application uses Express Router, so picture these endpoints as prepended with &lt;code class=&quot;highlighter-rouge&quot;&gt;/api/polls&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Anytime a request reaches the server, it first passes through Express’ middleware, which includes express router. Here’s a heavily redacted &lt;a href=&quot;https://github.com/itxchy/FCC-vote/blob/master/server.js&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;server.js&lt;/code&gt;&lt;/a&gt;:
+```js
+const express = require(‘express’)
+const users = require(‘./routes/users.js’)
+const auth = require(‘./routes/auth.js’)
+const polls = require(‘./routes/polls.js’)
+const app = express()&lt;/p&gt;
+
+&lt;p&gt;app.use(bodyParser.json())&lt;/p&gt;
+
+&lt;p&gt;/**
+ * Routes
+ */
+app.use(‘/api/users’, users)
+app.use(‘/api/auth’, auth)
+app.use(‘/api/polls’, polls)&lt;/p&gt;
+
+&lt;p&gt;app.use(‘/public’, expressStaticGzip(‘./public’))
+```&lt;/p&gt;
+
+&lt;p&gt;One mistake I made while building this API was that I didn’t design a blueprint first.&lt;/p&gt;
+
+&lt;p&gt;It’s a good idea to have all of your endpoints and data schemas mapped out beforehand so you don’t end up having to change it often as you build out features.&lt;/p&gt;
+
+&lt;p&gt;In the example above from &lt;a href=&quot;https://github.com/itxchy/FCC-vote/blob/master/routes/polls.js&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;polls.js&lt;/code&gt;&lt;/a&gt;, those endpoints could be crudely mapped out this way:
+```
+GET: /api/polls
+  - responds with all polls&lt;/p&gt;
+
+&lt;p&gt;GET: /api/polls/:username
+  - responds with all of a user’s polls&lt;/p&gt;
+
+&lt;p&gt;GET: /api/polls/id/:id
+  - responds with a single poll based on its ID&lt;/p&gt;
+
+&lt;p&gt;DELETE: /api/polls/delete/:id
+  - deletes a poll based on its ID, and responds with the just-deleted poll object
+```&lt;/p&gt;
+
+&lt;p&gt;As I developed this application, its easy to see that I built the first two endpoint before the last two. It makes sense to think of endpoints as if you’re accessing a directory structure. In this case, the username endpoint isn’t very descriptive. &lt;code class=&quot;highlighter-rouge&quot;&gt;/api/polls/username/:username&lt;/code&gt; would be more clear.&lt;/p&gt;
+
+&lt;p&gt;The DELETE endpoint could have just pointed to &lt;code class=&quot;highlighter-rouge&quot;&gt;/api/polls/id/:id&lt;/code&gt; as well, but what if someone (possibly me) accidentally set a DELETE request to that URI instead of a GET request to that same URI and it somehow made it to production? Someone could lose priceless data from a groundbreaking poll.&lt;/p&gt;
+
+&lt;p&gt;API design is a deep subject and there are a lot different opinions about them, but REST offers some great guidelines to follow.&lt;/p&gt;
+
+&lt;h3 id=&quot;avoiding-callback-hell-with-asyncawait&quot;&gt;Avoiding Callback Hell With Async/Await&lt;/h3&gt;
+
+&lt;p&gt;Promises work very well by themselves, but I’ve really enjoyed working with &lt;a href=&quot;http://www.2ality.com/2016/10/async-function-tips.html&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;async&lt;/code&gt;/&lt;code class=&quot;highlighter-rouge&quot;&gt;await&lt;/code&gt;&lt;/a&gt; syntax. It allows you to program with asynchronous functions while treating them as if they’re synchronous. Generators and Promises are very effective, but I enjoy the simplicity and readability of &lt;code class=&quot;highlighter-rouge&quot;&gt;async&lt;/code&gt;/&lt;code class=&quot;highlighter-rouge&quot;&gt;await&lt;/code&gt;. It’s really cool that so many great alternatives to callbacks have entered the wild in just a few short years!&lt;/p&gt;
+
+&lt;h4 id=&quot;not-so-fast&quot;&gt;Not So Fast…&lt;/h4&gt;
+
+&lt;p&gt;Unfortunately, Node 6 doesn’t support &lt;code class=&quot;highlighter-rouge&quot;&gt;async&lt;/code&gt;/&lt;code class=&quot;highlighter-rouge&quot;&gt;await&lt;/code&gt;, but &lt;a href=&quot;http://node.green/#ES2017-features-async-functions&quot;&gt;Node 7 does&lt;/a&gt; and Node 8 is scheduled for release in &lt;a href=&quot;https://github.com/nodejs/LTS&quot;&gt;April 2017&lt;/a&gt;! By the time you read this, async/await will probably be available natively in Node.&lt;/p&gt;
+
+&lt;p&gt;For now, I used a library called &lt;code class=&quot;highlighter-rouge&quot;&gt;asyncawait&lt;/code&gt; to be able to use async/await as functions so no transpiling would be necessary.&lt;/p&gt;
+
+&lt;p&gt;```js
+const async = require(‘asyncawait/async’)
+const awaitFake = require(‘asyncawait/await’)&lt;/p&gt;
+
+&lt;p&gt;/**
+ *  Edits a poll
+ */
+router.put(‘/edit/:id’, authenticate, (req, res) =&amp;gt; {
+  const validate = validateUpdatedPoll(res, req.body, commonValidations)
+  if (!validate.isValid) {
+    return res.status(400).json({ ‘bad request’: ‘bad data for poll edit’, errors: validate.errors })
+  }&lt;/p&gt;
+
+&lt;p&gt;const applyPollEdits = async(function applyPollEdits (req, res) {
+    try {
+      let updatedPoll = awaitFake(updatePollDocumentOnEdit(req.params.id, req.body))
+      console.log(‘edit: updatedPoll:’, updatedPoll)
+      if (updatedPoll.updatedDoc) {
+        return res.json(updatedPoll.updatedDoc)
+      }
+      if (updatedPoll.error) {
+        return res.status(500).json({‘poll edit failed in database operation’: updatedPoll.error})
+      }
+    } catch (error) {
+      console.error(error)
+      return res.status(500).json({‘poll edit failed’: error})
+    }
+  })&lt;/p&gt;
+
+&lt;p&gt;applyPollEdits(req, res)
+})&lt;/p&gt;
+
+&lt;p&gt;```&lt;/p&gt;
+
+&lt;p&gt;Keep in mind that &lt;code class=&quot;highlighter-rouge&quot;&gt;async&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;await&lt;/code&gt; are reserved keywords in the spec, and NOT functions like they’re shown here. This &lt;a href=&quot;http://www.2ality.com/2016/10/async-function-tips.html&quot;&gt;2ality article&lt;/a&gt; goes deep into async/await in addition to other asynchronous syntax’s coming soon.&lt;/p&gt;
+
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;asyncawait&lt;/code&gt; library behaves just like the real thing, so it’s fine until I can use async await natively.&lt;/p&gt;
+
+&lt;p&gt;Let’s look at an older commit when I was still using &lt;code class=&quot;highlighter-rouge&quot;&gt;babel-register&lt;/code&gt; on the server for all environments:
+```js
+/**
+ *  Edits a poll
+ */
+router.put(‘/edit/:id’, authenticate, (req, res) =&amp;gt; {
+  const validate = validateUpdatedPoll(res, req.body, commonValidations)
+  if (!validate.isValid) {
+    return res.status(400).json({ ‘bad request’: ‘bad data for poll edit’, errors: validate.errors })
+  }
+  const pollID = req.params.id&lt;/p&gt;
+
+&lt;p&gt;applyPollEdits(req, res)&lt;/p&gt;
+
+&lt;p&gt;async function applyPollEdits (req, res) {
+    try {&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  let updatedPoll = await updatePollDocumentOnEdit(req.params.id, req.body)
+
+  if (updatedPoll.updatedDoc) {
+    return res.json(updatedPoll.updatedDoc)
+  }
+
+  if (updatedPoll.error) {
+    return res.status(500).json(&#39;poll edit failed in database operation&#39;: updatedPoll.error)
+  }
+
+} catch (error) {
+  console.error(error)
+  return res.status(500).json({&#39;poll edit failed&#39;: error})
+}   } }) ```
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Could a promise have been used here? Of course, but this project seemed like a good time to give &lt;code class=&quot;highlighter-rouge&quot;&gt;async&lt;/code&gt;/&lt;code class=&quot;highlighter-rouge&quot;&gt;await&lt;/code&gt; a try, and it’s very simple to use.&lt;/p&gt;
+
+&lt;p&gt;Inside of an async function, you set up &lt;code class=&quot;highlighter-rouge&quot;&gt;try&lt;/code&gt;/&lt;code class=&quot;highlighter-rouge&quot;&gt;catch&lt;/code&gt; blocks. Inside the &lt;code class=&quot;highlighter-rouge&quot;&gt;try&lt;/code&gt; block, you can use &lt;code class=&quot;highlighter-rouge&quot;&gt;await&lt;/code&gt; to essentially tell the function “hey, I’m pausing this context until I hear back from this promise I’m waiting for.” In this code, the expressions following the &lt;code class=&quot;highlighter-rouge&quot;&gt;await&lt;/code&gt; call won’t evaluate until a promise from &lt;code class=&quot;highlighter-rouge&quot;&gt;updatePollDocumentOnEdit&lt;/code&gt; gets resolved or rejected. Once the &lt;code class=&quot;highlighter-rouge&quot;&gt;updatePollDocumentOnEdit&lt;/code&gt; promise resolves, &lt;code class=&quot;highlighter-rouge&quot;&gt;updatedPoll&lt;/code&gt; will receive its new value, and the rest of the function will continue. All of this happens while Node does other things outside of the &lt;code class=&quot;highlighter-rouge&quot;&gt;async&lt;/code&gt; function’s context. If a promise gets rejected, you can handle the error in the &lt;code class=&quot;highlighter-rouge&quot;&gt;catch&lt;/code&gt; block.&lt;/p&gt;
+
+&lt;p&gt;This was a simple example with only one &lt;code class=&quot;highlighter-rouge&quot;&gt;await&lt;/code&gt; statement, but what if you had to perform three or four async function calls? Instead of nested callbacks, or even nested promises, you can use &lt;code class=&quot;highlighter-rouge&quot;&gt;await&lt;/code&gt; to tell the &lt;code class=&quot;highlighter-rouge&quot;&gt;async&lt;/code&gt; function to pause until &lt;code class=&quot;highlighter-rouge&quot;&gt;await&lt;/code&gt; gets a resolution of a promise. This way you can have multiple variables  with &lt;code class=&quot;highlighter-rouge&quot;&gt;await&lt;/code&gt; calls that will run in order, each pausing until its following promise gets resolved:&lt;/p&gt;
+
+&lt;p&gt;```js
+async function workout (run, updateJournal, highIntensityCardio) {
+  try {
+      const averageMileTime = await run({ miles: 2 })
+      const journalEntry = await updateJournal(averageMileTime)
+      const euphoria = await highIntensityCardio()
+      return { euphoria, journalEntry }
+  } catch (error) {
+    return { error }
+  }
+}&lt;/p&gt;
+
+&lt;p&gt;workout(run, updateJournal, highIntensityCardio)&lt;/p&gt;
+
+&lt;p&gt;```&lt;/p&gt;
+
+&lt;p&gt;Many more use cases can be read about &lt;a href=&quot;http://www.2ality.com/2016/10/async-function-tips.html&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h1 id=&quot;the-database-mongodb&quot;&gt;The Database: MongoDB&lt;/h1&gt;
+
+&lt;p&gt;I tried out Posgresql with Vote at first, but switched back to MongoDB mostly because I’m more familiar with Mongo and Mongoose, but also because the data of this app works very well for noSQL objects. Translating the poll schema into SQL tables would have gotten messy very quickly, and I’m not great at SQL scripting. I’m sure there’s an elegant way to do it that I’m not aware of, but Postgresql isn’t going anywhere. The other key factor was being able to use a hosted MongoDB database on &lt;a href=&quot;https://mlab.com/&quot;&gt;mLab&lt;/a&gt; for free.&lt;/p&gt;
+
+&lt;h2 id=&quot;schema&quot;&gt;Schema&lt;/h2&gt;
+
+&lt;p&gt;Going hand-in-hand with designing an API, another key takeaway I took from Vote was thinking about Schema design.&lt;/p&gt;
+
+&lt;p&gt;The Schema for polls went through a few iterations but I ended up with this:
+```js
+const mongoose = require(‘mongoose’)&lt;/p&gt;
+
+&lt;p&gt;const votesSchema = new mongoose.Schema({
+  voter: String
+})&lt;/p&gt;
+
+&lt;p&gt;const optionsSchema = new mongoose.Schema({
+  option: String,
+  votes: [votesSchema]
+})&lt;/p&gt;
+
+&lt;p&gt;const voteSchema = new mongoose.Schema({
+  title: String,
+  options: [optionsSchema],
+  totalVotes: Number,
+  owner: String
+}, { timestamps: true })&lt;/p&gt;
+
+&lt;p&gt;const Poll = mongoose.model(‘Polls’, voteSchema)&lt;/p&gt;
+
+&lt;p&gt;module.exports = Poll
+```&lt;/p&gt;
+
+&lt;p&gt;This could probably be simplified, but having the separate schemas made the structure flat and clean to look at. Each level would be easy to extend as well&lt;/p&gt;
+
+&lt;h2 id=&quot;mongoose&quot;&gt;Mongoose&lt;/h2&gt;
+
+&lt;p&gt;Mongoose allows you to chain commands and use promises to simply MongoDB logic.&lt;/p&gt;
+
+&lt;p&gt;```js
+/**
+ * Looks up a user based on username or email
+ * If no user is found, the response will be null
+ */
+router.get(‘/:identifier’, (req, res) =&amp;gt; {
+  User.find({ $or: [{ email: req.params.identifier }, { username: req.params.identifier }] })
+  .select(‘username email’)
+  .exec()
+  .then(user =&amp;gt; {
+    console.log(‘user found!’, user)
+    if (isEmpty(user)) {
+      return res.json({user: null})
+    }
+    return res.json({user})
+  })
+  .catch(err =&amp;gt; {
+    console.error(‘find user promise rejection’)
+    res.status(400).json({ ‘user lookup error’: err, error: err })
+  })
+})&lt;/p&gt;
+
+&lt;p&gt;```&lt;/p&gt;
+
+&lt;p&gt;This code searches the database for an email or username matching the identifier passed into the login form. The promise gets resolved with a user object (either populated with a found user, or empty), otherwise, the error is passed to the &lt;code class=&quot;highlighter-rouge&quot;&gt;catch&lt;/code&gt; function.&lt;/p&gt;
+
+&lt;p&gt;It’s important to handle rejected promises quickly so that you can debug them in the right context. Without the &lt;code class=&quot;highlighter-rouge&quot;&gt;catch&lt;/code&gt; statement, an error here would be more difficult to trace.&lt;/p&gt;
+
+&lt;h2 id=&quot;development-database-vs-production-database&quot;&gt;Development Database vs Production Database&lt;/h2&gt;
+
+&lt;p&gt;During development, you can spin up a database on your system if MongoDB is installed locally, and connect to it with mongoose.&lt;/p&gt;
+
+&lt;p&gt;You’ll need to create a &lt;code class=&quot;highlighter-rouge&quot;&gt;data&lt;/code&gt; folder in your project’s root directory and another npm script:
+&lt;code class=&quot;highlighter-rouge&quot;&gt;
+&quot;scripts&quot; {
+  &quot;mongo&quot;: &quot;mongod --port 27017 --dbpath=./data&quot;
+}
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;You should see a bunch of logs in your terminal if it’s working.&lt;/p&gt;
+
+&lt;p&gt;Then, you just connect mongoose to &lt;code class=&quot;highlighter-rouge&quot;&gt;mongodb://localhost:27017/[databaseName]&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;For production, you should use an environment variable for your mLab URI, since it’s a bad idea to put security credentials directly into your code, especially if you’re committing to GitHub publicly.&lt;/p&gt;
+
+&lt;p&gt;You can use a conditional statement to connect the proper database based on your node environment:
+```js
+// server.js /
+/**
+ * connect to MongoDB
+ */
+if (process.env.NODE_ENV === ‘production’) {
+  mongoose.connect(process.env.MONGO_URI)
+    .then(() =&amp;gt; {
+      console.log(‘Connected to Mongoose! production environment’)
+    })
+    .catch(err =&amp;gt; {
+      console.error(‘Mongoose production connection failed’, err)
+    })
+} else {
+  mongoose.connect(‘mongodb://localhost:27017/vote’)
+  .then(() =&amp;gt; {
+    console.log(‘Connected to Mongoose! development environment’)
+  })
+  .catch(err =&amp;gt; {
+    console.error(‘Mongoose development connection failed:’, err)
+  })
+}&lt;/p&gt;
+
+&lt;p&gt;```&lt;/p&gt;
+
+&lt;p&gt;Promises make life easier.&lt;/p&gt;
+
+&lt;h1 id=&quot;production&quot;&gt;Production&lt;/h1&gt;
+
+&lt;p&gt;It’s never been easier to deploy to the cloud. You can spin up a VPS instance in a few minutes at Digital Ocean, Linode, and others, or use a platform like Heroku or Amazon EC2 to handle all of the devops for you.&lt;/p&gt;
+
+&lt;p&gt;I think it’s valuable to go through the process of configuring your own VPS server at least once, as its a great learning experience to get you thinking about Linux, permissions, security, configuring a server that’s not Node, caching, and even some rudimentary performance optimizations that you can keep in mind if you build an app that ends up getting real users in the future. Nginx is very powerful, and can be used to stand in front of your node application to serve cached static content much more efficiently.&lt;/p&gt;
+
+&lt;p&gt;If you’re serving customers, that’s when it’s better to use a cloud platform like &lt;a href=&quot;https://aws.amazon.com/ec2/&quot;&gt;AWS&lt;/a&gt; that has a team of seasoned professionals working full time on maintaining the servers as well as security concerns. Plus, it will make scaling out your app quickly a lot easier when your Hat Review app makes it to the front page of Reddit, crushing your server with requests. You’ll pay a premium for the extra pre-configured features, but situations like spikes in traffic (the good kind), DDoS attacks (the bad kind), or even intrusive hacking attempts are commonplace on the modern web. If you’re serving customers, you have a responsibly to ensure consistent uptime, and protect customer data. Security needs to be a top concern at the development stage, but more on that later.&lt;/p&gt;
+
+&lt;p&gt;Cloud platforms like AWS aren’t invincible as a lot people found out recently, but it’s important to remember that no matter how reliable a cloud service seems, they are all still just computers being maintained by humans. Mistakes will happen, guaranteed. There will be plenty more outages at all sorts of companies in the future, whether from mistakes in a terminal command, a natural disaster, or just too many redundancies failing at the same time. Anticipating disasters, and even simulating them, will help you come up with an established playbook for what to do when the probable eventually happens. Performing “fire drills” regularly is a good practice for companies because when disasters do happen, you’ll be following a familiar plan step-by-step, and not reacting to events while in a heightened emotional state. With all of that preparation, however, things will still happen that are beyond your control. When S3 went down, it was probably cheaper for a lot of companies to just accept a few hours of downtime and lost revenue rather than reach for their “solar storm” contingency, which could have taken many more hours to conduct properly than the time of the outage itself. It probably helped that a large chunk of the Internet was in the same boat.&lt;/p&gt;
+
+&lt;h2 id=&quot;continuous-integration&quot;&gt;Continuous Integration&lt;/h2&gt;
+
+&lt;p&gt;Continuous integration services will build your project in the cloud, and run all of your tests and linting to determine whether your app’s build is “passing” or “failing”. This ensures that your app can actually install in a variety of environments, and will help you catch resolve dependencies you may have missed in a project if you used a module that was installed globally on your system. This also keeps you from automatically deploying a build with failing tests. With teams of developers, this adds an automated safety check beyond running unit test suites manually.&lt;/p&gt;
+
+&lt;p&gt;For Vote, I used Circle CI since it’s very easy to use, but I’d recommend Travis CI since it offers a lot more features for free, and their mission is to forever support open source software. Travis CI is heavily integrated with GitHub, and allows maintainers to manage builds from pull requests easily. The &lt;a href=&quot;https://docs.travis-ci.com/user/deployment&quot;&gt;docs&lt;/a&gt; are very good too.&lt;/p&gt;
+
+&lt;p&gt;If you’re using a cloud platform like Heroku, you can deploy to a staging server on every successful build. Travis CI has a &lt;a href=&quot;https://docs.travis-ci.com/user/deployment/heroku/&quot;&gt;guide for that&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;staging-vs-production&quot;&gt;Staging vs Production&lt;/h3&gt;
+
+&lt;p&gt;It’s a good idea to have your automatic deployments first go to a staging server, and then deploy to production manually. The manual production deployment step can be as easy as a single click. This ensures that if a serious mistake passes Travis CI’s build step and testing, you can still catch it before passing it on to the production server.&lt;/p&gt;
+
+&lt;p&gt;A feature like Heroku &lt;a href=&quot;https://devcenter.heroku.com/articles/pipelines&quot;&gt;pipelines&lt;/a&gt; is useful for managing multiple deployments that share the same codebase, and you can deploy code from a staging server to a production server easily and safely knowing that it’s already functioning in actual server’s environment.&lt;/p&gt;
+
+&lt;p&gt;For Vote, I use a free Heroku instance for continuous deployment, and I deploy manually to my own production VPS server after that.&lt;/p&gt;
+
+&lt;h3 id=&quot;logging&quot;&gt;Logging&lt;/h3&gt;
+
+&lt;p&gt;If you have an app that gets steady traffic every day, how do you take your app’s temperature? It seems to be running fine, your unit tests are all passing, and the app hasn’t crashed since your last deployment. That’s all great, but how do you know that your users aren’t hitting some strange edge cases that are causing errors?&lt;/p&gt;
+
+&lt;p&gt;Well, you could look through your application’s logs from &lt;a href=&quot;https://github.com/foreverjs/forever&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;forever&lt;/code&gt;&lt;/a&gt;’s log files, but they can get very long. More importantly, how do you view only the logged errors, and logged actions leading to them, that you’re most interested in for debugging, separate from other errors? What about fatal errors that you even want paged (or emailed) to you as soon as they happen?&lt;/p&gt;
+
+&lt;p&gt;A logger called Bunyan allows you to configure JSON logs that can include as many details as you’d like. Those JSON logs can be pretty-streamed to the console and to an external log file which an external process like &lt;a href=&quot;https://github.com/Kami/node-log-watcher&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;node-log-watcher&lt;/code&gt;&lt;/a&gt; can monitor for you, and send you an email anytime something blows up. You can also stream bunyan logs programmatically, so you can make yourself an IoT wifi siren that will go off anytime Bunyan streams a POST request with a fatal error. Or not, but getting emails about errors you want to know about is very helpful.&lt;/p&gt;
+
+&lt;p&gt;What to log can turn into a rabbit hole, but its helpful to log information about the successful operations that affect users, and log detailed errors when things go wrong. Hopefully, you’ll be able to see what operations happened leading up to the error to help narrow down what went wrong without having to inject a bunch of &lt;code class=&quot;highlighter-rouge&quot;&gt;console.logs&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;To set up bunyan:
+&lt;code class=&quot;highlighter-rouge&quot;&gt;js
+const bunyan = require(&#39;bunyan&#39;)
+const log = bunyan.createLogger({
+  name: &#39;vote&#39;,
+  streams: [
+    {
+      level: &#39;info&#39;,
+      stream: process.stdout
+    },
+    {
+      level: &#39;warn&#39;,
+      path: &#39;log/vote.log&#39;
+    }
+  ]})
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;With this config, levels that are at least “info” will get streamed to &lt;code class=&quot;highlighter-rouge&quot;&gt;process.stout&lt;/code&gt;, and levels that are at least “warn” will get logged into a file called &lt;code class=&quot;highlighter-rouge&quot;&gt;vote.log&lt;/code&gt; in a &lt;code class=&quot;highlighter-rouge&quot;&gt;log&lt;/code&gt; directory at the project’s root. This file can be pretty-printed by running &lt;code class=&quot;highlighter-rouge&quot;&gt;bunyan vote.log&lt;/code&gt; inside the &lt;code class=&quot;highlighter-rouge&quot;&gt;vote&lt;/code&gt; directory.&lt;/p&gt;
+
+&lt;p&gt;Here’s how some helpful logging can work in practice:
+```js
+/**
+ * params: selectedOption number, pollID string, voter string
+ *
+ * Adds a new vote to a poll document. Returns an object
+ * with the updated document and updated votes tally, or
+ * error if unsuccessful.
+ *
+ * returns: Object
+ */
+const updateDocumentWithNewVote = function (selectedOption, pollID, voter) {
+  const votesPath = &lt;code class=&quot;highlighter-rouge&quot;&gt;options.${selectedOption}.votes&lt;/code&gt;
+  return Poll.findOneAndUpdate(
+      { _id: pollID },
+      { $addToSet: { [votesPath]: { ‘voter’: voter } } },
+      { new: true, upsert: true }
+    )
+    .then(updatedDoc =&amp;gt; {
+      let voteTotal = tallyVoteTotal(updatedDoc)&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  log.info(&#39;pollsDb.js: updated document with new vote&#39;, { updatedDoc }, { voteTotal })
+
+  return { updated: true, totalVotes: voteTotal, doc: updatedDoc }
+})
+.catch(err =&amp;gt; {
+
+  log.error(&#39;pollsDb.js: updateDocumentWithNewVote&#39;, { mongoose: true }, { err })
+
+  return { updated: false, error: err }
+}) } ```
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Note the use of &lt;code class=&quot;highlighter-rouge&quot;&gt;log.info&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;log.error&lt;/code&gt;. Both logs will be printed to the console, but the error will also get written to the log file, which can later be searched using &lt;code class=&quot;highlighter-rouge&quot;&gt;bunyan&lt;/code&gt;’s cli.&lt;/p&gt;
+
+&lt;h2 id=&quot;security&quot;&gt;Security&lt;/h2&gt;
+
+&lt;h3 id=&quot;watch-this-talkhttpswwwyoutubecomwatchvpomnl-pruast12s&quot;&gt;&lt;a href=&quot;https://www.youtube.com/watch?v=POmnL-PruAs&amp;amp;t=12s&quot;&gt;Watch this talk&lt;/a&gt;&lt;/h3&gt;
+
+&lt;p&gt;There are a lot of reasons not build your own authentication strategy. Good security is a constantly moving target, and nothing is immune from hackers that want to break in badly enough. Even if you manage to build a reasonably secure authentication strategy that’s penetration tested and following current best practices, how often are you going to audit it for new vulnerabilities, known and unknown? Once a week? Once a month? Never? Before you know it, your users’ &lt;a href=&quot;https://auth0.com/forum/t/stealing-jwt-from-authenticated-user/352/4&quot;&gt;JWT’s start getting stolen&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Security is very hard to get right, and its best left to professionals who deal with it full time.&lt;/p&gt;
+
+&lt;h3 id=&quot;securing-express&quot;&gt;Securing Express&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://passportjs.org/&quot;&gt;Passport&lt;/a&gt; has over 300 authentication strategies that are widely used. They’re free, open source, and easier to implement that building a leaky authentication strategy yourself.&lt;/p&gt;
+
+&lt;p&gt;Express has a lot of &lt;a href=&quot;https://expressjs.com/en/advanced/best-practice-security.html&quot;&gt;great advice&lt;/a&gt; on how to secure your server. So does &lt;a href=&quot;https://blog.risingstack.com/node-js-security-checklist/&quot;&gt;Stangeloop&lt;/a&gt;, and&lt;a href=&quot;https://blog.risingstack.com/node-hero-node-js-security-tutorial/&quot;&gt;RisingStack&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/helmetjs/helmet&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;helmet&lt;/code&gt;&lt;/a&gt; is mandatory.&lt;/p&gt;
+
+&lt;p&gt;For simple &lt;a href=&quot;https://www.owasp.org/index.php/Cross-site_Scripting_(XSS)&quot;&gt;XSS&lt;/a&gt; protection, &lt;a href=&quot;https://www.npmjs.com/package/express-sanitized&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;express-sanitized&lt;/code&gt;&lt;/a&gt; makes it very easy.&lt;/p&gt;
+
+&lt;h3 id=&quot;https&quot;&gt;HTTPS&lt;/h3&gt;
+
+&lt;p&gt;Finally, use HTTPS if you aren’t already. It’s very easy to set up with &lt;a href=&quot;https://certbot.eff.org/&quot;&gt;certbot&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h1 id=&quot;this-all-comes-back-to-javascript&quot;&gt;This All Comes Back to JavaScript&lt;/h1&gt;
+
+&lt;p&gt;You can try to learn as many frameworks, libraries and tools as you’d like, but if you don’t have a good foundational understanding of JavaScript itself, you’re in for a lot of pain. I’ve been there.&lt;/p&gt;
+
+&lt;p&gt;Getting a comfortable understanding of prototypal inheritance, lexical scope, closure, this, CommonJS/ES6 modules, higher-order functions, and async functions make everything else easier. You can pick up on new frameworks faster because you start to recognize the design patterns they’re based on, and pick up on the conventions that many libraries follow. Think about all the libraries that using chaining functions in their APIs similar to jQuery, or open source projects that use constructor functions to build their library APIs. You begin to see the same coding patterns used over and over again, and  once you understand them, you can start working on other people’s code a lot more effectively.&lt;/p&gt;
+
+&lt;p&gt;All it takes to get comfortable is to just put in the time. A lot of it. Talent (if that even exists) &lt;em&gt;may&lt;/em&gt; give some people a head start for a time, but the people who are willing to put in the work consistently and stay curious reach new peaks every day. That can be anyone. If you want to be a “good developer”, it starts with &lt;em&gt;deciding&lt;/em&gt; to be a good developer, defining what that means, and doing what it takes to reach that level, and redefining a new level of mastery when you get there. That idea will change a lot over time. There are more new technologies coming out every month than you could ever hope learn. It’s important to be okay with the unknowns, and hopefully find some exhilaration in the potential to discover new things every day. You can learn a lot from other developers, and you probably know a lot already that you can teach.&lt;/p&gt;
+
+&lt;p&gt;JavaScript is a hard language to master. It has a lot of quirks, gotchas, and &lt;a href=&quot;https://www.destroyallsoftware.com/talks/wat&quot;&gt;wats&lt;/a&gt;, but it’s powerful and expressive, and its been evolving rapidly since ES5. It’s here to stay, and its everywhere. &lt;a href=&quot;https://nodejs.org/static/documents/casestudies/Node_CaseStudy_Nasa_FNL.pdf&quot;&gt;It’s even in space&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;To get the most out of the language, it really helps to spend some time coding in JavaScript all by itself every once in awhile. No frameworks, no loDash, just ES6.&lt;/p&gt;
+
+&lt;p&gt;My favorite learning resource has been &lt;a href=&quot;https://github.com/getify/You-Dont-Know-JS&quot;&gt;You Don’t Know JS&lt;/a&gt; series. Kyle Simpson goes very deep into the guts of the language in a very clear, concise way. I’ve jumped around the books and had to re-read a lot of the chapters over the past couple of years, but the concepts are crystallizing more and more every time I revisit them.&lt;/p&gt;
+
+&lt;p&gt;And again, I have to recommend Zen and the Art of Motorcycle Maintenance one more time. It will change your life.&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Navigating the Unknown Unknowns</title>
@@ -96,7 +2283,7 @@
    <id>http://blog.matttrifilo.com/2016/08/02/leveling-up</id>
    <content type="html">&lt;p&gt;At the end of May, I finally completed my &lt;a href=&quot;https://www.freecodecamp.com/itxchy/front-end-certification&quot;&gt;Front End Certification&lt;/a&gt; for Free Code Camp.&lt;/p&gt;
 
-&lt;p&gt;Since then, I’ve spent some time refactoring a few of my older projects to get them to a place where I don’t cringe every time I look at the source code. They were pretty grisly. My Pomodoro app from last year in particular was a hacky mess. It was my first project trying out AngularJS, and while it worked, it broke pretty much every relavent style in &lt;a href=&quot;https://github.com/johnpapa/angular-styleguide/blob/master/a1/README.md&quot;&gt;John Papa’s style guide&lt;/a&gt;. Here’s the &lt;a href=&quot;http://codepen.io/dprsky/pen/OymXEp&quot;&gt;old source&lt;/a&gt; if you have a strong stomach. All of the logic was in one controller and $scope was polluted with almost every variable in the project. Not even one service to handle business logic. The controller was in charge or user interactions, business logic, &lt;em&gt;and&lt;/em&gt; state. The horror. It must be destroyed. I didn’t even know how to use a service versus a controller at the time. It’s a small app, and the design-pattern-less layout of the code was well commented, but it would have quickly turned into a field of thorns if it ever needed new features. Good code should be mostly self-documenting anyway. I took this as an oppurtunity to refactor the app’s code &lt;a href=&quot;https://johnpapa.net/angular-app-structuring-guidelines/&quot;&gt;structure&lt;/a&gt; and logic to separate concerns (UI elements, &lt;a href=&quot;https://johnpapa.net/sharing-data-in-an-angular-controller-or-an-angular-service/&quot;&gt;state&lt;/a&gt;, application logic, user interaction handling) and get some practice using Angular 1.5’s great new &lt;a href=&quot;https://toddmotto.com/exploring-the-angular-1-5-component-method/&quot;&gt;component method&lt;/a&gt;, modeled after Angular 2’s component pattern. That’s a story for another blog post, but it was a humbling learning experience, and Angular 1’s paradigm makes so much more sense now on every level.&lt;/p&gt;
+&lt;p&gt;Since then, I’ve spent some time refactoring a few of my older projects to get them to a place where I don’t cringe every time I look at the source code. They were pretty grisly. My Pomodoro app from last year in particular was a hacky mess. It was my first project trying out AngularJS, and while it worked, it broke pretty much every relevant style in &lt;a href=&quot;https://github.com/johnpapa/angular-styleguide/blob/master/a1/README.md&quot;&gt;John Papa’s style guide&lt;/a&gt;. Here’s the &lt;a href=&quot;http://codepen.io/dprsky/pen/OymXEp&quot;&gt;old source&lt;/a&gt; if you have a strong stomach. All of the logic was in one controller and $scope was polluted with almost every variable in the project. Not even one service to handle business logic. The controller was in charge or user interactions, business logic, &lt;em&gt;and&lt;/em&gt; state. The horror. It must be destroyed. I didn’t even know how to use a service versus a controller at the time. It’s a small app, and the design-pattern-less layout of the code was well commented, but it would have quickly turned into a field of thorns if it ever needed new features. Good code should be mostly self-documenting anyway. I took this as an opportunity to refactor the app’s code &lt;a href=&quot;https://johnpapa.net/angular-app-structuring-guidelines/&quot;&gt;structure&lt;/a&gt; and logic to separate concerns (UI elements, &lt;a href=&quot;https://johnpapa.net/sharing-data-in-an-angular-controller-or-an-angular-service/&quot;&gt;state&lt;/a&gt;, application logic, user interaction handling) and get some practice using Angular 1.5’s great new &lt;a href=&quot;https://toddmotto.com/exploring-the-angular-1-5-component-method/&quot;&gt;component method&lt;/a&gt;, modeled after Angular 2’s component pattern. That’s a story for another blog post, but it was a humbling learning experience, and Angular 1’s paradigm makes so much more sense now on every level.&lt;/p&gt;
 
 &lt;p&gt;The new pomodoro source code is &lt;a href=&quot;https://github.com/itxchy/FCC-pomodoro&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
 
@@ -118,7 +2305,7 @@
 
 &lt;p&gt;One boilerplate that stands out to me is &lt;a href=&quot;https://github.com/erikras/react-redux-universal-hot-example&quot;&gt;React Redux Universal Hot Example&lt;/a&gt;.&lt;/p&gt;
 
-&lt;p&gt;I haven’t used it, but its stack uses very familier tools, nothing exotic. It’s well documented–even the &lt;a href=&quot;https://react-redux.herokuapp.com/&quot;&gt;demo app&lt;/a&gt; has &lt;a href=&quot;https://github.com/erikras/react-redux-universal-hot-example/blob/master/docs/ExploringTheDemoApp/ExploringTheDemoApp.md&quot;&gt;a guide&lt;/a&gt;, and the source is heavily commented. It also has over 100 contributers and close to 1000 commits. When I start working on some server-side rendered React apps for Free Code Camp’s full stack projects, this will likely be my starter.&lt;/p&gt;
+&lt;p&gt;I haven’t used it, but its stack uses very familiar tools, nothing exotic. It’s well documented–even the &lt;a href=&quot;https://react-redux.herokuapp.com/&quot;&gt;demo app&lt;/a&gt; has &lt;a href=&quot;https://github.com/erikras/react-redux-universal-hot-example/blob/master/docs/ExploringTheDemoApp/ExploringTheDemoApp.md&quot;&gt;a guide&lt;/a&gt;, and the source is heavily commented. It also has over 100 contributers and close to 1000 commits. When I start working on some server-side rendered React apps for Free Code Camp’s full stack projects, this will likely be my starter.&lt;/p&gt;
 
 &lt;p&gt;Over the next few months, I will be finishing a redesign for a friend’s business site, working through Free Code Camp’s back end challenges with Express, and learning all I can about NodeJS, Express, ReactJS, and Redux. The rest of the summer should be very exciting.&lt;/p&gt;
 
