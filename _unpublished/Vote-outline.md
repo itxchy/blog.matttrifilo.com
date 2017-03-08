@@ -124,6 +124,3 @@ DOM api use requires render
 
 ### advice
 
-Keep tests simple, and disposable. Make tests more complicated is bugs arise.
-
-extract component business logic into modules, and test the modules like crazy.

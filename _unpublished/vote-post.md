@@ -797,9 +797,9 @@ On the other hand, Redux adds complexity and weight to your app, making it more 
 
 At what point do you *need* Redux?
 
-Many people don't mind data-tunneling for small to mid-size apps, but its probably a good idea to bring in Redux once you find yourself with state and props that need to be passed at least two layers deep in multiple parts of your application. As your app grows, those complexities will start to snowball, and make refactoring more and more difficult.
+Many people don't mind data-tunneling for small to mid-size apps, but its probably a good idea to bring in Redux once you find yourself with state and props that need to be passed at least two layers deep in multiple parts of your application. As your app grows, those complexities will start to snowball, and refactoring will become more and more difficult.
 
-If, on the other hand, you have an app with one component a few layers deep that needs to tunnel some state, and no others, then you'll probably be fine just handling the data-tunneling in that instance. The added complexity of Redux would outweigh the complexity of maintaining one data-tunneling occurrence without Redux.
+If, on the other hand, you have an app with one component a few layers deep that needs to tunnel some state, then you'll probably be fine just handling the data-tunneling in that instance. The added complexity of Redux would outweigh the complexity of maintaining one data-tunneling occurrence without Redux.
 
 For Vote, adding Redux was a no-brainer. Many components need access to the `user` object in state, which alone would have been a nightmare to pass between components. A higher-order component could have been an option, but there are a number of other bits of state and methods, like `flashMessage`'s state-altering methods, which are used in multiple components in different branches of the component tree. Using higher-order components for everything would get hairy fast.
 
@@ -809,7 +809,7 @@ The added complexity of Redux didn't hold a candle to the added complexity witho
 
 At first, my Redux code lived in a single `store.js` file which got unruly very quickly.
 
-After some research, I read about the [Ducks](https://medium.com/@scbarrus/the-ducks-file-structure-for-redux-d63c41b7035c#.yawhsa7sx) Pattern which looked great.
+After some research, I read about the [Ducks](https://medium.com/@scbarrus/the-ducks-file-structure-for-redux-d63c41b7035c#.yawhsa7sx) Pattern which looked very promising.
 
 I ended up with a variation of that pattern which worked out well for my needs:
 ```
@@ -837,7 +837,7 @@ export const store = createStore(rootReducer, compose(
 export default store
 ```
 
-The Store.js file simply initiallized the store with middleware and the rootReducer. Thanks again to Brian Holt for teaching that very handy devTools argument. Before that, I used remote-dev-tools to spin up a separate server to run the dev tools while server side rendering. This one-liner is much simpler, and works on the client and the server.
+The Store.js file simply initializes the store with middleware and the rootReducer. Thanks again to Brian Holt for teaching that very handy devTools initialization parameter. Before that, I used `remote-dev-tools` to spin up a separate server to run the dev tools externally while server side rendering. This one-liner is much simpler.
 
 rootReducer.js:
 ```js
@@ -870,11 +870,11 @@ export default combineReducers({
 
 ```
 
-`rootReducer.js` is even simpler. It just exports `conmineReducers` from the default exports of the modules.
+`rootReducer.js` combines all of the reducer slices into one root reducer.
 
-One important note is that the name of the exported reducer slice inside each module determines the name of the module's state object in the store.
+One important note is that the name of the exported reducer slice inside each module determines the name of the module's individual state object in the store.
 
-Let's look at a module, createNewPoll.js:
+Let's look at the `createNewPoll.js` module:
 ```js
 import axios from 'axios'
 import { addFlashMessage } from './flashMessage'
@@ -1029,11 +1029,11 @@ export default function newPoll (state = DEFAULT_STATE, action) {
 
 ```
 
-There is a lot going in this file, but it progresses logically. For a `newPoll`, the actions, action creators, reducer functions, and the rootReducerSlice are easy to follow. Adding a new feature is as easy as adding the relevent code to each section, instead of bouncing between many files. It's easier to reason about as well (for me at least).
+There is a lot going in this file, but it progresses logically. For a `newPoll`, the actions, action creators, reducer functions, and the rootReducerSlice are all right here, and not in separate files. Adding a new feature is as easy as adding the relevant code to each section, instead of bouncing back and forth between files. It's easier to reason about as well (for me at least).
 
 One way to make this cleaner would be to group the Action Types, Actions, and Reducers together for each feature, and maybe even put each feature into separate files to be imported into this current one for the Root Reducer Slice to use.
 
-Here's how grouping action creators and reducers can look:
+Here's how grouping just the action creators and reducers together can look:
 ```js
 import axios from 'axios'
 import { addFlashMessage } from './flashMessage'
@@ -1186,21 +1186,23 @@ export default function newPoll (state = DEFAULT_STATE, action) {
 
 ```
 
-The file is still pretty long, but much easier to maintain. Keeping Each action creator and its corresponding reducer together eliminate the need to scroll back and forth while changing things, or adding a new action. The flow reads a lot more naturally as well.
+The file is still pretty long, but this refactor is already much easier to reason about. Keeping Each action creator and its corresponding reducer together eliminate the need to scroll back and forth while changing things, or adding a new action/reducer flow.
 
 ### Thunks Middleware
 
 Out of the box, Redux only supports a strictly synchronous [data flow](http://redux.js.org/docs/basics/DataFlow.html).
 
-Thankfully, middleware make it easy to dispatch functions and promises, instead of synchronous action creators alone, allowing you to perform operations after a action is dispatched, but before the reducer is called.
+Thankfully, middleware make it easy to dispatch functions and promises, instead of synchronous action creators alone. This allows you to perform operations after a action is dispatched, but before the reducer is called.
 
-[`redux-thunk`](https://github.com/gaearon/redux-thunk) for example, will hijack a dispatched action when a function is returned and tell Redux "Hey, I've got this. Do other things, and I'll get back to you." Once an async operation, like commonly a promise, gets resolved or rejected, you can dispatch any actions you'd like depending on result of the promise, and Redux will handle those resulting action dispatches. You can uses a thunk for dispatching actions conditionally as well. A thunk function is simply a wrapper function used to delay the evaluation inside of it.
+[`redux-thunk`](https://github.com/gaearon/redux-thunk) for example, will hijack a dispatched action when a function is returned and tell Redux "Hey, I've got this. Do other things, and I'll get back to you." Once an async operation, like commonly a promise, gets resolved or rejected, you can dispatch any actions you'd like depending on result of the promise, and Redux will handle those resulting action dispatches. The final actions must return normal action objects with at least a `type` property.
 
-You can dispatch more than one action in a `.then` callback after a promise is returned, but you need at least one `dispatch` call for Redux to anything.
+You can uses a thunk for dispatching actions conditionally as well. A thunk function is simply a wrapper function used to delay the evaluation inside of it.
+
+You can dispatch more than one action in a `.then` or `.catch` callback after a promise is resolved or rejected, but the final actions dispatched must return normal action objects, each with at least a `type` property. The module's root reducer will use the `action.type` property of the dispatched action in its switch statement to determine which reducer to run (if any).
 
 Handling async actions in Redux is simple using thunks.
 
-Note the axios call from the example above:
+Note the `axios` call from the example above:
 ```js
 /**
  * Submits a new poll to the server
@@ -1220,36 +1222,40 @@ export function submitNewPoll (newPoll) {
         dispatch(resetNewPoll())
         dispatch(addFlashMessage({ type: 'success', text: 'Poll saved!' }))
         dispatch(pollSaved(res.data.poll._id))
+
+        // dispatch loading done!
       })
       .catch(err => {
         console.error('ERROR: redux: newPoll could not be saved', err)
         dispatch(addFlashMessage({ type: 'error', text: 'Something went wrong. Poll coudn\'t be saved.' }))
+
+        // dispatch loading done!
       })
   }
 }
 ```
 
-After getting a response from the API, a certain set of action creators will get dispatched if the response is successful, and other action creators will get dispatched if the response is an error.
+After getting a response from the API, a certain set of action creators will get dispatched if the response is successful and the promise is resolved, and other action creators will get dispatched if the response is an error and the promise gets rejected.
 
-Writing a thunk action involves simply returning a function taking in `dispatch` as its argument, and making your async request (a side effect) within the function.
+Writing a thunk action involves simply returning a function taking in `dispatch` as its parameter, and making your async request (a side effect) within the function.
 
-Action creators are pure functions, but thunks allow you to make them "impure" and handle side effects effectively.
+Action creators in Redux are meant to be pure functions by default, but thunks allow you to make them "impure" and handle side effects effectively.
 
-[redux-saga](https://github.com/redux-saga/redux-saga) may be worth looking into as well if you have some complex async logic to handle. Sagas allow [cancellation](https://redux-saga.github.io/redux-saga/docs/advanced/TaskCancellation.html) and ["concurrency"](https://redux-saga.github.io/redux-saga/docs/advanced/Concurrency.html) in your async operations.
+[redux-saga](https://github.com/redux-saga/redux-saga) may be worth looking into as well if you have some complex async logic to handle. Sagas allow [cancellation](https://redux-saga.github.io/redux-saga/docs/advanced/TaskCancellation.html) and ["concurrency"](https://redux-saga.github.io/redux-saga/docs/advanced/Concurrency.html) in your async operations using generators.
 
 Note that ["concurrency" in JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript/EventLoop) as its used redux-saga involves an event loop on a single thread, and not multiple processes on individual threads like in other languages.
 
-With web workers however, you can take advantage of multi-threading with JavaScript. Check out [`Hampsters.js]`(https://github.com/austinksmith/Hamsters.js) for that awesomeness. It's best not to go that route until you absolutely need to.
+With web workers however, you can now take advantage of multi-threading with JavaScript. Check out [`Hampsters.js]`(https://github.com/austinksmith/Hamsters.js) for that awesomeness. It's best not to go that route until you absolutely need to.
 
 ## Unit Testing
 
-A lot of wins are gained with unit tests. They force you to think about common edge cases and how to handle them, they act as documentation for how your logic works in detail, and they encourage simple, decoupled code. As you develop your app, you're probably going to break things you've already worked on as you add more features. Good unit tests will let you know right away when something breaks so you don't end up with a nasty surprise later. Just having a process run a good majority of your code frequently is a good sanity check, and it builds confidence in your codebase as it grows even if a lot of people are working on it.
+A lot of wins are gained with unit tests. They force you to think about common edge cases in your business logic and how to handle them, they act as documentation for how your logic works in detail, and they encourage simple, decoupled code. If your code is hard to test, that's a code smell. As you develop your app, you're probably going to break things you've already worked on as you add more features. Well thought out unit tests will let you know right away when something breaks so you don't end up with a nasty surprise later on. Just having a test runner touch a good majority of your code frequently is a good sanity check, and it builds confidence in your codebase as it grows even if a lot of people are working on it at the same time.
 
-There are many great testing libraries and frameworks out there to choose from. I've been useing [Jest](https://facebook.github.io/jest/) lately, but [Mocha](https://mochajs.org/) and [Tape](https://github.com/substack/tape) are great as well, depending on your needs.
+There are many great testing libraries and frameworks out there to choose from. I've been using [Jest](https://facebook.github.io/jest/) lately, but [Mocha](https://mochajs.org/) and [Tape](https://github.com/substack/tape) are very popular and current as well. Any of them are fine.
 
 ### Testing React with Jest and Enzyme
 
-Jest is well suited for React. You can make [snapshot](https://facebook.github.io/jest/docs/snapshot-testing.html#content) tests of your components, which essestially render a component into markup as JSON using whatever props you'd like. The test fails if the markup changes, and you'll see a diff of what changed similar to Git. You can update the snapshot by running `jest --updateSnapshot` or just `jest -u`. Snapshots are not bulletproof, but they're cheap and disposable, and will ensure that your markup is rendering as expected.
+Jest is well suited for React. You can write [snapshot](https://facebook.github.io/jest/docs/snapshot-testing.html#content) tests of your components, which render components into markup as JSON using whatever props you'd like. The test fails if the markup changes, and you'll see a diff of what changed similar to a Git diff. You can update the snapshot by running `jest --updateSnapshot` or just `jest -u`. Snapshots are far from bulletproof, but they're cheap and disposable, and will ensure that your markup is rendering as expected.
 
 For simplicity, let's go back to `[SpiffyWikipedia`](https://github.com/itxchy/FCC-spiffy-wikipedia/blob/master/src/components/SearchResults/SearchResults.test.js) for a snapshot example:
 ```js
@@ -1266,13 +1272,17 @@ test('SearchResults snapshot test', () => {
 
 ```
 
-`shallow` renders the component, `shallowToJson` is just a function to create a JSON tree from shallow, and you just need to `expect` the tree `.toMatchSnapshot`. `expect` comes with Jest by default.
+We'll get to `enzyme` in a moment.
+
+`shallow` renders the component, `shallowToJson` creates a JSON tree from `shallow`'s render, and you just need to `expect` the tree `.toMatchSnapshot`. `expect` comes with Jest for free.
 
 If no snapshot file exists, Jest will create one for you. A directory will appear called `__snapshots__` in same directory as your test file.
 
-Beyond snapshots, `enzyme` from AirBnB is essential for testing your components more deeply. You can use `enzyme` with Mocha as well. `enzyme` comes with a few rendering options for your components like [`shallow`](http://airbnb.io/enzyme/docs/api/shallow.html) and [`mount`](http://airbnb.io/enzyme/docs/api/shallow.html).
+Beyond snapshots, `enzyme` from AirBnB is essential for testing your components more deeply. `enzyme` is also commonly used with Mocha.
 
-Shallow only renders the component passed to it, and none of its children. It doens't render a full DOM, so you won't get access to DOM API's or component lifecycle methods. The tradeoff is Shallow is very fast. It's great for testing that markup is showing up properly based on props or state in more detail than snapshots. Shallow should be used as much as possible before using `mount`.
+`enzyme` comes with a few different rendering functions for your components like [`shallow`](http://airbnb.io/enzyme/docs/api/shallow.html) and [`mount`](http://airbnb.io/enzyme/docs/api/shallow.html).
+
+Shallow only renders the component passed to it, and none of its children. It doesn't render a full DOM, so you won't get access to DOM API's or component lifecycle methods. The trade-off is that Shallow is fast. It's great for testing that markup is showing up properly based on props or state in more detail than snapshots. Shallow should be used as much as possible before using `mount`.
 
 Another example from `SpiffyWikipedia`:
 ```js
@@ -1310,7 +1320,7 @@ test('SearchResults should render "An error occured." if nothis is passed to sea
 })
 ```
 
-These tests are simply testing that the correct markup appears depending on what prop values are passed into `<SearchResults />`. Shallow has a lot of properties you can use, and they have great [documentation](http://airbnb.io/enzyme/docs/api/shallow.html).
+These tests are simply testing that the correct markup and components appear depending on what prop values are passed into `<SearchResults />`. Shallow has a lot of properties you can use, and they have great [documentation](http://airbnb.io/enzyme/docs/api/shallow.html).
 
 The [`SearchBar`](https://github.com/itxchy/FCC-spiffy-wikipedia/blob/master/src/components/SearchBar/SearchBar.js) component was a bit more complicated to test. A few events needed to be simulated, so `mount` was used instead of `shallow`:
 ```js
@@ -1354,13 +1364,13 @@ Mount renders full DOM allowing you to interact with DOM API's as well as compon
 
 In the tests above, form change events and button click events are simulated to test how the component handles them.
 
-This is about as deep as I've gotten with testing React components. You can test all sorts of aspects of their behavior, but I think its a good idea to let your React components focus mainly on presentation, and limit business logic in React as much as possible. If you're components have a lot of complex operations going on, you can easily abstract that logic out of React and into smaller external modules that are much easier to test. By the time your app needs Redux, most of your business logic will be handled by your action creators and reducer which are very easy to test. They're just JavaScript!
+This is about as deep as I've gotten with testing React components. You can test all sorts of aspects of their behavior, but I think its a good idea to let your React components focus mainly on presentation, and limit business logic in React as much as possible. If you're components have a lot of complex operations going on, you can easily abstract that logic out of React and into small external modules that are much easier to test thoroughly. By the time your app needs Redux, most of your business logic will be handled by your action creators and reducers which are very easy to test as they're just JavaScript. Nothing magical or fancy.
 
 ### Testing Redux with Jest
 
 Testing Redux is as easy as simulating an action being reduced into new state, and testing that new state against your expectations. Let's look at few examples from Vote.
 
-A few action creators along side their reducers in [`createNewPoll.js`](https://github.com/itxchy/FCC-vote/blob/master/redux/modules/createNewPoll.js):
+A few action creators alongside their reducers in [`createNewPoll.js`](https://github.com/itxchy/FCC-vote/blob/master/redux/modules/createNewPoll.js):
 ```js
 // ... /
 
@@ -1448,17 +1458,19 @@ And here are their tests in [`createNewPoll.spec.js`](https://github.com/itxchy/
 // ... /
 ```
 
-In each test, the redux module's reducer slice is returning a new state object based on the previous state, and given action or action creator's returned action. Then, its just a matter of seeing if the new state is what you expect it to be. If not, you know exactly where to look for the bug.
+In each test, `createNewPoll.js`'s root reducer slice is returning a new state object based on the previous state, and an action or an action creator's returned action. Then, its just a matter of seeing if the new state is what you expect it to be. If not, you know exactly where to look for the bug.
 
-A lot more edge cases need to be considered for these tests like wrong types, out-of-range values, super long strings, etc., but this is a good start. In production apps with real clients, thousands of users will use and abuse your forms every day. App needs to be hardened against bad data.
+> A root reducer slice is simply the module's exported reducer that gets passed to combineReducer in the rootReducer.js file. It's a bit confusing to think about at first. Put another way, the root reducer is Redux's main reducer that reduces everything into its one state object. The root reducer is comprised of a number of root reducer slices, each being an individual modules main reducer. A module's main reducer (or root reducer slice) will call one of the many individual reducers in that module if an action's type gets matched. That reducer will return a new state, and it will be passed back to combineReducers into Redux's main root reducer, and Redux's store will have a brand new state object.
+
+A lot more edge cases need to be considered for these tests like wrong types out-of-range values, super long strings, etc. being passed as parameters to action creators, but this is a good start. In production apps with real clients, thousands of users will use and abuse your forms every day. Applications need to be hardened against bad data. This is important for security too, but more on that later.
 
 ## Styling
 
-`webpack` makes it easy to modularize your CSS and import individual CSS modules into your React components. `create-react-app` encourages this by default, and I really enjoyed this workflow in my [Spiffy Wikipeda](https://github.com/itxchy/FCC-spiffy-wikipedia/blob/master/src/components/Result/Result.css) app. Maintaining CSS styles is getting easier all the time. [`PostCSS`](https://github.com/postcss/postcss) offers many powerful plugins as well, which can work well with your CSS preprocessor of choice.
+`webpack` makes it easy to modularize your CSS and import individual CSS modules into your React components. `create-react-app` encourages this by default, and I really enjoyed this workflow in my [Spiffy Wikipeda](https://github.com/itxchy/FCC-spiffy-wikipedia/blob/master/src/components/Result/Result.css) app. Maintaining CSS styles is getting easier all the time. [`PostCSS`](https://github.com/postcss/postcss) offers many powerful plugins as well, which will work with your favorite CSS preprocessor.
 
-For vote, I'll admit I didn't focus as much attention on styling as I should have. For simplicity, I elected to keep my SASS and CSS considerations separate from my React code. I used `webpack`'s `ExtractTextPlugin` to bundle all of the compiled CSS into a separate css file, and imported the `main.scss` directly into [`BrowserEntry.js`](https://github.com/itxchy/FCC-vote/blob/master/components/BrowserEntry.jsx#L4).
+For vote, I'll admit I didn't focus as much attention on styling as I should have. For simplicity, I elected to keep my SASS and CSS considerations separate from my React code. I used `webpack`'s `ExtractTextPlugin` to bundle all of the compiled CSS into a separate css file, and import the `main.scss` directly into [`BrowserEntry.js`](https://github.com/itxchy/FCC-vote/blob/master/components/BrowserEntry.jsx#L4) so Webpack would know about it.
 
-All of my SCSS files were stored in a separate `sass` directory, the idea being to keep syling concerns and React component concerns separate. But isn't the *syling* of a component part of a component's concerns? Depends on who you ask I guess, but importing your SASS or CSS modules directly into the components that need them makes a lot of sense. Instead of going through a separate directory tree looking for the styles that are responsible for your component, and managing the file structure of the style directory, it makes sense to keep your CSS or SASS together with the components they're styling. This makes it easier to use CSS conventions like [BEM](https://en.bem.info/methodology/key-concepts/) as well. Instead of mirroring your CSS directory with your component directory, you can keep your components even more self contained in their file structure.
+All of my SCSS files were stored in a separate `sass` directory, the idea being to keep styling concerns and React component concerns separate. But isn't the *styling* of a component part of a component's concerns? Depends on who you ask I guess, but importing your SASS or CSS modules directly into the components that need them makes a lot of sense. Instead of going through a separate directory tree looking for the style module that's responsible for your component, and managing the file structure of a separate style directory, it makes sense to keep your CSS or SASS together with the components they're styling. This is good for a faster workflow, and it makes it easier to use CSS conventions like [BEM](https://en.bem.info/methodology/key-concepts/). Instead of mirroring your CSS directory with your component directory, you can keep your components even more self contained in their file structure.
 
 ![Styling in its own directory compared with keeping styles with their components.](../public/img/css-structure.png)
 
@@ -1466,21 +1478,24 @@ All of my SCSS files were stored in a separate `sass` directory, the idea being 
 
 # The Server
 
-Vote uses Express to handle requests from users requesting a page, as well as the API for data requests and CRUD operations from MongoDB.
+Vote uses Express to handle page requests, as well as API requests for CRUD operations with MongoDB.
 
 ## Server Side Rendering
 
-Vote's React markup is rendered on the [server](https://github.com/itxchy/FCC-vote/blob/master/server.js) into a string using `ReactDOMServer.renderToString`, and passed down to the client. By the time the client bootstraps the bundle, the client-side application code from the bundle takes over user interactions. This is great for a few reasons. First, React doesn't need to re-render the requested page when the client application finally bootstraps. Second, this allows the server to respond with markup as if it were static, which is great for users with slow connections. A lot of people are stuck with 2G around the world. Instead of having to wait a long time for a bundle to download before seeing anything, the pre-rendered markup will show up faster by an order of magnitude. Once the app's bundle finishes downloading, the app will be interactive. This is great for SEO, since the pre-rendered markup is crawlable by search engine bots.
+Vote's React markup is rendered on the [server](https://github.com/itxchy/FCC-vote/blob/master/server.js) into a string using `ReactDOMServer.renderToString`, and passed down to the client. By the time the client bootstraps the JavaScript bundles, the client-side application code from the bundle takes over user interactions. This is great for a few reasons. First, client-side React doesn't need to re-render the page's markup when it finally bootstraps in the browser. Second, this allows the server to respond with markup as if it were static (it's made into static markup on the fly), which is great for users with slow connections. A lot of people are stuck with 2G around the world. Instead of having to wait many seconds for a bundle to download before seeing anything, the pre-rendered markup will show up almost immediately. Once the app's bundle finishes downloading, the app will be interactive. This is great for SEO, since the pre-rendered markup is crawlable for search engine bots.
 
 The code itself is very simple. Thanks again to Brain Holt for teaching this pattern in the first Complete Intro To React!
 
 ```js
 app.use((req, res) => {
   match({ routes: Routes(), location: req.url }, (error, redirectLocation, renderProps) => {
+
     if (error) {
       res.status(500).send(error.message)
+
     } else if (redirectLocation) {
       res.redirect(302, redirectLocation.pathname + redirectLocation.search)
+
     } else if (renderProps) {
       const body = ReactDOMServer.renderToString(
         React.createElement(
@@ -1495,9 +1510,9 @@ app.use((req, res) => {
 })
 ```
 
-> Note: that this code works for React Router 2. The [documentation](https://github.com/ReactTraining/react-router/blob/master/docs/guides/ServerRendering.md) for server-side rendering don't mention any changes of this pattern from v2 to v3 , but you've been warned.
+> Note: that this code works for React Router 2. The [documentation](https://github.com/ReactTraining/react-router/blob/master/docs/guides/ServerRendering.md) for server-side rendering doesn't mention any changes of this pattern from v2 to v3 , but you've been warned.
 >
-> React Router 4 is looking amazing and you should probably just make the jump if you're starting a new project. The [documentation](https://reacttraining.com/react-router/) got a complete revamp. You can use [`<StaticRouter>`](https://reacttraining.com/react-router/#staticrouter) and [`match`](https://reacttraining.com/react-router/#match) for server-side rendering if you're using version 4. Brian Holt explains how to tie them together in his second Complete Intro to React course on Front End Masters. It's worth it!
+> React Router 4 is looking amazing and you should probably just make the jump if you're starting a new project. The final version will be released very soon, and the [documentation](https://reacttraining.com/react-router/) got a complete revamp. You can use [`<StaticRouter>`](https://reacttraining.com/react-router/#staticrouter) and [`match`](https://reacttraining.com/react-router/#match) for server-side rendering if you're using version 4. Brian Holt explains how to tie them together in his second Complete Intro to React course on Front End Masters. It's worth it! React Router has had a lot of API churn over the past few years, but it the twitter whispers are reliable, version 4 will be the last major API redesign for the foreseeable future. I'm glad Ryan Florence and Michael Jackson elected to take the heat from disgruntled users while working tirelessly to build a more finalized router API that will be much better for the long term. The breaking changes were well worth it to get to this point.
 
 The code above seems pretty busy at first glance, but let's break this down.
 
@@ -1511,7 +1526,7 @@ app.use((req, res) => {
 })
 ```
 
-When a request is received, the `match` function from `react-router` is called. It takes two parameters, the first being an object where it can learn about your application's `routes` (returned from a function in this case), and a `location` (the request's URL) to match to the routes. It can also take in a `history` property.
+When a request is received by Express, the `match` function from `react-router` is called. It takes two parameters, the first being an object where it can learn about your application's `routes` (returned from a function in this case), and a `location` (the request's URL) to match to the routes. It can also take in a `history` property if you'd like.
 
 One aside: in your `index.html` file, make sure you include a forward slash in your bundle script locations or you might get basename errors when reloading nested routes, or navigating to nested routes directly:
 
@@ -1522,7 +1537,7 @@ One aside: in your `index.html` file, make sure you include a forward slash in y
 
 `match`'s second argument is a callback with three parameters, `error`, `redirectLocation`, and `renderProps`.
 
-The meat of that function simply handles an `error` if it is defined, a `redirectLocation` if it is defined, `renderProps` if there is a successful match between the requested `location` and a known route, and finally, a 404 error if none of the callbacks arguments are defined since there is no error, redirect, or match.
+The meat of that callback simply handles an `error` if it is defined, a `redirectLocation` if it is defined, `renderProps` if it is defined (this is how you know there is a successful match between the requested `location` and a known route), and finally falls back on a 404 error if none of the callback's parameters are defined. If there is no error, no renderProps, and no redirect, then there is no match.
 
 ```js
 app.use((req, res) => {
@@ -1554,11 +1569,11 @@ app.use((req, res) => {
 
 > More about [`LocationDescriptor`](https://github.com/ReactTraining/react-router/blob/master/docs/Glossary.md#locationdescriptor)
 
-The actual rendering happens thanks to `ReactDOMServer.renderToString`. Since this is happening on the server, it adds unecessory complexity to use JSX since JSX needs to be transpiled. Instead, using `React.createElement` for the two elements we need works out fine without getting too nested.
+The actual rendering happens thanks to `ReactDOMServer.renderToString`. Since this is happening on the server, using JSX would add necessary complexity since JSX needs to be transpiled. Instead, using `React.createElement` for the two elements we need works out fine without too much nesting.
 
 #### `React.createElement` Refresher
 
-JSX is syntax to make it easier to compose components. Components are just functions, so we can easily express our components here as a function JSX hides under the covers. [`React.createElement`](https://facebook.github.io/react/docs/react-without-jsx.html) takes in three arguments: component, props, and children.
+JSX is syntax to make it easier to compose components. Components are just functions, so we can easily write our components without JSX. [`React.createElement`](https://facebook.github.io/react/docs/react-without-jsx.html) takes in three parameters: `component`, `props`, and `children`.
 
 ```js
 const body = ReactDOMServer.renderToString(
@@ -1577,26 +1592,26 @@ const body = (
 )
 ```
 
-Those two elements will branch out into the entire page's markup.
+Those two elements will render into the entire page's markup.
 
 ### Pre-Transpiling For Node Using Babel
 
-One obsticle to rendering a React application on the server is that Node doesn't understand JSX or ES6 module syntax, not to mention any other ES2016-ES2017+ syntax we might have leaned on Babel to transpile.
+One obstacle to rendering a React application on the server is that Node doesn't understand JSX or ES6 module syntax, not to mention any other ES2016-ES2017+ syntax we might have leaned on Babel to transpile in the application code.
 
-There are a few options to transpile our application code for the server.
+There are a few options to transpile the application code for the server.
 
 Brian Holt teaches with `babel-register`, which can be required into your server code.
 ```js
 require('babel-register')({ ignore: /node_modules/ } )
 ```
 
-> I ended up passing an option to ignore `node_modules` because I think there was a `.babelrc` file somewhere that was overriding my own.
+> I ended up adding an option to ignore `node_modules` because I think there was a `.babelrc` file somewhere in a 3rd party module that was overriding my own.
 
 This works great for development, but you don't want to use this in [production](https://github.com/thejameskyle/babel-handbook/blob/master/translations/en/user-handbook.md#babel-register).
 
-For server-side code, it's better to transpile ahead of time, instead of `babel` transpiling the same code over and over again on the server.
+For server-side code, it's better to transpile ahead of time, instead of `babel` Transpiling the same code over and over again on the server.
 
-To pull this off, I made a `production` directory, and set up some `npm` scripts to transpile a copy of all of the application code that the server needs to render, and put that process into the production build step.
+To pull this off, I made a `production` directory, and set up some `npm` scripts to transpile a copy of all of the application code that the server needs to render, and then put that process into the production build step.
 
 ```js
   "scripts": {
@@ -1616,7 +1631,7 @@ Now, when running `build:prod`, all of my application files will be transpiled, 
 
 That's great, but there are a few more steps.
 
-It would be a drag to have to transpile everything everytime a file changes during development, so it would be nice to still be able to use `babel-register` outside of a 'production' environment.
+It would be a drag to have to transpile everything every time a file changes during development, so it would be nice to still be able to use `babel-register` outside of a 'production' environment.
 
 ```js
 if (process.env.NODE_ENV !== 'production') {
@@ -1641,13 +1656,13 @@ Vote's API was meant to be [RESTful](http://www.restapitutorial.com/lessons/what
 
 ### RESTful Dialog Between Machines
 
-REST is more of a paradigm than a hardened standard that describes an interface between a client and a server that is uniform, stateless, and explicit. Resources are passed between computers (usually in JSON, but XML is still prevailent) in a predictable way, so that the two distinct applications don't have to care about what languages, libraries or even hardware each are using. REST is method of communication with its own customs and dialect.
+REST is more of a paradigm than a standard that describes an interface between a client and a server that is uniform, stateless, and explicit. Resources are passed between computers (usually in JSON, but XML is still prevalent) in a predictable way, so that the two distinct applications don't have to care about what languages, libraries, or even hardware each are using. REST is method of communication with its own customs and dialect.
 
 REST stands for REpresentational State Transfer.
 
 ### CRUD Logic
 
-Making a polling app was a great exercise for creating a server API since a number of simple Create Read Update Delete operations would be necessary.
+Making a polling application was a great exercise for creating a server API since a number of simple Create Read Update Delete operations would be necessary.
 
 From [`polls.js`](https://github.com/itxchy/FCC-vote/blob/master/routes/polls.js)
 ```js
@@ -1707,7 +1722,7 @@ router.delete('/delete/:id', (req, res) => {
 
 ```
 
-This application uses Express Router, so picture these endpoints as prepended with `api/polls`.
+This application uses Express Router, so picture these endpoints as prepended with `/api/polls`.
 
 Anytime a request reaches the server, it first passes through Express' middleware, which includes express router. Here's a heavily redacted [`server.js`](https://github.com/itxchy/FCC-vote/blob/master/server.js):
 ```js
@@ -1729,9 +1744,9 @@ app.use('/api/polls', polls)
 app.use('/public', expressStaticGzip('./public'))
 ```
 
-One mistake I made building this API was that I didn't design a blueprint for it first.
+One mistake I made while building this API was that I didn't design a blueprint first.
 
-It's a good idea to have all of your endpoints and data schemas mapped out beforehand to anticipate where some clarification of API routes may be needed.
+It's a good idea to have all of your endpoints and data schema mapped out beforehand so you don't end up having to change it often as you build out features.
 
 In the example above from [`polls.js`](https://github.com/itxchy/FCC-vote/blob/master/routes/polls.js), those endpoints could be crudely mapped out this way:
 ```
@@ -1745,7 +1760,7 @@ GET: /api/polls/id/:id
   - responds with a single poll based on its ID
 
 DELETE: /api/polls/delete/:id
-  - deletes a poll based on its ID
+  - deletes a poll based on its ID, and responds with
 ```
 
 As I developed this application, its easy to see that I built the first two endpoint before the latter two. It makes sense to think of endpoints as if you're accessing a directory struncture. In this case, the username endpoint isn't very descriptive. `/api/polls/username/:username` would be more clear.
