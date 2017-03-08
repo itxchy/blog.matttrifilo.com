@@ -1036,7 +1036,7 @@ import { addFlashMessage } from ‘./flashMessage’</p>
   pollSaved: null
 }</p>
 
-<p>// <strong>**</strong>* Action Types <strong>**</strong>* /</p>
+<p>// <strong>**</strong>* Action Types <strong>**</strong>*</p>
 
 <p>const SET_NEW_POLL_TITLE = ‘SET_NEW_POLL_TITLE’
 const SET_NEW_TITLE_EDITABLE = ‘SET_TITLE_EDITABLE’
@@ -1045,7 +1045,7 @@ const RESET_NEW_POLL = ‘RESET_NEW_POLL’
 const POLL_SAVED = ‘POLL_SAVED’
 const RESET_POLL_SAVED = ‘RESET_POLL_SAVED’</p>
 
-<p>// <strong>**</strong>* Action Creators <strong>**</strong>* /</p>
+<p>// <strong>**</strong>* Action Creators <strong>**</strong>*</p>
 
 <p>/**
  * Sets state.newPollTitle
@@ -1114,7 +1114,7 @@ export function submitNewPoll (newPoll) {
   }
 }</p>
 
-<p>// <strong>**</strong>* Reducers <strong>**</strong>* /</p>
+<p>// <strong>**</strong>* Reducers <strong>**</strong>*</p>
 
 <p>const setNewPollTitleReducer = (state, action) =&gt; {
   if (typeof action.value !== ‘string’) {
@@ -1154,7 +1154,7 @@ const resetPollSavedReducer = (state, action) =&gt; {
   return Object.assign({}, state, { pollSaved: null })
 }</p>
 
-<p>// <strong>**</strong>* Root Reducer Slice <strong>**</strong>* /
+<p>// <strong>**</strong>* Root Reducer Slice <strong>**</strong>*
 export default function newPoll (state = DEFAULT_STATE, action) {
   switch (action.type) {
     case SET_NEW_POLL_TITLE:
@@ -1195,7 +1195,7 @@ import { addFlashMessage } from ‘./flashMessage’</p>
   pollSaved: null
 }</p>
 
-<p>// <strong>**</strong>* Action Types <strong>**</strong>* /</p>
+<p>// <strong>**</strong>* Action Types <strong>**</strong>*</p>
 
 <p>const SET_NEW_POLL_TITLE = ‘SET_NEW_POLL_TITLE’
 const SET_NEW_TITLE_EDITABLE = ‘SET_NEW_TITLE_EDITABLE’
@@ -1204,7 +1204,7 @@ const RESET_NEW_POLL = ‘RESET_NEW_POLL’
 const POLL_SAVED = ‘POLL_SAVED’
 const RESET_POLL_SAVED = ‘RESET_POLL_SAVED’</p>
 
-<p>// <strong>**</strong>* Action Creators &amp; Reducers<strong>**</strong>* /</p>
+<p>// <strong>**</strong>* Action Creators &amp; Reducers<strong>**</strong>*</p>
 
 <p>/**
  * Sets state.newPollTitle
@@ -1310,7 +1310,7 @@ export function submitNewPoll (newPoll) {
   }
 }</p>
 
-<p>// <strong>**</strong>* Root Reducer Slice <strong>**</strong>* /</p>
+<p>// <strong>**</strong>* Root Reducer Slice <strong>**</strong>*</p>
 
 <p>export default function newPoll (state = DEFAULT_STATE, action) {
   switch (action.type) {

@@ -4,7 +4,7 @@
  <title>Matt Trifilo</title>
  <link href="http://blog.matttrifilo.com/atom.xml" rel="self"/>
  <link href="http://blog.matttrifilo.com/"/>
- <updated>2017-03-08T03:49:15-06:00</updated>
+ <updated>2017-03-08T03:58:28-06:00</updated>
  <id>http://blog.matttrifilo.com</id>
  <author>
    <name>Matt Trifilo</name>
@@ -965,7 +965,7 @@ import { addFlashMessage } from ‘./flashMessage’&lt;/p&gt;
   pollSaved: null
 }&lt;/p&gt;
 
-&lt;p&gt;// &lt;strong&gt;**&lt;/strong&gt;* Action Types &lt;strong&gt;**&lt;/strong&gt;* /&lt;/p&gt;
+&lt;p&gt;// &lt;strong&gt;**&lt;/strong&gt;* Action Types &lt;strong&gt;**&lt;/strong&gt;*&lt;/p&gt;
 
 &lt;p&gt;const SET_NEW_POLL_TITLE = ‘SET_NEW_POLL_TITLE’
 const SET_NEW_TITLE_EDITABLE = ‘SET_TITLE_EDITABLE’
@@ -974,7 +974,7 @@ const RESET_NEW_POLL = ‘RESET_NEW_POLL’
 const POLL_SAVED = ‘POLL_SAVED’
 const RESET_POLL_SAVED = ‘RESET_POLL_SAVED’&lt;/p&gt;
 
-&lt;p&gt;// &lt;strong&gt;**&lt;/strong&gt;* Action Creators &lt;strong&gt;**&lt;/strong&gt;* /&lt;/p&gt;
+&lt;p&gt;// &lt;strong&gt;**&lt;/strong&gt;* Action Creators &lt;strong&gt;**&lt;/strong&gt;*&lt;/p&gt;
 
 &lt;p&gt;/**
  * Sets state.newPollTitle
@@ -1043,7 +1043,7 @@ export function submitNewPoll (newPoll) {
   }
 }&lt;/p&gt;
 
-&lt;p&gt;// &lt;strong&gt;**&lt;/strong&gt;* Reducers &lt;strong&gt;**&lt;/strong&gt;* /&lt;/p&gt;
+&lt;p&gt;// &lt;strong&gt;**&lt;/strong&gt;* Reducers &lt;strong&gt;**&lt;/strong&gt;*&lt;/p&gt;
 
 &lt;p&gt;const setNewPollTitleReducer = (state, action) =&amp;gt; {
   if (typeof action.value !== ‘string’) {
@@ -1083,7 +1083,7 @@ const resetPollSavedReducer = (state, action) =&amp;gt; {
   return Object.assign({}, state, { pollSaved: null })
 }&lt;/p&gt;
 
-&lt;p&gt;// &lt;strong&gt;**&lt;/strong&gt;* Root Reducer Slice &lt;strong&gt;**&lt;/strong&gt;* /
+&lt;p&gt;// &lt;strong&gt;**&lt;/strong&gt;* Root Reducer Slice &lt;strong&gt;**&lt;/strong&gt;*
 export default function newPoll (state = DEFAULT_STATE, action) {
   switch (action.type) {
     case SET_NEW_POLL_TITLE:
@@ -1124,7 +1124,7 @@ import { addFlashMessage } from ‘./flashMessage’&lt;/p&gt;
   pollSaved: null
 }&lt;/p&gt;
 
-&lt;p&gt;// &lt;strong&gt;**&lt;/strong&gt;* Action Types &lt;strong&gt;**&lt;/strong&gt;* /&lt;/p&gt;
+&lt;p&gt;// &lt;strong&gt;**&lt;/strong&gt;* Action Types &lt;strong&gt;**&lt;/strong&gt;*&lt;/p&gt;
 
 &lt;p&gt;const SET_NEW_POLL_TITLE = ‘SET_NEW_POLL_TITLE’
 const SET_NEW_TITLE_EDITABLE = ‘SET_NEW_TITLE_EDITABLE’
@@ -1133,7 +1133,7 @@ const RESET_NEW_POLL = ‘RESET_NEW_POLL’
 const POLL_SAVED = ‘POLL_SAVED’
 const RESET_POLL_SAVED = ‘RESET_POLL_SAVED’&lt;/p&gt;
 
-&lt;p&gt;// &lt;strong&gt;**&lt;/strong&gt;* Action Creators &amp;amp; Reducers&lt;strong&gt;**&lt;/strong&gt;* /&lt;/p&gt;
+&lt;p&gt;// &lt;strong&gt;**&lt;/strong&gt;* Action Creators &amp;amp; Reducers&lt;strong&gt;**&lt;/strong&gt;*&lt;/p&gt;
 
 &lt;p&gt;/**
  * Sets state.newPollTitle
@@ -1239,7 +1239,7 @@ export function submitNewPoll (newPoll) {
   }
 }&lt;/p&gt;
 
-&lt;p&gt;// &lt;strong&gt;**&lt;/strong&gt;* Root Reducer Slice &lt;strong&gt;**&lt;/strong&gt;* /&lt;/p&gt;
+&lt;p&gt;// &lt;strong&gt;**&lt;/strong&gt;* Root Reducer Slice &lt;strong&gt;**&lt;/strong&gt;*&lt;/p&gt;
 
 &lt;p&gt;export default function newPoll (state = DEFAULT_STATE, action) {
   switch (action.type) {

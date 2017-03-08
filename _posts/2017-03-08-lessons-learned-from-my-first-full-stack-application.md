@@ -891,7 +891,7 @@ export const DEFAULT_STATE = {
   pollSaved: null
 }
 
-// ******* Action Types ******* /
+// ******* Action Types *******
 
 const SET_NEW_POLL_TITLE = 'SET_NEW_POLL_TITLE'
 const SET_NEW_TITLE_EDITABLE = 'SET_TITLE_EDITABLE'
@@ -900,7 +900,7 @@ const RESET_NEW_POLL = 'RESET_NEW_POLL'
 const POLL_SAVED = 'POLL_SAVED'
 const RESET_POLL_SAVED = 'RESET_POLL_SAVED'
 
-// ******* Action Creators ******* /
+// ******* Action Creators *******
 
 /**
  * Sets state.newPollTitle
@@ -969,7 +969,7 @@ export function submitNewPoll (newPoll) {
   }
 }
 
-// ******* Reducers ******* /
+// ******* Reducers *******
 
 const setNewPollTitleReducer = (state, action) => {
   if (typeof action.value !== 'string') {
@@ -1009,7 +1009,7 @@ const resetPollSavedReducer = (state, action) => {
   return Object.assign({}, state, { pollSaved: null })
 }
 
-// ******* Root Reducer Slice ******* /
+// ******* Root Reducer Slice *******
 export default function newPoll (state = DEFAULT_STATE, action) {
   switch (action.type) {
     case SET_NEW_POLL_TITLE:
@@ -1050,7 +1050,7 @@ export const DEFAULT_STATE = {
   pollSaved: null
 }
 
-// ******* Action Types ******* /
+// ******* Action Types *******
 
 const SET_NEW_POLL_TITLE = 'SET_NEW_POLL_TITLE'
 const SET_NEW_TITLE_EDITABLE = 'SET_NEW_TITLE_EDITABLE'
@@ -1059,7 +1059,7 @@ const RESET_NEW_POLL = 'RESET_NEW_POLL'
 const POLL_SAVED = 'POLL_SAVED'
 const RESET_POLL_SAVED = 'RESET_POLL_SAVED'
 
-// ******* Action Creators & Reducers******* /
+// ******* Action Creators & Reducers*******
 
 /**
  * Sets state.newPollTitle
@@ -1165,7 +1165,7 @@ export function submitNewPoll (newPoll) {
   }
 }
 
-// ******* Root Reducer Slice ******* /
+// ******* Root Reducer Slice *******
 
 export default function newPoll (state = DEFAULT_STATE, action) {
   switch (action.type) {
