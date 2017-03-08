@@ -569,6 +569,7 @@ a.pagination-item:hover {
 
 .highlight pre {
   min-width: 45rem !important;
+  margin-left: -2rem;
   font-size: .67em;
 }
 

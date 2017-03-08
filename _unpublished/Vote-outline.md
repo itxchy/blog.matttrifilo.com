@@ -124,3 +124,8 @@ DOM api use requires render
 
 ### advice
 
+{% highlight javascript %}
+
+{% highlight bash %}
+
+{% endhighlight %}
