@@ -55,7 +55,6 @@ img {
   margin: 0 auto;
 }
 
-
 /*
  * Wrapper
  *
@@ -564,4 +563,16 @@ a.pagination-item:hover {
 /* Only one tweak for a reverse layout */
 .layout-reverse.sidebar-overlay #sidebar-checkbox:checked ~ .sidebar {
   box-shadow: -.25rem 0 .5rem rgba(0,0,0,.1);
+}
+
+/* =================== blog.matttrifilo.com =================== */
+
+.highlight pre {
+  min-width: 45rem !important;
+  font-size: .67em;
+}
+
+.highlight .err {
+  color: #515151 !important;
+
 }

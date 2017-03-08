@@ -128,26 +128,30 @@ Instead of using Standard directly, you can install a package called `snazzy`, w
 If you have a new project, here's what you can do:
 
 Install:
-```bash
+
+{% highlight bash %}
 $ yarn add -D snazzy
-```
+{% endhighlight %}
 
 > If you already have standard installed globally, install `standard` as a dev dependency to work with snazzy in your project without errors:
 `yarn add -D standard snazzy`. The smarties behind Yarn [discourage](https://yarnpkg.com/en/docs/cli/add#toc-caveats) using global dependencies in most cases, so keep them local whenever possible so your projects can stay portable between machines. NPM works just fine too if you're not using yarn.
 
 Add a lint script to `package.json`:
-```
-"scripts": {
-  "lint": "snazzy"
+
+{% highlight json %}
+{
+  "scripts": {
+    "lint": "snazzy"
 }
-```
+{% endhighlight %}
 
 > If you're using `npm`, mute the annoying `err!` messages by adding `exit 0` to your script: `"lint": "snazzy; exit 0`
 
 Run it:
-```
+
+{% highlight bash %}
 $ yarn run lint
-```
+{% endhighlight %}
 
 That's it! Standard will magically find your JavaScript (excluding `node_modules`) and return your lint errors, or nothing if everything passes.
 
@@ -156,40 +160,48 @@ That's it! Standard will magically find your JavaScript (excluding `node_modules
 Using Standard with React will require an eslint config file, but it's still very easy.
 
 install:
-```
+
+{% highlight bash %}
 $ yarn add -D eslint-config-standard eslint-config-standard-react eslint-plugin-promise eslint-plugin-react eslint-plugin-standard
-```
+{% endhighlight %}
+
 > If you have `eslint` installed globally, add `eslint` to the above command so that your config points to the local copy of `eslint` to avoid errors.
 
 Create a file called `.eslintrc` in your root directory and add this:
-```
+
+{% highlight json %}
 {
   "extends": ["standard", "standard-react"]
 }
-```
+{% endhighlight %}
 
 Add an `eslint` command with your source code directory to your lint script:
-```
+
+{% highlight json %}
+{
 "scripts": {
   "lint": "eslint src"
 }
-```
+{% endhighlight %}
 
 Unlike `standard` or `snazzy`, you need to specify where eslint should look for your `.js` files. In the script above, eslint will check a directory called `src`. You can add multiple directories separated by spaces.
 
 What if you use extensions like `.jsx` or `.es6`? `eslint` has a flag for that:
-```
-"scripts": {
-  "lint": "eslint --ext .js --ext .jsx src"
+
+{% highlight json %}
+{
+  "scripts": {
+    "lint": "eslint --ext .js --ext .jsx src"
 }
-```
+{% endhighlight %}
 
 The CLI has many more options depending on your needs. [The docs are very helpful](http://eslint.org/docs/user-guide/command-line-interface).
 
 Finally, run it:
-```
-yarn run lint
-```
+
+{% highlight bash %}
+$ yarn run lint
+{% endhighlight %}
 
 Happy linting!
 
@@ -220,12 +232,14 @@ Before configuring the `vendor.js` bundle for Vote, I first had to figure out wh
 One of the coolest plugins I've come across for Webpack is the [webpack-bundle-analyzer](https://www.npmjs.com/package/webpack-bundle-analyzer). It gives you a highly-interactive visualization of your bundle(s) to show you the elephants in the room.
 
 It's as easy as installing:
-```
+
+{% highlight bash %}
 $ yarn add -D webpack-bundle-analyzer
-```
+{% endhighlight %}
 
 and including it with your plugins in your Webpack config:
-```js
+
+{% highlight javascript %}
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 module.exports = {
@@ -237,7 +251,7 @@ module.exports = {
   }
 }
 
-```
+{% endhighlight %}
 
 Now, anytime you build a new bundle, `BundleAnalyzerPlugin` will spin up a server, and open your browser to a visualization of your bundle(s) and dependencies scaled to size. The plugin can take a config object as a parameter, but the defaults should be just fine for most cases. The config options are in the [docs](https://github.com/th0r/webpack-bundle-analyzer). To "turn it off," you can simply comment out the plugin.
 
@@ -270,14 +284,16 @@ The `webpack -p` command is very handy for many situations, but for Vote, I want
 A quick way to cleanly create a production config file for webpack is to use `webpack-merge`. This allows you to combine a separate config file with your main `webpack.config.js` file to limit code duplication and keep your config files clean and easy to extend. To keep things simple, I decided to simply add a `webpack.prod.js` file for production builds, and use my `webpack.config.js` file alone for development builds.
 
 to install:
-```
+
+{% highlight bash %}
 $ yarn add -D webpack-merge
-```
+{% endhighlight %}
 
 Then, instead of exporting your config objects directly, you'll need to return the config objects as functions. Easy.
 
 `webpack.config.js`:
-```js
+
+{% highlight javascript %}
 const webpack = require('webpack')
 
 module.exports = function () {
@@ -285,11 +301,11 @@ module.exports = function () {
     // config...
   }
 }
-```
+{% endhighlight %}
 
 The production config function will actually use `webpack-merge` to include `webpack.config.js`'s config properties as `commonConfig`.
 
-```js
+{% highlight javascript %}
 const webpack = require('webpack')
 const CompressionPlugin = require('compression-webpack-plugin')
 const webpackMerge = require('webpack-merge')
@@ -325,7 +341,7 @@ module.exports = function (env) {
   })
 }
 
-```
+{% endhighlight %}
 
 `webpackMerge` runs `commonConfig()` in its argument and receives `webpack.config.js`'s properties.
 
@@ -334,11 +350,12 @@ The first three plugins are mostly identical to what `webpack` includes for you 
 There are likely better ways to gzip files automatically from `niginx`, but my `nginx`fu is lacking on that front.
 
 Now, you can add an npm script to build your production bundle:
-```js
+
+{% highlight javascript %}
 "scripts": {
   "build-prod": "webpack --config webpack.prod.js"
 }
-```
+{% endhighlight %}
 
 ### Tree-Shaking
 
@@ -347,12 +364,13 @@ Another modern feature in Webpack 2 is tree-shaking. Since Webpack 2 supports ES
 There is a problem with this if you use Babel's `es2015` preset, but its easy to fix.
 
 Just set `modules` to false in your `.babelrc`:
-```
+
+{% highlight javascript %}
 "presets": [
     "react",
     ["es2015", { "modules": false }]
   ],
-```
+{% endhighlight %}
 
 Babel's `es2015` preset will convert your your ES6 modules to CommonJS modules by default, so just turn it off and your ES6 modules will be respected.
 
@@ -361,12 +379,14 @@ Babel's `es2015` preset will convert your your ES6 modules to CommonJS modules b
 Remember Standard? You can use [`eslint-loader`](https://github.com/MoOx/eslint-loader) to lint your code before Webpack bundles everything. I did this based on Brian Holt's recommendation in Complete Intro to React.
 
 First install:
-```
+
+{% highlight bash %}
 yarn add -D eslint-loader
-```
+{% endhighlight %}
 
 Then, add this to your config:
-```js
+
+{% highlight javascript %}
 module.exports = {
   // rest of config...
   module: {
@@ -380,7 +400,7 @@ module.exports = {
     ]
   }
 }
-```
+{% endhighlight %}
 
 Note `enforce: 'pre`. That will allow your code to be linted *before* webpack's build step.
 
@@ -425,7 +445,8 @@ Practically speaking, I don't really have a preference of one stateful component
 The true value of React's [PropTypes](https://facebook.github.io/react/docs/typechecking-with-proptypes.html) really shine while building larger apps.
 
 Take this example from Vote's Create A Poll page component:
-```js
+
+{% highlight javascript %}
 import React from 'react'
 import NewPollTitle from './NewPollTitle'
 import PendingPollOptions from './PendingPollOptions'
@@ -532,7 +553,7 @@ const mapDispatchToProps = (dispatch) => {
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateAPoll)
 
-```
+{% endhighlight %}
 
 There is a lot going on here, but just take a look at all of the `propTypes` checking the props coming in from Redux.
 
@@ -546,7 +567,8 @@ Note that `static` properties are still only at [Stage-2](https://github.com/hem
 
 Otherwise, you can tack on `propTypes` to your Component `class`
 separately:
-```js
+
+{% highlight javascript %}
 import React, { Component } from 'react'
 const { string } = React.PropTypes
 
@@ -574,7 +596,7 @@ Greeting.propTypes = {
 }
 
 export default Greeting
-```
+{% endhighlight %}
 
 Note the casing difference in `React.PropTypes` vs `Greeting.propTypes`.
 
@@ -585,14 +607,16 @@ The official React docs have a great guide about how to [think about your compon
 One of my favorite qualities of React is the ability to compose components in your render function as JSX, effectively treating them as if you're using custom HTML elements containing whatever you'd like, taking in any attributes you'd like. JSX is just JavaScript, so you can pass in JaveScript expressions to component props as well as regular HTML attributes. These JavaScript expressions can include arrow functions as well.
 
 >Digression: One great handy use for arrow functions in React's synthetic DOM event attributes is when you want to pass an argument to an `onClick` event. The native `onclick` handler only accepts a function reference with no parameters. `onclick` will pass along the click event object to the function its calling as that function's parameter. You can get around this easily in React:
-```jsx
+
+{% highlight javascript %}x
 <a
   className='btn btn-danger delete-button'
   onClick={() => this.deleteOption(index)}
   aria-label='Delete' >
   <i className='fa fa-trash-o' aria-hidden='true' />
 </a>
-```
+{% endhighlight %}
+
 This way, I was able to use an arrow function inside of `onClick`'s JavaScript expression to pass `index` to `this.deleteOption(index)` as the arrow function's implicit return value. `index` will be the index value from a `map` function encapsulating this link.
 
 Decisions about how to break up your UI into components can get subjective, but it makes sense to use the [Single Responsibly Principle](https://en.wikipedia.org/wiki/Single_responsibility_principle) as mentioned in the docs. In practice, this can get difficult as applications grow, but simple code doesn't mean easy code.
@@ -602,18 +626,20 @@ Decisions about how to break up your UI into components can get subjective, but 
 For a simple example, let's put Vote aside for a moment and look at my other recently-refactored React project, [Spiffy Wikipedia](https://github.com/itxchy/FCC-spiffy-wikipedia). This project simply allows you to search Wikipedia for a topic using its API, and the see some aesthetically pleasing results.
 
 Component tree:
-```
+
+{% highlight markdown %}
 - App
   + Header
   + SearchBar
   + SearchResults
     * Result
-```
+{% endhighlight %}
 
 ##### Container Components
 
 `ReactDOM` renders [`App`](https://github.com/itxchy/FCC-spiffy-wikipedia/blob/master/src/components/App.js):
-```js
+
+{% highlight javascript %}
 class App extends Component {
 
 // ... check the GitHub repo for the complete code
@@ -628,7 +654,7 @@ class App extends Component {
     )
   }
 }
-```
+{% endhighlight %}
 
 App's responsibility as a [container component](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0#.qlp6sobvr) is to handle search requests from `SearchBar`, and pass the results down to `SearchResults` after performing an AJAX call to Wikipedia's API.
 
@@ -639,7 +665,8 @@ Notice that this component only displays other components. The main concern of `
 ##### Presentational Components
 
 `Header`:
-```js
+
+{% highlight javascript %}
 import React from 'react'
 import './Header.css'
 
@@ -653,14 +680,15 @@ function Header (props) {
 
 export default Header
 
-```
+{% endhighlight %}
 
 Header is a very simple stateless functional component. It shows the header. Notice the `Header.css` import. It may seem trivial to make a separate component for such a simple piece of UI, but now, anytime I might want to change the header's look, I know exactly where to go. Everything about the header's presentation, from markup to styling, is encapsulated right here inside this component. It has one responsibility.
 
 ##### Time to Refactor
 
 `SearchBar`:
-```js
+
+{% highlight javascript %}
 import React, { Component } from 'react'
 import './SearchBar.css'
 import { Form, FormGroup, FormControl, Button } from 'react-bootstrap'
@@ -698,7 +726,7 @@ SearchBar.propTypes = {
 
 export default SearchBar
 
-```
+{% endhighlight %}
 
 There is a code smell here.
 
@@ -707,7 +735,8 @@ SearchBar is currently a presentational component with one responsibility, which
 Do you keep everything encapsulated here, or do you break this up with components for "SearchForm", "Button" inside "SearchForm", and "ChanceLink"? This is where things get subjective. If you're not careful, you could end up making a component for every synthetic DOM element. On the other hand, it's good for readability and maintainability to keep components as simple as possible.
 
 One easy compromise would be to make a `SearchForm` component to be responsible for the form itself, and leave the chance link in `SearchBar` since its only one simple link element:
-```js
+
+{% highlight javascript %}
 class SearchBar extends Component {
   constructor (props) {
     super(props)
@@ -746,7 +775,7 @@ class SearchBar extends Component {
 SearchBar.propTypes = {
   onSearchSubmit: func.isRequired
 }
-```
+{% endhighlight %}
 
 Now that render function is much cleaner. I included the rest of the code here to illustrate how SearchBar's methods and state can be passed down as props.
 
@@ -765,7 +794,7 @@ Now, what if I decided to add a dropdown component of look-ahead search results 
 It would make sense to include the dropdown's UI as a separate component, but what if it needs to call [`loadWikiData`](https://github.com/itxchy/FCC-spiffy-wikipedia/blob/master/src/components/App.js#L28) from `App.js`  every 400 ms to load results?
 
 Let's reference the updated component tree:
-```
+{% highlight markdown %}
 - App (WikiContainer)
     + SearchBar
       * SearchForm
@@ -773,7 +802,7 @@ Let's reference the updated component tree:
           + LookAheadResult
     + SearchResults
       * Result
-```
+{% endhighlight %}
 
 We don't need to flesh out the new components in code to realize we'd have a problem. To pull this off, we'd need to pass `App`'s `loadWikiData` method down as a prop through `SearchBar`, into `SearchForm`, and possibly even to `LookAheadDropdown` depending on whether `SearchForm` gets refactored to include `handleSearchInputChange` and `handleSubmit` instead of [SearchBar](https://github.com/itxchy/FCC-spiffy-wikipedia/blob/master/src/components/SearchBar/SearchBar.js) to further clarify each components' single responsibility. But that's not all! We'd need to pass [`state.data`](https://github.com/itxchy/FCC-spiffy-wikipedia/blob/master/src/components/App.js#L13) from `App` down the component tree to at least `SearchForm` as well.
 
@@ -814,19 +843,20 @@ At first, my Redux code lived in a single `store.js` file which got unruly very 
 After some research, I read about the [Ducks](https://medium.com/@scbarrus/the-ducks-file-structure-for-redux-d63c41b7035c#.yawhsa7sx) Pattern which looked very promising.
 
 I ended up with a variation of that pattern which worked out well for my needs:
-```
+{% highlight markdown %}
 /redux
   /modules
     module.js
     ...
   Store.js
   rootReducer.js
-```
+{% endhighlight %}
 
-Very simple.
+Very simple!
 
 Store.js:
-```js
+
+{% highlight javascript %}
 import { applyMiddleware, compose, createStore } from 'redux'
 import thunk from 'redux-thunk'
 import rootReducer from './rootReducer'
@@ -837,12 +867,13 @@ export const store = createStore(rootReducer, compose(
 ))
 
 export default store
-```
+{% endhighlight %}
 
 The Store.js file simply initializes the store with middleware and the rootReducer. Thanks again to Brian Holt for teaching that very handy devTools initialization parameter. Before that, I used `remote-dev-tools` to spin up a separate server to run the dev tools externally while server side rendering. This one-liner is much simpler.
 
 rootReducer.js:
-```js
+
+{% highlight javascript %}
 import { combineReducers } from 'redux'
 import flashMessages from './modules/flashMessage'
 import newPoll from './modules/createNewPoll'
@@ -870,14 +901,15 @@ export default combineReducers({
   deletedPoll
 })
 
-```
+{% endhighlight %}
 
 `rootReducer.js` combines all of the reducer slices into one root reducer.
 
 One important note is that the name of the exported reducer slice inside each module determines the name of the module's individual state object in the store.
 
 Let's look at the `createNewPoll.js` module:
-```js
+
+{% highlight javascript %}
 import axios from 'axios'
 import { addFlashMessage } from './flashMessage'
 
@@ -1029,14 +1061,15 @@ export default function newPoll (state = DEFAULT_STATE, action) {
   }
 }
 
-```
+{% endhighlight %}
 
 There is a lot going in this file, but it progresses logically. For a `newPoll`, the actions, action creators, reducer functions, and the rootReducerSlice are all right here, and not in separate files. Adding a new feature is as easy as adding the relevant code to each section, instead of bouncing back and forth between files. It's easier to reason about as well (for me at least).
 
 One way to make this cleaner would be to group the Action Types, Actions, and Reducers together for each feature, and maybe even put each feature into separate files to be imported into this current one for the Root Reducer Slice to use.
 
 Here's how grouping just the action creators and reducers together can look:
-```js
+
+{% highlight javascript %}
 import axios from 'axios'
 import { addFlashMessage } from './flashMessage'
 
@@ -1186,7 +1219,7 @@ export default function newPoll (state = DEFAULT_STATE, action) {
   }
 }
 
-```
+{% endhighlight %}
 
 The file is still pretty long, but this refactor is already much easier to reason about. Keeping Each action creator and its corresponding reducer together eliminate the need to scroll back and forth while changing things, or adding a new action/reducer flow.
 
@@ -1205,7 +1238,8 @@ You can dispatch more than one action in a `.then` or `.catch` callback after a 
 Handling async actions in Redux is simple using thunks.
 
 Note the `axios` call from the example above:
-```js
+
+{% highlight javascript %}
 /**
  * Submits a new poll to the server
  *
@@ -1235,7 +1269,7 @@ export function submitNewPoll (newPoll) {
       })
   }
 }
-```
+{% endhighlight %}
 
 After getting a response from the API, a certain set of action creators will get dispatched if the response is successful and the promise is resolved, and other action creators will get dispatched if the response is an error and the promise gets rejected.
 
@@ -1260,7 +1294,8 @@ There are many great testing libraries and frameworks out there to choose from. 
 Jest is well suited for React. You can write [snapshot](https://facebook.github.io/jest/docs/snapshot-testing.html#content) tests of your components, which render components into markup as JSON using whatever props you'd like. The test fails if the markup changes, and you'll see a diff of what changed similar to a Git diff. You can update the snapshot by running `jest --updateSnapshot` or just `jest -u`. Snapshots are far from bulletproof, but they're cheap and disposable, and will ensure that your markup is rendering as expected.
 
 For simplicity, let's go back to `[SpiffyWikipedia`](https://github.com/itxchy/FCC-spiffy-wikipedia/blob/master/src/components/SearchResults/SearchResults.test.js) for a snapshot example:
-```js
+
+{% highlight javascript %}
 import React from 'react'
 import { shallow } from 'enzyme'
 import { shallowToJson } from 'enzyme-to-json'
@@ -1272,7 +1307,7 @@ test('SearchResults snapshot test', () => {
   expect(tree).toMatchSnapshot()
 })
 
-```
+{% endhighlight %}
 
 We'll get to `enzyme` in a moment.
 
@@ -1287,7 +1322,8 @@ Beyond snapshots, `enzyme` from AirBnB is essential for testing your components 
 Shallow only renders the component passed to it, and none of its children. It doesn't render a full DOM, so you won't get access to DOM API's or component lifecycle methods. The trade-off is that Shallow is fast. It's great for testing that markup is showing up properly based on props or state in more detail than snapshots. Shallow should be used as much as possible before using `mount`.
 
 Another example from `SpiffyWikipedia`:
-```js
+
+{% highlight javascript %}
 import React from 'react'
 import { shallow } from 'enzyme'
 import { shallowToJson } from 'enzyme-to-json'
@@ -1316,16 +1352,17 @@ test('SearchResults should render "An error occured." if an error is passed to p
   expect(component.text()).toEqual('An error occured.')
 })
 
-test('SearchResults should render "An error occured." if nothis is passed to seachResults or error as props', () => {
+test('SearchResults should render "An error occured." if nothing is is passed to seachResults or error as props', () => {
   const component = shallow(<SearchResults error={null} searchResults={null} />)
   expect(component.text()).toEqual('An error occured.')
 })
-```
+{% endhighlight %}
 
 These tests are simply testing that the correct markup and components appear depending on what prop values are passed into `<SearchResults />`. Shallow has a lot of properties you can use, and they have great [documentation](http://airbnb.io/enzyme/docs/api/shallow.html).
 
 The [`SearchBar`](https://github.com/itxchy/FCC-spiffy-wikipedia/blob/master/src/components/SearchBar/SearchBar.js) component was a bit more complicated to test. A few events needed to be simulated, so `mount` was used instead of `shallow`:
-```js
+
+{% highlight javascript %}
 import React from 'react'
 import { shallow, mount } from 'enzyme'
 import { shallowToJson } from 'enzyme-to-json'
@@ -1360,7 +1397,7 @@ test('SearchBar should not call onSearchSubmit from props if input is empty', ()
   expect(submitHandler).not.toHaveBeenCalled()
 })
 
-```
+{% endhighlight %}
 
 Mount renders full DOM allowing you to interact with DOM API's as well as component lifecycle methods.
 
@@ -1373,8 +1410,9 @@ This is about as deep as I've gotten with testing React components. You can test
 Testing Redux is as easy as simulating an action being reduced into new state, and testing that new state against your expectations. Let's look at few examples from Vote.
 
 A few action creators alongside their reducers in [`createNewPoll.js`](https://github.com/itxchy/FCC-vote/blob/master/redux/modules/createNewPoll.js):
-```js
-// ... /
+
+{% highlight javascript %}
+// ...
 
 /**
  * Sets state.newPollOptions
@@ -1418,12 +1456,13 @@ const pollSavedReducer = (state, action) => {
   return Object.assign({}, state, { pollSaved: action.pollId })
 }
 
-// ... /
-```
+// ...
+{% endhighlight %}
 
 And here are their tests in [`createNewPoll.spec.js`](https://github.com/itxchy/FCC-vote/blob/master/redux/modules/createNewPoll.spec.js):
-```js
-// ... /
+
+{% highlight javascript %}
+// ...
 
   describe('updateOption', () => {
     it('should set state.newPollOptions as the array of option strings passed to it', () => {
@@ -1458,7 +1497,7 @@ And here are their tests in [`createNewPoll.spec.js`](https://github.com/itxchy/
   })
 
 // ... /
-```
+{% endhighlight %}
 
 In each test, `createNewPoll.js`'s root reducer slice is returning a new state object based on the previous state, and an action or an action creator's returned action. Then, its just a matter of seeing if the new state is what you expect it to be. If not, you know exactly where to look for the bug.
 
@@ -1474,7 +1513,7 @@ For vote, I'll admit I didn't focus as much attention on styling as I should hav
 
 All of my SCSS files were stored in a separate `sass` directory, the idea being to keep styling concerns and React component concerns separate. But isn't the *styling* of a component part of a component's concerns? Depends on who you ask I guess, but importing your SASS or CSS modules directly into the components that need them makes a lot of sense. Instead of going through a separate directory tree looking for the style module that's responsible for your component, and managing the file structure of a separate style directory, it makes sense to keep your CSS or SASS together with the components they're styling. This is good for a faster workflow, and it makes it easier to use CSS conventions like [BEM](https://en.bem.info/methodology/key-concepts/). Instead of mirroring your CSS directory with your component directory, you can keep your components even more self contained in their file structure.
 
-![Styling in its own directory compared with keeping styles with their components.](../public/img/css-structure.png)
+![Styling in its own directory compared with keeping styles with their components.]({{ site.url }}/public/img/css-structure.png)
 
 *How* to [bundle your CSS](https://webpack.js.org/guides/code-splitting-css/) is another consideration. Using `ExtractTextPlugin` will allow you to load your CSS in a separate script tag, requiring an additional network request. Including your CSS in a JavaScript bundle will save a network request, but will add to the bundle's weight.
 
@@ -1488,7 +1527,7 @@ Vote's React markup is rendered on the [server](https://github.com/itxchy/FCC-vo
 
 The code itself is very simple. Thanks again to Brain Holt for teaching this pattern in the first Complete Intro To React!
 
-```js
+{% highlight javascript %}
 app.use((req, res) => {
   match({ routes: Routes(), location: req.url }, (error, redirectLocation, renderProps) => {
 
@@ -1510,7 +1549,7 @@ app.use((req, res) => {
     }
   })
 })
-```
+{% endhighlight %}
 
 > Note: that this code works for React Router 2. The [documentation](https://github.com/ReactTraining/react-router/blob/master/docs/guides/ServerRendering.md) for server-side rendering doesn't mention any changes of this pattern from v2 to v3 , but you've been warned.
 >
@@ -1518,7 +1557,7 @@ app.use((req, res) => {
 
 The code above seems pretty busy at first glance, but let's break this down.
 
-```js
+{% highlight javascript %}
 app.use((req, res) => {
 
   match({ routes: Routes(), location: req.url }, (error, redirectLocation, renderProps) => {
@@ -1526,22 +1565,22 @@ app.use((req, res) => {
   })
 
 })
-```
+{% endhighlight %}
 
 When a request is received by Express, the `match` function from `react-router` is called. It takes two parameters, the first being an object where it can learn about your application's `routes` (returned from a function in this case), and a `location` (the request's URL) to match to the routes. It can also take in a `history` property if you'd like.
 
 One aside: in your `index.html` file, make sure you include a forward slash in your bundle script locations or you might get basename errors when reloading nested routes, or navigating to nested routes directly:
 
-```html
+{% highlight html %}
     <script src="/public/vendor.js" charset="utf-8"></script>
     <script src="/public/bundle.js" charset="utf-8"></script>
-```
+{% endhighlight %}
 
 `match`'s second argument is a callback with three parameters, `error`, `redirectLocation`, and `renderProps`.
 
 The meat of that callback simply handles an `error` if it is defined, a `redirectLocation` if it is defined, `renderProps` if it is defined (this is how you know there is a successful match between the requested `location` and a known route), and finally falls back on a 404 error if none of the callback's parameters are defined. If there is no error, no renderProps, and no redirect, then there is no match.
 
-```js
+{% highlight javascript %}
 app.use((req, res) => {
 
   match({ routes: Routes(), location: req.url }, (error, redirectLocation, renderProps) => {
@@ -1567,7 +1606,7 @@ app.use((req, res) => {
     }
   })
 })
-```
+{% endhighlight %}
 
 > More about [`LocationDescriptor`](https://github.com/ReactTraining/react-router/blob/master/docs/Glossary.md#locationdescriptor)
 
@@ -1577,22 +1616,23 @@ The actual rendering happens thanks to `ReactDOMServer.renderToString`. Since th
 
 JSX is syntax to make it easier to compose components. Components are just functions, so we can easily write our components without JSX. [`React.createElement`](https://facebook.github.io/react/docs/react-without-jsx.html) takes in three parameters: `component`, `props`, and `children`.
 
-```js
+{% highlight javascript %}
 const body = ReactDOMServer.renderToString(
   React.createElement(
     Provider, { store }, React.createElement(RouterContext, renderProps)
   )
 )
-```
+{% endhighlight %}
 
 In JSX, this would translate to:
-```jsx
+
+{% highlight javascript %}
 const body = (
   <Provider store={store}>
     <RouterContext renderProps={renderProps} />
   </Provider>
 )
-```
+{% endhighlight %}
 
 Those two elements will render into the entire page's markup.
 
@@ -1603,9 +1643,10 @@ One obstacle to rendering a React application on the server is that Node doesn't
 There are a few options to transpile the application code for the server.
 
 Brian Holt teaches with `babel-register`, which can be required into your server code.
-```js
+
+{% highlight javascript %}
 require('babel-register')({ ignore: /node_modules/ } )
-```
+{% endhighlight %}
 
 > I ended up adding an option to ignore `node_modules` because I think there was a `.babelrc` file somewhere in a 3rd party module that was overriding my own.
 
@@ -1615,7 +1656,7 @@ For server-side code, it's better to transpile ahead of time, instead of `babel`
 
 To pull this off, I made a `production` directory, and set up some `npm` scripts to transpile a copy of all of the application code that the server needs to render, and then put that process into the production build step.
 
-```js
+{% highlight javascript %}
   "scripts": {
     "build:prod": "npm run babel:prod && webpack --config webpack.prod.js",
     "babel:clear": "del production/*",
@@ -1627,7 +1668,7 @@ To pull this off, I made a `production` directory, and set up some `npm` scripts
     "babel:prod": "npm run babel:clear && npm run copy:sass && npm run babel:routes && npm run babel:components && npm run babel:redux && npm run babel:auth",
     ...
   }
-```
+{% endhighlight %}
 
 Now, when running `build:prod`, all of my application files will be transpiled, and the `sass` folder will be copied to the production directory too so that the application doesn't panic (gross, I know). I'm a a new convert for keeping styles with their components in the same directory to begin with in React apps.
 
@@ -1635,18 +1676,19 @@ That's great, but there are a few more steps.
 
 It would be a drag to have to transpile everything every time a file changes during development, so it would be nice to still be able to use `babel-register` outside of a 'production' environment.
 
-```js
+{% highlight javascript %}
 if (process.env.NODE_ENV !== 'production') {
   require('babel-register')({ ignore: /node_modules/ })
 }
-```
+{% endhighlight %}
 
 Finally, the correct application files need to be required based on the environment:
-```js
+
+{% highlight javascript %}
 const { store } = process.env.NODE_ENV === 'production' ? require('./production/redux/Store.js') : require('./redux/Store.js')
 
 const { Routes } = process.env.NODE_ENV === 'production' ? require('./production/components/Routes.js') : require('./components/Routes.jsx')
-```
+{% endhighlight %}
 
 Now it's closer to production ready.
 
@@ -1667,7 +1709,7 @@ REST stands for REpresentational State Transfer.
 Making a polling application was a great exercise for creating a server API since a number of simple Create Read Update Delete operations would be necessary.
 
 From [`polls.js`](https://github.com/itxchy/FCC-vote/blob/master/routes/polls.js)
-```js
+{% highlight javascript %}
 /**
  * Retrieves all polls
  */
@@ -1722,12 +1764,13 @@ router.delete('/delete/:id', (req, res) => {
     .catch(err => res.status(500).json({'error deleting poll': err}))
 })
 
-```
+{% endhighlight %}
 
 This application uses Express Router, so picture these endpoints as prepended with `/api/polls`.
 
 Anytime a request reaches the server, it first passes through Express' middleware, which includes express router. Here's a heavily redacted [`server.js`](https://github.com/itxchy/FCC-vote/blob/master/server.js):
-```js
+
+{% highlight javascript %}
 const express = require('express')
 const users = require('./routes/users.js')
 const auth = require('./routes/auth.js')
@@ -1744,14 +1787,15 @@ app.use('/api/auth', auth)
 app.use('/api/polls', polls)
 
 app.use('/public', expressStaticGzip('./public'))
-```
+{% endhighlight %}
 
 One mistake I made while building this API was that I didn't design a blueprint first.
 
 It's a good idea to have all of your endpoints and data schemas mapped out beforehand so you don't end up having to change it often as you build out features.
 
 In the example above from [`polls.js`](https://github.com/itxchy/FCC-vote/blob/master/routes/polls.js), those endpoints could be crudely mapped out this way:
-```
+
+{% highlight markdown %}
 GET: /api/polls
   - responds with all polls
 
@@ -1763,7 +1807,7 @@ GET: /api/polls/id/:id
 
 DELETE: /api/polls/delete/:id
   - deletes a poll based on its ID, and responds with the just-deleted poll object
-```
+{% endhighlight %}
 
 As I developed this application, its easy to see that I built the first two endpoint before the last two. It makes sense to think of endpoints as if you're accessing a directory structure. In this case, the username endpoint isn't very descriptive. `/api/polls/username/:username` would be more clear.
 
@@ -1781,7 +1825,7 @@ Unfortunately, Node 6 doesn't support `async`/`await`, but [Node 7 does](http://
 
 For now, I used a library called `asyncawait` to be able to use async/await as functions so no transpiling would be necessary.
 
-```js
+{% highlight javascript %}
 const async = require('asyncawait/async')
 const awaitFake = require('asyncawait/await')
 
@@ -1813,14 +1857,15 @@ router.put('/edit/:id', authenticate, (req, res) => {
   applyPollEdits(req, res)
 })
 
-```
+{% endhighlight %}
 
 Keep in mind that `async` and `await` are reserved keywords in the spec, and NOT functions like they're shown here. This [2ality article](http://www.2ality.com/2016/10/async-function-tips.html) goes deep into async/await in addition to other asynchronous syntax's coming soon.
 
 The `asyncawait` library behaves just like the real thing, so it's fine until I can use async await natively.
 
 Let's look at an older commit when I was still using `babel-register` on the server for all environments:
-```js
+
+{% highlight javascript %}
 /**
  *  Edits a poll
  */
@@ -1852,7 +1897,7 @@ router.put('/edit/:id', authenticate, (req, res) => {
     }
   }
 })
-```
+{% endhighlight %}
 
 Could a promise have been used here? Of course, but this project seemed like a good time to give `async`/`await` a try, and it's very simple to use.
 
@@ -1860,7 +1905,7 @@ Inside of an async function, you set up `try`/`catch` blocks. Inside the `try` b
 
 This was a simple example with only one `await` statement, but what if you had to perform three or four async function calls? Instead of nested callbacks, or even nested promises, you can use `await` to tell the `async` function to pause until `await` gets a resolution of a promise. This way you can have multiple variables  with `await` calls that will run in order, each pausing until its following promise gets resolved:
 
-```js
+{% highlight javascript %}
 async function workout (run, updateJournal, highIntensityCardio) {
   try {
       const averageMileTime = await run({ miles: 2 })
@@ -1874,7 +1919,7 @@ async function workout (run, updateJournal, highIntensityCardio) {
 
 workout(run, updateJournal, highIntensityCardio)
 
-```
+{% endhighlight %}
 
 Many more use cases can be read about [here](http://www.2ality.com/2016/10/async-function-tips.html).
 
@@ -1887,7 +1932,8 @@ I tried out Posgresql with Vote at first, but switched back to MongoDB mostly be
 Going hand-in-hand with designing an API, another key takeaway I took from Vote was thinking about Schema design.
 
 The Schema for polls went through a few iterations but I ended up with this:
-```js
+
+{% highlight javascript %}
 const mongoose = require('mongoose')
 
 const votesSchema = new mongoose.Schema({
@@ -1909,7 +1955,7 @@ const voteSchema = new mongoose.Schema({
 const Poll = mongoose.model('Polls', voteSchema)
 
 module.exports = Poll
-```
+{% endhighlight %}
 
 This could probably be simplified, but having the separate schemas made the structure flat and clean to look at. Each level would be easy to extend as well
 
@@ -1918,7 +1964,7 @@ This could probably be simplified, but having the separate schemas made the stru
 
 Mongoose allows you to chain commands and use promises to simply MongoDB logic.
 
-```js
+{% highlight javascript %}
 /**
  * Looks up a user based on username or email
  * If no user is found, the response will be null
@@ -1940,7 +1986,7 @@ router.get('/:identifier', (req, res) => {
   })
 })
 
-```
+{% endhighlight %}
 
 This code searches the database for an email or username matching the identifier passed into the login form. The promise gets resolved with a user object (either populated with a found user, or empty), otherwise, the error is passed to the `catch` function.
 
@@ -1951,11 +1997,12 @@ It's important to handle rejected promises quickly so that you can debug them in
 During development, you can spin up a database on your system if MongoDB is installed locally, and connect to it with mongoose.
 
 You'll need to create a `data` folder in your project's root directory and another npm script:
-```
+
+{% highlight json %}
 "scripts" {
   "mongo": "mongod --port 27017 --dbpath=./data"
 }
-```
+{% endhighlight %}
 
 You should see a bunch of logs in your terminal if it's working.
 
@@ -1964,7 +2011,8 @@ Then, you just connect mongoose to `mongodb://localhost:27017/[databaseName]`
 For production, you should use an environment variable for your mLab URI, since it's a bad idea to put security credentials directly into your code, especially if you're committing to GitHub publicly.
 
 You can use a conditional statement to connect the proper database based on your node environment:
-```js
+
+{% highlight javascript %}
 // server.js /
 /**
  * connect to MongoDB
@@ -1987,7 +2035,7 @@ if (process.env.NODE_ENV === 'production') {
   })
 }
 
-```
+{% endhighlight %}
 
 Promises make life easier.
 
@@ -2028,7 +2076,8 @@ A logger called Bunyan allows you to configure JSON logs that can include as man
 What to log can turn into a rabbit hole, but its helpful to log information about the successful operations that affect users, and log detailed errors when things go wrong. Hopefully, you'll be able to see what operations happened leading up to the error to help narrow down what went wrong without having to inject a bunch of `console.logs`.
 
 To set up bunyan:
-```js
+
+{% highlight javascript %}
 const bunyan = require('bunyan')
 const log = bunyan.createLogger({
   name: 'vote',
@@ -2042,12 +2091,13 @@ const log = bunyan.createLogger({
       path: 'log/vote.log'
     }
   ]})
-```
+{% endhighlight %}
 
 With this config, levels that are at least "info" will get streamed to `process.stout`, and levels that are at least "warn" will get logged into a file called `vote.log` in a `log` directory at the project's root. This file can be pretty-printed by running `bunyan vote.log` inside the `vote` directory.
 
 Here's how some helpful logging can work in practice:
-```js
+
+{% highlight javascript %}
 /**
  * params: selectedOption number, pollID string, voter string
  *
@@ -2078,7 +2128,7 @@ const updateDocumentWithNewVote = function (selectedOption, pollID, voter) {
       return { updated: false, error: err }
     })
 }
-```
+{% endhighlight %}
 
 Note the use of `log.info` and `log.error`. Both logs will be printed to the console, but the error will also get written to the log file, which can later be searched using `bunyan`'s cli.
 
