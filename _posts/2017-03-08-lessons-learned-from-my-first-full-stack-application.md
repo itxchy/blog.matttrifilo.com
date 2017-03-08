@@ -2,7 +2,7 @@
 layout: post
 title: Lessons Learned from My First Full Stack Application
 comments: true
-date: 2017-02-20T10:20:00Z
+date: 2017-03-08T10:20:00Z
 ---
 
 For the past few months, I've been working on my first full stack application challenge for Free Code Camp, a web application for creating and sharing polls. It's finally [deployed](https://fcc-vote.matttrifilo.com)! You can view the source on [GitHub](https://github.com/itxchy/FCC-vote).
@@ -10,6 +10,8 @@ For the past few months, I've been working on my first full stack application ch
 I took my time on this project in particular because while I was familiar with React, Express, and MongoDB at a rudimentary level, I'd never used them together to build a modern CRUD application. Piling on to that, I had no experience at all with Redux or the Flux architecture in general, much less how to pass state around in a larger React/Redux application. This was also my first experience visualizing data with D3.js.
 
 I've learned more from this project than anything else I've ever made to date, and this seems like a good time to take a step back to reflect on and share some of the most useful lessons I've learned from this project.
+
+<!--break-->
 
 This is a very long post, so feel free to jump around.
 
