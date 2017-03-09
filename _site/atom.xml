@@ -4,7 +4,7 @@
  <title>Matt Trifilo</title>
  <link href="http://blog.matttrifilo.com/atom.xml" rel="self"/>
  <link href="http://blog.matttrifilo.com/"/>
- <updated>2017-03-09T01:41:10-06:00</updated>
+ <updated>2017-03-09T01:45:49-06:00</updated>
  <id>http://blog.matttrifilo.com</id>
  <author>
    <name>Matt Trifilo</name>
@@ -105,7 +105,10 @@
 &lt;li&gt;&lt;a href=&quot;#continuous-integration&quot;&gt;Continuous Integration&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;#staging-vs-production&quot;&gt;Staging vs Production&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;#logging&quot;&gt;Logging&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;#security&quot;&gt;Security&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#security&quot;&gt;Security&lt;/a&gt;
+
+&lt;ul&gt;
 &lt;li&gt;&lt;a href=&quot;#watch-this-talk&quot;&gt;Watch this talk&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;#securing-express&quot;&gt;Securing Express&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;#https&quot;&gt;HTTPS&lt;/a&gt;&lt;/li&gt;
@@ -2063,15 +2066,15 @@ DELETE: /api/polls/delete/:id
 
 &lt;p&gt;Note the use of &lt;code&gt;log.info&lt;/code&gt; and &lt;code&gt;log.error&lt;/code&gt;. Both logs will be printed to the console, but the error will also get written to the log file, which can later be searched using &lt;code&gt;bunyan&lt;/code&gt;&amp;#39;s cli.&lt;/p&gt;
 
-&lt;h2 id=&quot;security&quot;&gt;Security&lt;/h2&gt;
+&lt;h1 id=&quot;security&quot;&gt;Security&lt;/h1&gt;
 
-&lt;h3 id=&quot;watch-this-talk&quot;&gt;&lt;a href=&quot;https://www.youtube.com/watch?v=POmnL-PruAs&amp;amp;t=12s&quot;&gt;Watch this talk&lt;/a&gt;&lt;/h3&gt;
+&lt;h2 id=&quot;watch-this-talk&quot;&gt;&lt;a href=&quot;https://www.youtube.com/watch?v=POmnL-PruAs&amp;amp;t=12s&quot;&gt;Watch this talk&lt;/a&gt;&lt;/h2&gt;
 
 &lt;p&gt;There are a lot of reasons not build your own authentication strategy. Good security is a constantly moving target, and nothing is immune from hackers that want to break in badly enough. Even if you manage to build a reasonably secure authentication strategy that&amp;#39;s penetration tested and following current best practices, how often are you going to audit it for new vulnerabilities, known and unknown? Once a week? Once a month? Never? Before you know it, your users&amp;#39; &lt;a href=&quot;https://auth0.com/forum/t/stealing-jwt-from-authenticated-user/352/4&quot;&gt;JWT&amp;#39;s start getting stolen&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;Security is very hard to get right, and its best left to professionals who deal with it full time.&lt;/p&gt;
 
-&lt;h3 id=&quot;securing-express&quot;&gt;Securing Express&lt;/h3&gt;
+&lt;h2 id=&quot;securing-express&quot;&gt;Securing Express&lt;/h2&gt;
 
 &lt;p&gt;&lt;a href=&quot;http://passportjs.org/&quot;&gt;Passport&lt;/a&gt; has over 300 authentication strategies that are widely used. They&amp;#39;re free, open source, and easier to implement that building a leaky authentication strategy yourself.&lt;/p&gt;
 
@@ -2081,7 +2084,7 @@ DELETE: /api/polls/delete/:id
 
 &lt;p&gt;For simple &lt;a href=&quot;https://www.owasp.org/index.php/Cross-site_Scripting_(XSS)&quot;&gt;XSS&lt;/a&gt; protection, &lt;a href=&quot;https://www.npmjs.com/package/express-sanitized&quot;&gt;&lt;code&gt;express-sanitized&lt;/code&gt;&lt;/a&gt; makes it very easy.&lt;/p&gt;
 
-&lt;h3 id=&quot;https&quot;&gt;HTTPS&lt;/h3&gt;
+&lt;h2 id=&quot;https&quot;&gt;HTTPS&lt;/h2&gt;
 
 &lt;p&gt;Finally, use HTTPS if you aren&amp;#39;t already. It&amp;#39;s very easy to set up with &lt;a href=&quot;https://certbot.eff.org/&quot;&gt;certbot&lt;/a&gt;.&lt;/p&gt;
 

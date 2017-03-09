@@ -176,7 +176,10 @@
 <li><a href="#continuous-integration">Continuous Integration</a></li>
 <li><a href="#staging-vs-production">Staging vs Production</a></li>
 <li><a href="#logging">Logging</a></li>
-<li><a href="#security">Security</a></li>
+</ul></li>
+<li><a href="#security">Security</a>
+
+<ul>
 <li><a href="#watch-this-talk">Watch this talk</a></li>
 <li><a href="#securing-express">Securing Express</a></li>
 <li><a href="#https">HTTPS</a></li>
@@ -2134,15 +2137,15 @@ DELETE: /api/polls/delete/:id
 
 <p>Note the use of <code>log.info</code> and <code>log.error</code>. Both logs will be printed to the console, but the error will also get written to the log file, which can later be searched using <code>bunyan</code>&#39;s cli.</p>
 
-<h2 id="security">Security</h2>
+<h1 id="security">Security</h1>
 
-<h3 id="watch-this-talk"><a href="https://www.youtube.com/watch?v=POmnL-PruAs&amp;t=12s">Watch this talk</a></h3>
+<h2 id="watch-this-talk"><a href="https://www.youtube.com/watch?v=POmnL-PruAs&amp;t=12s">Watch this talk</a></h2>
 
 <p>There are a lot of reasons not build your own authentication strategy. Good security is a constantly moving target, and nothing is immune from hackers that want to break in badly enough. Even if you manage to build a reasonably secure authentication strategy that&#39;s penetration tested and following current best practices, how often are you going to audit it for new vulnerabilities, known and unknown? Once a week? Once a month? Never? Before you know it, your users&#39; <a href="https://auth0.com/forum/t/stealing-jwt-from-authenticated-user/352/4">JWT&#39;s start getting stolen</a>.</p>
 
 <p>Security is very hard to get right, and its best left to professionals who deal with it full time.</p>
 
-<h3 id="securing-express">Securing Express</h3>
+<h2 id="securing-express">Securing Express</h2>
 
 <p><a href="http://passportjs.org/">Passport</a> has over 300 authentication strategies that are widely used. They&#39;re free, open source, and easier to implement that building a leaky authentication strategy yourself.</p>
 
@@ -2152,7 +2155,7 @@ DELETE: /api/polls/delete/:id
 
 <p>For simple <a href="https://www.owasp.org/index.php/Cross-site_Scripting_(XSS)">XSS</a> protection, <a href="https://www.npmjs.com/package/express-sanitized"><code>express-sanitized</code></a> makes it very easy.</p>
 
-<h3 id="https">HTTPS</h3>
+<h2 id="https">HTTPS</h2>
 
 <p>Finally, use HTTPS if you aren&#39;t already. It&#39;s very easy to set up with <a href="https://certbot.eff.org/">certbot</a>.</p>
 

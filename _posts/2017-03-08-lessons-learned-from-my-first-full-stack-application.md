@@ -63,10 +63,10 @@ This is a very long post, so feel free to jump around.
   - [Continuous Integration](#continuous-integration)
     - [Staging vs Production](#staging-vs-production)
     - [Logging](#logging)
-  - [Security](#security)
-    - [Watch this talk](#watch-this-talk)
-    - [Securing Express](#securing-express)
-    - [HTTPS](#https)
+- [Security](#security)
+  - [Watch this talk](#watch-this-talk)
+  - [Securing Express](#securing-express)
+  - [HTTPS](#https)
 - [This All Comes Back to JavaScript](#this-all-comes-back-to-javascript)
 
 <!-- /MarkdownTOC -->
@@ -2134,15 +2134,15 @@ const updateDocumentWithNewVote = function (selectedOption, pollID, voter) {
 
 Note the use of `log.info` and `log.error`. Both logs will be printed to the console, but the error will also get written to the log file, which can later be searched using `bunyan`'s cli.
 
-## Security
+# Security
 
-### [Watch this talk](https://www.youtube.com/watch?v=POmnL-PruAs&t=12s)
+## [Watch this talk](https://www.youtube.com/watch?v=POmnL-PruAs&t=12s)
 
 There are a lot of reasons not build your own authentication strategy. Good security is a constantly moving target, and nothing is immune from hackers that want to break in badly enough. Even if you manage to build a reasonably secure authentication strategy that's penetration tested and following current best practices, how often are you going to audit it for new vulnerabilities, known and unknown? Once a week? Once a month? Never? Before you know it, your users' [JWT's start getting stolen](https://auth0.com/forum/t/stealing-jwt-from-authenticated-user/352/4).
 
 Security is very hard to get right, and its best left to professionals who deal with it full time.
 
-### Securing Express
+## Securing Express
 
 [Passport](http://passportjs.org/) has over 300 authentication strategies that are widely used. They're free, open source, and easier to implement that building a leaky authentication strategy yourself.
 
@@ -2152,7 +2152,7 @@ Express has a lot of [great advice](https://expressjs.com/en/advanced/best-pract
 
 For simple [XSS](https://www.owasp.org/index.php/Cross-site_Scripting_(XSS)) protection, [`express-sanitized`](https://www.npmjs.com/package/express-sanitized) makes it very easy.
 
-### HTTPS
+## HTTPS
 
 Finally, use HTTPS if you aren't already. It's very easy to set up with [certbot](https://certbot.eff.org/).
 
