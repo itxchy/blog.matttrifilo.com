@@ -10,7 +10,7 @@ redcarpet:
 title:               Matt Trifilo
 tagline:             'JavaScript is eating the world.'
 description:         "JavaScript developer, cyclist, keto carnivore. Let's speak in code."
-url:                 http://blog.matttrifilo.com
+url:                 https://blog.matttrifilo.com
 baseurl:             ''
 gems: [jekyll-paginate]
 paginate:            5

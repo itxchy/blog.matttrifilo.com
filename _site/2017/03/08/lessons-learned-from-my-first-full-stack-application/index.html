@@ -1561,7 +1561,7 @@ separately:</p>
 
 <p>All of my SCSS files were stored in a separate <code>sass</code> directory, the idea being to keep styling concerns and React component concerns separate. But isn&#39;t the <em>styling</em> of a component part of a component&#39;s concerns? Depends on who you ask I guess, but importing your SASS or CSS modules directly into the components that need them makes a lot of sense. Instead of going through a separate directory tree looking for the style module that&#39;s responsible for your component, and managing the file structure of a separate style directory, it makes sense to keep your CSS or SASS together with the components they&#39;re styling. This is good for a faster workflow, and it makes it easier to use CSS conventions like <a href="https://en.bem.info/methodology/key-concepts/">BEM</a>. Instead of mirroring your CSS directory with your component directory, you can keep your components even more self contained in their file structure.</p>
 
-<p><img src="http://blog.matttrifilo.com/public/img/css-structure.png" alt="Styling in its own directory compared with keeping styles with their components."></p>
+<p><img src="https://blog.matttrifilo.com/public/img/css-structure.png" alt="Styling in its own directory compared with keeping styles with their components."></p>
 
 <p><em>How</em> to <a href="https://webpack.js.org/guides/code-splitting-css/">bundle your CSS</a> is another consideration. Using <code>ExtractTextPlugin</code> will allow you to load your CSS in a separate script tag, requiring an additional network request. Including your CSS in a JavaScript bundle will save a network request, but will add to the bundle&#39;s weight.</p>
 
@@ -2185,7 +2185,7 @@ DELETE: /api/polls/delete/:id
       //var disqus_developer = 1;
 
       var disqus_config = function () {
-          this.page.url = "http://blog.matttrifilo.com/2017/03/08/lessons-learned-from-my-first-full-stack-application/";  // Replace PAGE_URL with your page's canonical URL variable
+          this.page.url = "https://blog.matttrifilo.com/2017/03/08/lessons-learned-from-my-first-full-stack-application/";  // Replace PAGE_URL with your page's canonical URL variable
           this.page.identifier = "/2017/03/08/lessons-learned-from-my-first-full-stack-application"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
       };
 

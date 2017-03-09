@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
  <title>Matt Trifilo</title>
- <link href="http://blog.matttrifilo.com/atom.xml" rel="self"/>
- <link href="http://blog.matttrifilo.com/"/>
- <updated>2017-03-09T02:09:07-06:00</updated>
- <id>http://blog.matttrifilo.com</id>
+ <link href="https://blog.matttrifilo.com/atom.xml" rel="self"/>
+ <link href="https://blog.matttrifilo.com/"/>
+ <updated>2017-03-09T02:22:16-06:00</updated>
+ <id>https://blog.matttrifilo.com</id>
  <author>
    <name>Matt Trifilo</name>
    <email>matt.trifilo@gmail.com</email>
@@ -14,9 +14,9 @@
  
  <entry>
    <title>Lessons Learned from My First Full Stack Application</title>
-   <link href="http://blog.matttrifilo.com/2017/03/08/lessons-learned-from-my-first-full-stack-application/"/>
+   <link href="https://blog.matttrifilo.com/2017/03/08/lessons-learned-from-my-first-full-stack-application/"/>
    <updated>2017-03-08T04:40:00-06:00</updated>
-   <id>http://blog.matttrifilo.com/2017/03/08/lessons-learned-from-my-first-full-stack-application</id>
+   <id>https://blog.matttrifilo.com/2017/03/08/lessons-learned-from-my-first-full-stack-application</id>
    <content type="html">&lt;p&gt;All of the things I&amp;#39;ve been learning for the past two years were finally brought together to build out my first full stack application for Free Code Camp, a polling app. It&amp;#39;s &lt;a href=&quot;https://fcc-vote.matttrifilo.com&quot;&gt;deployed&lt;/a&gt;! You can view the source on &lt;a href=&quot;https://github.com/itxchy/FCC-vote&quot;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;I took my time on this project because while I was comfortable with React, Express, and MongoDB, I&amp;#39;d never used them together to build a large, modern CRUD application. Piling on to that, I had no experience at all with Redux or the Flux pattern in general, much less how to pass state around in a larger React/Redux application. This was also my first experience visualizing data with D3.js and dealing with user authentication.&lt;/p&gt;
@@ -1490,7 +1490,7 @@ separately:&lt;/p&gt;
 
 &lt;p&gt;All of my SCSS files were stored in a separate &lt;code&gt;sass&lt;/code&gt; directory, the idea being to keep styling concerns and React component concerns separate. But isn&amp;#39;t the &lt;em&gt;styling&lt;/em&gt; of a component part of a component&amp;#39;s concerns? Depends on who you ask I guess, but importing your SASS or CSS modules directly into the components that need them makes a lot of sense. Instead of going through a separate directory tree looking for the style module that&amp;#39;s responsible for your component, and managing the file structure of a separate style directory, it makes sense to keep your CSS or SASS together with the components they&amp;#39;re styling. This is good for a faster workflow, and it makes it easier to use CSS conventions like &lt;a href=&quot;https://en.bem.info/methodology/key-concepts/&quot;&gt;BEM&lt;/a&gt;. Instead of mirroring your CSS directory with your component directory, you can keep your components even more self contained in their file structure.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://blog.matttrifilo.com/public/img/css-structure.png&quot; alt=&quot;Styling in its own directory compared with keeping styles with their components.&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://blog.matttrifilo.com/public/img/css-structure.png&quot; alt=&quot;Styling in its own directory compared with keeping styles with their components.&quot;&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;em&gt;How&lt;/em&gt; to &lt;a href=&quot;https://webpack.js.org/guides/code-splitting-css/&quot;&gt;bundle your CSS&lt;/a&gt; is another consideration. Using &lt;code&gt;ExtractTextPlugin&lt;/code&gt; will allow you to load your CSS in a separate script tag, requiring an additional network request. Including your CSS in a JavaScript bundle will save a network request, but will add to the bundle&amp;#39;s weight.&lt;/p&gt;
 
@@ -2108,9 +2108,9 @@ DELETE: /api/polls/delete/:id
  
  <entry>
    <title>Navigating the Unknown Unknowns</title>
-   <link href="http://blog.matttrifilo.com/2017/02/20/navigating-the-unknown-unknowns/"/>
+   <link href="https://blog.matttrifilo.com/2017/02/20/navigating-the-unknown-unknowns/"/>
    <updated>2017-02-20T04:20:00-06:00</updated>
-   <id>http://blog.matttrifilo.com/2017/02/20/navigating-the-unknown-unknowns</id>
+   <id>https://blog.matttrifilo.com/2017/02/20/navigating-the-unknown-unknowns</id>
    <content type="html">&lt;p&gt;As new coders traverse the vast, treacherous landscape of modern JavaScript development in 2017, many chasms in knowledge appear out of the fog that can stop them in their tracks. There&amp;#39;s no avoiding it. There&amp;#39;s no guessing where they might even arise at times.&lt;/p&gt;
 
 &lt;p&gt;In my case, the first &amp;quot;knowledge chasm&amp;quot; of many appeared after completing Codecademy&amp;#39;s JavaScript course, and finishing all of Free Code Camp&amp;#39;s beginner algorithm challenges. I felt pretty confident. JavaScript was becoming familiar, and I built web pages with HTML, CSS, and jQuery with increasing ease.&lt;/p&gt;
@@ -2185,9 +2185,9 @@ DELETE: /api/polls/delete/:id
  
  <entry>
    <title>Leveling Up</title>
-   <link href="http://blog.matttrifilo.com/2016/08/02/leveling-up/"/>
+   <link href="https://blog.matttrifilo.com/2016/08/02/leveling-up/"/>
    <updated>2016-08-02T05:20:00-05:00</updated>
-   <id>http://blog.matttrifilo.com/2016/08/02/leveling-up</id>
+   <id>https://blog.matttrifilo.com/2016/08/02/leveling-up</id>
    <content type="html">&lt;p&gt;At the end of May, I finally completed my &lt;a href=&quot;https://www.freecodecamp.com/itxchy/front-end-certification&quot;&gt;Front End Certification&lt;/a&gt; for Free Code Camp.&lt;/p&gt;
 
 &lt;p&gt;Since then, I&amp;#39;ve spent some time refactoring a few of my older projects to get them to a place where I don&amp;#39;t cringe every time I look at the source code. They were pretty grisly. My Pomodoro app from last year in particular was a hacky mess. It was my first project trying out AngularJS, and while it worked, it broke pretty much every relevant style in &lt;a href=&quot;https://github.com/johnpapa/angular-styleguide/blob/master/a1/README.md&quot;&gt;John Papa&amp;#39;s style guide&lt;/a&gt;. Here&amp;#39;s the &lt;a href=&quot;http://codepen.io/dprsky/pen/OymXEp&quot;&gt;old source&lt;/a&gt; if you have a strong stomach. All of the logic was in one controller and $scope was polluted with almost every variable in the project. Not even one service to handle business logic. The controller was in charge or user interactions, business logic, &lt;em&gt;and&lt;/em&gt; state. The horror. It must be destroyed. I didn&amp;#39;t even know how to use a service versus a controller at the time. It&amp;#39;s a small app, and the design-pattern-less layout of the code was well commented, but it would have quickly turned into a field of thorns if it ever needed new features. Good code should be mostly self-documenting anyway. I took this as an opportunity to refactor the app&amp;#39;s code &lt;a href=&quot;https://johnpapa.net/angular-app-structuring-guidelines/&quot;&gt;structure&lt;/a&gt; and logic to separate concerns (UI elements, &lt;a href=&quot;https://johnpapa.net/sharing-data-in-an-angular-controller-or-an-angular-service/&quot;&gt;state&lt;/a&gt;, application logic, user interaction handling) and get some practice using Angular 1.5&amp;#39;s great new &lt;a href=&quot;https://toddmotto.com/exploring-the-angular-1-5-component-method/&quot;&gt;component method&lt;/a&gt;, modeled after Angular 2&amp;#39;s component pattern. That&amp;#39;s a story for another blog post, but it was a humbling learning experience, and Angular 1&amp;#39;s paradigm makes so much more sense now on every level.&lt;/p&gt;
@@ -2220,9 +2220,9 @@ DELETE: /api/polls/delete/:id
  
  <entry>
    <title>First Blog Post!</title>
-   <link href="http://blog.matttrifilo.com/2016/02/16/first-blog-post/"/>
+   <link href="https://blog.matttrifilo.com/2016/02/16/first-blog-post/"/>
    <updated>2016-02-16T04:20:00-06:00</updated>
-   <id>http://blog.matttrifilo.com/2016/02/16/first-blog-post</id>
+   <id>https://blog.matttrifilo.com/2016/02/16/first-blog-post</id>
    <content type="html">&lt;iframe src=&quot;//giphy.com/embed/kpQjhiuMqGJHi&quot; width=&quot;480&quot; height=&quot;269&quot; frameBorder=&quot;0&quot; class=&quot;giphy-embed&quot; allowFullScreen&gt;&lt;/iframe&gt;
 
 &lt;p&gt;I thought I&amp;#39;d christen this shiny new blog with a reflection of how I got to this point. This post will be long (okay, it&amp;#39;s a novel), but this will be a good chance for me to reflect on the past few years that have been a roller coaster to say the least.&lt;/p&gt;
