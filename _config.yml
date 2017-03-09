@@ -4,6 +4,9 @@
 permalink:           pretty
 
 # Setup
+markdown: redcarpet
+redcarpet:
+  extensions: ["strikethrough", "with_toc_data"]
 title:               Matt Trifilo
 tagline:             'JavaScript is eating the world.'
 description:         "JavaScript developer, cyclist, keto carnivore. Let's speak in code."

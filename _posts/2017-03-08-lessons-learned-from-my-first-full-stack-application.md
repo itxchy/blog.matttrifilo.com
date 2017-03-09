@@ -2,14 +2,14 @@
 layout: post
 title: Lessons Learned from My First Full Stack Application
 comments: true
-date: 2017-03-08T03:40:00Z
+date: 2017-03-08T10:40:00Z
 ---
 
-For the past few months, I've been working on my first full stack application challenge for Free Code Camp, a web application for creating and sharing polls. It's finally [deployed](https://fcc-vote.matttrifilo.com)! You can view the source on [GitHub](https://github.com/itxchy/FCC-vote).
+For the past few months, I've built out my first full stack application for Free Code Camp, a polling app. It's finally [deployed](https://fcc-vote.matttrifilo.com)! You can view the source on [GitHub](https://github.com/itxchy/FCC-vote).
 
-I took my time on this project in particular because while I was familiar with React, Express, and MongoDB at a rudimentary level, I'd never used them together to build a modern CRUD application. Piling on to that, I had no experience at all with Redux or the Flux architecture in general, much less how to pass state around in a larger React/Redux application. This was also my first experience visualizing data with D3.js.
+I took my time on this project because while I was familiar with React, Express, and MongoDB at a basic level, I'd never used them together to build a large, modern CRUD application. Piling on to that, I had no experience at all with Redux or the Flux pattern in general, much less how to pass state around in a larger React/Redux application. This was also my first experience visualizing data with D3.js and dealing with user authentication.
 
-I've learned more from this project than anything else I've ever made to date, and this seems like a good time to take a step back to reflect on and share some of the most useful lessons I've learned from this project.
+I've learned more from this project than anything else I've ever built and this seems like a good time to take a step back to reflect on and share some of the most useful lessons I've learned from this project.
 
 <!--break-->
 
@@ -74,9 +74,9 @@ This is a very long post, so feel free to jump around.
 
 # Thank You Virtual Mentors
 
-First off, I'd like to thank [Brian Holt](https://twitter.com/holtbt) for both of his great Complete Intro To React workshops on [Front End Masters](https://frontendmasters.com/courses/?u=563312949abcfdd369685f8abe03f2bec24ead42). The workflow he shares is a simple and scalable way to think about building React applications. As you go, you bring in new tools only as you need them, and refactor fast and often. I can't recommend his workshops enough, even if you've been using React for years. The insights he shares are well worth the Front End Masters subscription. Check out all of Kyle Simpson's workshops while you're at it!
+First off, I'd like to thank [Brian Holt](https://twitter.com/holtbt) for both of his mind-bending Complete Intro To React workshops on [Front End Masters](https://frontendmasters.com/courses/?u=563312949abcfdd369685f8abe03f2bec24ead42). The workflow he shares is a simple and scalable way to think about building a React application. As you build it up, you bring in new tools only as you need them, and refactor fast and often. I can't recommend his workshops enough, even if you've been using React for years. The insights he shares are well worth the Front End Masters subscription. Check out all of Kyle Simpson's workshops while you're at it!
 
-I'd also like to thank [Rem Zolotykh](https://twitter.com/remzolotykh?lang=en) for putting together such a thorough [Youtube series](https://www.youtube.com/playlist?list=PLuNEz8XtB51K-x3bwCC9uNM_cxXaiCcRY) about building a React/Redux application with jwt authentication. While you should never use a custom authentication strategy like this for real-world production apps (use Passport instead), he offered a detailed overview of how to build an authentication flow using JSON web tokens, localStorage, and the proper headers. It was also very helpful to get another perspective of how to wire up React and Redux, and handle forms with controlled components.
+I'd also like to thank [Rem Zolotykh](https://twitter.com/remzolotykh?lang=en) for putting together such a thorough [Youtube series](https://www.youtube.com/playlist?list=PLuNEz8XtB51K-x3bwCC9uNM_cxXaiCcRY) about building a React/Redux application with jwt authentication. While you should never use a custom authentication strategy for real-world production apps (use [Passport](http://passportjs.org/) instead), he offered a detailed overview of how to build an authentication flow using JSON web tokens, localStorage, and the proper headers. It was also very helpful to get another perspective of how to wire up React and Redux, and handle forms with controlled components.
 
 Finally, I owe a heavy amount of gratitude to Robert M. Pirsig. While working on this project, I hit a lot of brick walls. To unwind after getting put in my place by a waterfall of error messages, I would read [Zen and the Art of Motorcycle Maintenance](https://www.amazon.com/Zen-Art-Motorcycle-Maintenance-Inquiry/dp/0060589469). After picking at the first half for about a year, I finished the second half within a few weeks while working on this project. The explorations of Quality in the book correlate directly with programming, and with life in general. It put a lot of mental blocks I had with thinking about code into a much broader perspective, and inspired a deeper sense of kinship with the craft. It changed the way I perceive and approach bugs. I've gained an appreciation for them, as frustrating and ego-crushing as they can be. Each hard bug illuminates a gap in knowledge with an opportunity to learn something profound, and you grow because of it. As Ryan Holiday's cult-classic is titled, "[The Obstacle is the Way](https://www.amazon.com/Obstacle-Way-Timeless-Turning-Triumph/dp/1591846358)." In turn, this leads to writing better *quality* software naturally and becoming better prepared and energized to contribute fresh perspectives and innovations to open source projects, companies you're working for, or your even an entire industry by finding your own [blue ocean](https://www.amazon.com/Blue-Ocean-Strategy-Expanded-Uncontested/dp/1625274491/ref=sr_1_2?ie=UTF8&qid=1417408285&sr=8-2&keywords=blue+ocean+strategy) with your own open source project or company. Quality wins out in the end. Customers know it when they find it. A bug may seem trivial at first, but if you consider that an entire application may rely on that trivial bug being fixed in order to run the way it needs to, it's not so trivial after all, and deserves attention and careful thought.
 
@@ -84,11 +84,13 @@ There seem to be a lot of nods to Stoicism in Zen and the Art of Motorcycle Main
 
 # An Overview of Vote
 
-The user stories for this Free Code Camp project can be viewed [here](https://www.freecodecamp.com/challenges/build-a-voting-app).
+The user stories for this Free Code Camp project are [here](https://www.freecodecamp.com/challenges/build-a-voting-app).
 
-Basically, Vote allows you to create and manage polls as an authenticated user, vote once on any poll whether you're authenticated or not, and share a single poll with friends and strangers.
+Vote is a server-side rendered single page application that allows you to create and manage polls as an authenticated user, vote once on any poll whether you're authenticated or not, view poll results instantly after voting, and share a single poll with friends and strangers.
 
-This project is far from perfect. You can't search or sort polls, but the time spent adding too much functionality beyond the user stories for a toy app like this is better spent on new projects at this point. This app won't be a "[Show HN](https://news.ycombinator.com/show)" post. Learning the process and mechanics of building something like this was the primary goal, and it payed dividends in hard lessons.
+It uses React and Redux for the client side application, and Express and MongoDB for the back end API and database. For each initial request, `ReactDOMServer` renders the entire React application's markup into a string, which gets injected into `index.html` before being sent to the client. Authentication is handled with JSON web tokens.
+
+This project is far from perfect. You can't search or sort polls, but this app satisfies all of the user stories for Free Code Camp, and that was the intent. Vote won't be found on "[Show HN](https://news.ycombinator.com/show)", but the hard lessons drilled into me have ~~haunted~~ inspired me to explore better API design, TDD, modular CSS patterns with PostCSS and BEM, and a renewed focus on ES6+ JavaScript fundamentals for future projects I'm gestating.
 
 Let's dig in!
 
@@ -99,23 +101,23 @@ If you're going to build a good table, you'd better know what tools to use when,
 ## Linting with Standard JS (Use with caution)
 
 I was skeptical of [Standard JS](http://standardjs.com/) at first,
-but I gave it a chance at the recommendation of Brian Holt in his workshop, and really enjoyed the simplicity.
+but I gave it a chance at the recommendation of Brian Holt in his workshop and really enjoyed the simplicity.
 
-A lot of [very](https://github.com/getify/You-Dont-Know-JS/blob/master/types%20&%20grammar/ch5.md#error-correction) [smart](http://www.2ality.com/2011/05/semicolon-insertion.html) [people](https://google.github.io/styleguide/javascriptguide.xml#Semicolons) caution (with good reason) that omitting semi-colons, and relying on JavaScript's [Automatic Semicolon Insertion](https://www.ecma-international.org/ecma-262/5.1/#sec-7.9) feature to insert every semi-colon for you under the hood should be avoided. For companies with a large teams of developers, omitting semi-colons adds another layer of risk, simply because of the added exposure to ASI-related bugs if any code isn't linted properly. Plus, you need to place your trust in the linter to catch every edge case.
+A lot of [very](https://github.com/getify/You-Dont-Know-JS/blob/master/types%20&%20grammar/ch5.md#error-correction) [smart](http://www.2ality.com/2011/05/semicolon-insertion.html) [people](https://google.github.io/styleguide/javascriptguide.xml#Semicolons) caution (with good reason) that omitting semi-colons and relying on JavaScript's [Automatic Semicolon Insertion](https://www.ecma-international.org/ecma-262/5.1/#sec-7.9) feature should be avoided. For companies with a large team of developers, relying on ASI adds another layer of risk.
 
-That said, the common [gotchas](http://standardjs.com/rules.html#semicolons) of omitting semi-colons are well known and Standard has lint rules to stop you from making those mistakes, assuming that all of your code is always linted. Continuous integration tools like TravisCI can run a final lint check for you before allowing the code to be deployed to staging. If any lint errors are present, the build will fail and it won't get deployed. I think Standard is fine for personal projects and smaller companies, as long as linting is strictly enforced.
+That said, the common [gotchas](http://standardjs.com/rules.html#semicolons) of omitting semi-colons are well known and Standard has lint rules to catch those mistakes, assuming that all of your code is always linted. Continuous integration tools like TravisCI can run a final lint check for you before allowing the code to be deployed to staging. If any lint errors are present, the build will fail and it won't get deployed. I think Standard is fine for personal projects and smaller companies, as long as linting is strictly enforced.
 
 For safety, [Semistandard](https://github.com/Flet/semistandard) (Standard plus semicolons) is available, and you'll still get all of the benefits of a simple, effective style guide that you don't need to spend time tweaking. This is good for having the peace of mind of knowing the risk of ASI bugs is off the table.
 
 ### Why Standard (or Semistandard)?
 
-Eslint is a powerful tool, but I'd spent more time than I'd like to admit experimenting with linting rules, and researching whether to use a popular style guide from companies like [AirBnB](https://github.com/airbnb/javascript) and which one, plus managing `.eslintrc` changes across different projects.
+Eslint is a powerful tool, but I'd spent more time than I'd like to admit tweaking linting rules and wrangling `.eslintrc` files .
 
-Standard JS takes all of that choice out of the equation and enforces a simple, reliable style guide that CAN'T be changed. If you change it with custom lint rules, than you're not coding in Standard.
+Standard JS takes all of that choice out of the equation and enforces a simple, reliable style guide that CAN'T be changed. If you change it with custom lint rules, than you're not coding in Standard Style.
 
-This idea is in the spirit of [PEP 8](https://www.python.org/dev/peps/pep-0008/) from Python. If you know PEP 8 well, you'll have an easy time reading other people's Python code. Standard seeks to offer the same consistency for JavaScript.
+This idea is in the spirit of [PEP 8](https://www.python.org/dev/peps/pep-0008/) from Python. If you know PEP 8 well, you'll have an easy time reading other people's Python code. Standard seeks to offer that same spirit of consistency for JavaScript.
 
-While I don't think it would be good for JavaScript to officially standardize any single style guide, Standard offers a set of rules for eslint that let you set-it-and-forget-it, freeing up valuable brain cycles for other things.
+While I don't think it would be good for JavaScript to officially standardize any single style guide, Standard offers a set of eslint rules that force you to set-it-and-forget-it. This saves you valuable brain cycles.
 
 ### Using Standard Without React
 
@@ -207,7 +209,7 @@ Happy linting!
 
 You can also delegate linting to `webpack` using `eslint-loader`, so can see lint errors every time a new bundle is compiled. More on that in a bit.
 
-I've turned off linting in Sublime Text because I find it more distracting then helpful. Plus it creates a latency while saving, and I save files all the time. If you don't like linting in a terminal, eslint plugins are available for the major text editors.
+I've turned off linting in Sublime Text because I've found it more distracting then helpful. Plus, it creates a latency while saving. If you don't like linting in a terminal, eslint plugins are available for the major text editors.
 
 ## Webpack 2
 
@@ -359,7 +361,7 @@ Now, you can add an npm script to build your production bundle:
 
 ### Tree-Shaking
 
-Another modern feature in Webpack 2 is tree-shaking. Since Webpack 2 supports ES6 module syntax, it is now able to check for exports in your code during the bundling step and determine if they're imported anywhere, and remove the exports that no other files import. Then, when you uglify your JavaScript, all of the now-dead export-less code get stripped away. Since the unused modules lost their export calls, the code inside never gets touched. Think of this like the name "tree-shaking" implies. You have a dependency tree of code, and the branches of that tree that are never touched just fall off during the uglify step. Webpack will show you verbose logs about the code being removed during the uglify step.
+Another new feature in Webpack 2 is tree-shaking. Since ES6 modules are now supported, Webpack 2 can check for exports in your code during the bundling step, determine if they're imported anywhere, and remove the exports that no other files import. Then, when you uglify your JavaScript, all of the now-dead export-less code gets stripped away. Since the unused modules lost their export calls, the code inside never gets touched. Think of this like the name "tree-shaking" implies. You have a dependency tree of code, and the branches of that tree that are never touched just fall off during the uglify step. Webpack will show you verbose logs of the code being removed during the uglify step.
 
 There is a problem with this if you use Babel's `es2015` preset, but its easy to fix.
 
@@ -838,11 +840,11 @@ The added complexity of Redux didn't hold a candle to the added complexity witho
 
 ### A Ducks Pattern Variant
 
-At first, my Redux code lived in a single `store.js` file which got unruly very quickly.
+At first, my Redux code lived in a single `store.js` file. It didn't take long for the file to get hairy.
 
 After some research, I read about the [Ducks](https://medium.com/@scbarrus/the-ducks-file-structure-for-redux-d63c41b7035c#.yawhsa7sx) Pattern which looked very promising.
 
-I ended up with a variation of that pattern which worked out well for my needs:
+I ended up with a variation of that pattern which worked out well:
 {% highlight markdown %}
 /redux
   /modules
@@ -854,7 +856,7 @@ I ended up with a variation of that pattern which worked out well for my needs:
 
 Very simple!
 
-Store.js:
+Here's Store.js:
 
 {% highlight javascript %}
 import { applyMiddleware, compose, createStore } from 'redux'
@@ -869,7 +871,7 @@ export const store = createStore(rootReducer, compose(
 export default store
 {% endhighlight %}
 
-The Store.js file simply initializes the store with middleware and the rootReducer. Thanks again to Brian Holt for teaching that very handy devTools initialization parameter. Before that, I used `remote-dev-tools` to spin up a separate server to run the dev tools externally while server side rendering. This one-liner is much simpler.
+The `Store.js` file initializes the store with middleware and the rootReducer. Thanks again to Brian Holt for teaching that handy devToolsExtension one-liner. Before that, I used `remote-dev-tools` to spin up a separate server to run the Redux Dev Tools to prevent server-side errors.
 
 rootReducer.js:
 
@@ -903,7 +905,7 @@ export default combineReducers({
 
 {% endhighlight %}
 
-`rootReducer.js` combines all of the reducer slices into one root reducer.
+`rootReducer.js` combines all of the reducer slices from modules into one root reducer.
 
 One important note is that the name of the exported reducer slice inside each module determines the name of the module's individual state object in the store.
 
@@ -1315,13 +1317,13 @@ We'll get to `enzyme` in a moment.
 
 If no snapshot file exists, Jest will create one for you. A directory will appear called `__snapshots__` in same directory as your test file.
 
-Beyond snapshots, `enzyme` from AirBnB is essential for testing your components more deeply. `enzyme` is also commonly used with Mocha.
+Beyond snapshots, [Enzyme](http://airbnb.io/enzyme/) from AirBnB is essential for testing your components more deeply. It works great with Jest, but it's also commonly used with Mocha.
 
-`enzyme` comes with a few different rendering functions for your components like [`shallow`](http://airbnb.io/enzyme/docs/api/shallow.html) and [`mount`](http://airbnb.io/enzyme/docs/api/shallow.html).
+Enzyme has few different rendering functions for your components like [shallow](http://airbnb.io/enzyme/docs/api/shallow.html) and [mount](http://airbnb.io/enzyme/docs/api/shallow.html).
 
-Shallow only renders the component passed to it, and none of its children. It doesn't render a full DOM, so you won't get access to DOM API's or component lifecycle methods. The trade-off is that Shallow is fast. It's great for testing that markup is showing up properly based on props or state in more detail than snapshots. Shallow should be used as much as possible before using `mount`.
+Shallow only renders a component's surface-level markup, and none of its child components it may have. Shallow doesn't render a full DOM, so you won't have access to DOM API's or the component's lifecycle methods. The trade-off is that Shallow is fast. It's great for testing if a component's markup is showing up properly with more detail than snapshots. Shallow should be used as much as possible before using `mount`.
 
-Another example from `SpiffyWikipedia`:
+Here are a few `shallow` tests from `SpiffyWikipedia`:
 
 {% highlight javascript %}
 import React from 'react'
@@ -1347,20 +1349,20 @@ test('SearchResults should render "Nothing Found" if there are no results', () =
   expect(component.text()).toEqual('Nothing Found')
 })
 
-test('SearchResults should render "An error occured." if an error is passed to props', () => {
-  const component = shallow(<SearchResults error={{ error: 'bad news' }} searchResults={null} />)
-  expect(component.text()).toEqual('An error occured.')
+test('SearchResults should render "An error occurred." if an error is passed to props', () => {
+  const component = shallow(<SearchResults error={ { error: 'bad news' } } searchResults={null} />)
+  expect(component.text()).toEqual('An error occurred.')
 })
 
-test('SearchResults should render "An error occured." if nothing is is passed to seachResults or error as props', () => {
+test('SearchResults should render "An error occurred." if nothing is is passed to seachResults or error as props', () => {
   const component = shallow(<SearchResults error={null} searchResults={null} />)
-  expect(component.text()).toEqual('An error occured.')
+  expect(component.text()).toEqual('An error occurred.')
 })
 {% endhighlight %}
 
-These tests are simply testing that the correct markup and components appear depending on what prop values are passed into `<SearchResults />`. Shallow has a lot of properties you can use, and they have great [documentation](http://airbnb.io/enzyme/docs/api/shallow.html).
+These tests expect the correct markup and components to appear depending on what prop values are passed into `<SearchResults />`. Shallow has a lot of methods you can use to target markup inside your component, and the fine folks at AirBnB offer some great [documentation](http://airbnb.io/enzyme/docs/api/shallow.html).
 
-The [`SearchBar`](https://github.com/itxchy/FCC-spiffy-wikipedia/blob/master/src/components/SearchBar/SearchBar.js) component was a bit more complicated to test. A few events needed to be simulated, so `mount` was used instead of `shallow`:
+[`SearchBar`](https://github.com/itxchy/FCC-spiffy-wikipedia/blob/master/src/components/SearchBar/SearchBar.js) was a bit more complicated to test. Some DOM events needed to be simulated, so `mount` was used instead of `shallow`:
 
 {% highlight javascript %}
 import React from 'react'
@@ -1399,17 +1401,17 @@ test('SearchBar should not call onSearchSubmit from props if input is empty', ()
 
 {% endhighlight %}
 
-Mount renders full DOM allowing you to interact with DOM API's as well as component lifecycle methods.
+Mount renders a full DOM, so you're now able to interact with DOM API's and component lifecycle methods.
 
-In the tests above, form change events and button click events are simulated to test how the component handles them.
+In the tests above, form change events and button click events are simulated to test how the component behaves.
 
-This is about as deep as I've gotten with testing React components. You can test all sorts of aspects of their behavior, but I think its a good idea to let your React components focus mainly on presentation, and limit business logic in React as much as possible. If you're components have a lot of complex operations going on, you can easily abstract that logic out of React and into small external modules that are much easier to test thoroughly. By the time your app needs Redux, most of your business logic will be handled by your action creators and reducers which are very easy to test as they're just JavaScript. Nothing magical or fancy.
+This is about as deep as I've gotten with testing React components. You can test all sorts of aspects of their behavior, but I think it's best to let your React components focus mainly on presentation, and limit business logic as much as possible. If your components have a lot of complex operations going on, you can easily abstract that logic away from React and into small external modules that are much easier to kick around with unit tests. By the time your app needs Redux, most of your business logic will be handled by your action creators and reducers, which are very easy to test since they're just JavaScript.
 
 ### Testing Redux with Jest
 
-Testing Redux is as easy as simulating an action being reduced into new state, and testing that new state against your expectations. Let's look at few examples from Vote.
+Testing Redux is as simple as calling a reducer with a default state object and an action containing dummy data, and verifying the returned new state object against what you're expecting. Let's look at few examples from Vote.
 
-A few action creators alongside their reducers in [`createNewPoll.js`](https://github.com/itxchy/FCC-vote/blob/master/redux/modules/createNewPoll.js):
+Here are a few action creators alongside their reducers in [createNewPoll.js](https://github.com/itxchy/FCC-vote/blob/master/redux/modules/createNewPoll.js):
 
 {% highlight javascript %}
 // ...
@@ -1459,7 +1461,7 @@ const pollSavedReducer = (state, action) => {
 // ...
 {% endhighlight %}
 
-And here are their tests in [`createNewPoll.spec.js`](https://github.com/itxchy/FCC-vote/blob/master/redux/modules/createNewPoll.spec.js):
+And here are their tests in [createNewPoll.spec.js](https://github.com/itxchy/FCC-vote/blob/master/redux/modules/createNewPoll.spec.js):
 
 {% highlight javascript %}
 // ...
@@ -1499,7 +1501,7 @@ And here are their tests in [`createNewPoll.spec.js`](https://github.com/itxchy/
 // ... /
 {% endhighlight %}
 
-In each test, `createNewPoll.js`'s root reducer slice is returning a new state object based on the previous state, and an action or an action creator's returned action. Then, its just a matter of seeing if the new state is what you expect it to be. If not, you know exactly where to look for the bug.
+In each test, `createNewPoll.js`'s root reducer slice is returning a new state object based on the previous or default state, and an action with test data. If the new state object returned from the reducer is what you expect, the test passes. If not, you know exactly where to look for the bug.
 
 > A root reducer slice is simply the module's exported reducer that gets passed to combineReducer in the rootReducer.js file. It's a bit confusing to think about at first. Put another way, the root reducer is Redux's main reducer that reduces everything into its one state object. The root reducer is comprised of a number of root reducer slices, each being an individual modules main reducer. A module's main reducer (or root reducer slice) will call one of the many individual reducers in that module if an action's type gets matched. That reducer will return a new state, and it will be passed back to combineReducers into Redux's main root reducer, and Redux's store will have a brand new state object.
 

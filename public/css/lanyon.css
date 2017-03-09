@@ -568,7 +568,7 @@ a.pagination-item:hover {
 /* =================== blog.matttrifilo.com =================== */
 
 .highlight pre {
-  min-width: 45rem !important;
+  min-width: 40rem;
   margin-left: -2rem;
   font-size: .67em;
 }
@@ -576,4 +576,8 @@ a.pagination-item:hover {
 .highlight .err {
   color: #515151 !important;
 
+}
+
+s, strike, del {
+  color: #515151;
 }
