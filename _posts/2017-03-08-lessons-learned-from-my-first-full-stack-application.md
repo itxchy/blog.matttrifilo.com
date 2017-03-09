@@ -5,7 +5,7 @@ comments: true
 date: 2017-03-08T10:40:00Z
 ---
 
-For the past few months, I've built out my first full stack application for Free Code Camp, a polling app. It's finally [deployed](https://fcc-vote.matttrifilo.com)! You can view the source on [GitHub](https://github.com/itxchy/FCC-vote).
+All of the things I've been learning for the past two years were finally brought together to built out my first full stack application for Free Code Camp, a polling app. It's [deployed](https://fcc-vote.matttrifilo.com)! You can view the source on [GitHub](https://github.com/itxchy/FCC-vote).
 
 I took my time on this project because while I was familiar with React, Express, and MongoDB at a basic level, I'd never used them together to build a large, modern CRUD application. Piling on to that, I had no experience at all with Redux or the Flux pattern in general, much less how to pass state around in a larger React/Redux application. This was also my first experience visualizing data with D3.js and dealing with user authentication.
 
