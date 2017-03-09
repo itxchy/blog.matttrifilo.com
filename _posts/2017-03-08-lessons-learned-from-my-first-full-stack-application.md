@@ -9,7 +9,7 @@ All of the things I've been learning for the past two years were finally brought
 
 I took my time on this project because while I was comfortable with React, Express, and MongoDB, I'd never used them together to build a large, modern CRUD application. Piling on to that, I had no experience at all with Redux or the Flux pattern in general, much less how to pass state around in a larger React/Redux application. This was also my first experience visualizing data with D3.js and dealing with user authentication.
 
-I've learned more from this project than anything else I've ever built and this seems like a good time to take a step back to reflect on and share some of the most useful lessons I've learned from this project.
+I've learned more from this project than anything else I've ever built. This seems like a good time to take a step back to reflect on and share some of the most useful lessons I've learned from this project.
 
 <!--break-->
 
